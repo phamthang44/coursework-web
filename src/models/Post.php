@@ -1,4 +1,5 @@
 <?php
+    namespace Models;
     class Post {
         private $postId;
         private $title;

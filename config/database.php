@@ -1,4 +1,5 @@
 <?php
+    namespace database;
     class Database {
         private $host = "localhost";
         private $db_name = "student_stack_overflow";
