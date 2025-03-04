@@ -1,3 +1,4 @@
 <?php
-namespace DAO;
+    namespace DAO;
+
 ?>
