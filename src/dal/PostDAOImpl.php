@@ -2,7 +2,7 @@
     namespace DAO;
     use database\Database;
     use PDO;
-    use PostDAOI;
+    use DAO\PostDAOI;
 
     class PostDAOImpl implements PostDAOI {
         private $pdo;
@@ -149,5 +149,15 @@
             $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
             return $stmt->execute();
         }
+
+        public function increaseVoteScore($postId, $voteScore)
+        {
+            // TODO: Implement increaseVoteScore() method.
+
+        }
+
+        public function decreaseVoteScore($postId, $voteScore)
+        {
+            // TODO: Implement decreaseVoteScore() method.
+        }
     }
-?>

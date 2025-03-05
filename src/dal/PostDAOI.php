@@ -1,4 +1,5 @@
 <?php
+    namespace DAO;
     interface PostDAOI {
         //CRUD function
         //create new post
@@ -13,5 +14,6 @@
         public function updatePostModule($postId, $moduleId, $updatedTimestamp);
         public function updateScore($postId, $voteScore);
         public function deletePost($postId);
+        public function increaseVoteScore($postId, $voteScore);
+        public function decreaseVoteScore($postId, $voteScore);
     }
-?>

@@ -1,4 +1,5 @@
 <?php
+    namespace DAO;
     interface ModuleDAOI {
         public function insertModule($moduleName, $moduleDescription);
         public function updateModule($moduleName, $moduleDescription, $moduleId);
@@ -10,4 +11,3 @@
         public function getAllModules();
     }
 
-?>

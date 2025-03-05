@@ -1,13 +1,17 @@
 <?php
+
 namespace DAO;
+
 use database\Database;
-use Models\Module;
-use ModuleDAOI;
+use models\Module;
+use DAO\ModuleDAOI;
 use PDO;
 
-    class ModuleDAOImpl implements ModuleDAOI {
+class ModuleDAOImpl implements ModuleDAOI
+{
     private $pdo;
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->pdo = $db->getConnection();
     }
@@ -77,7 +81,8 @@ use PDO;
         return $module;
     }
 
-    public function getModulesByName(string $moduleName) {
+    public function getModulesByName($moduleName)
+    {
         $searchTerm = "%{$moduleName}%";
         $sql = "SELECT * FROM Modules WHERE module_name LIKE :moduleName LIMIT 5";
         $stmt = $this->pdo->prepare($sql);
@@ -88,16 +93,14 @@ use PDO;
         // if only 1, return it
         if (count($rows) === 1) {
             $row = $rows[0];
-            $module = new Module($row['module_name'], $row['description']);
-            $module->setModuleId($row['module_id']);
+            $module = new Module($row['module_id'], $row['module_name'], $row['description']);
             return $module;
         }
 
         // if not  or more than 1 result return array
         $modules = [];
         foreach ($rows as $row) {
-            $module = new Module($row['module_name'], $row['description']);
-            $module->setModuleId($row['module_id']);
+            $module = new Module($row['module_id'], $row['module_name'], $row['description']);
             $modules[] = $module;
         }
         return $modules;
@@ -118,6 +121,4 @@ use PDO;
         }
         return $modules;
     }
-
-    }
-?>
+}

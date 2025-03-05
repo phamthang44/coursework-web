@@ -1,7 +1,7 @@
 <?php
     namespace DAO;
     use database\Database;
-    use Models\User;
+    use models\User;
 
     class UserDAOImpl implements UserDAOI {
         private $pdo;
@@ -197,4 +197,3 @@
 
 
     }
-?>

@@ -79,7 +79,9 @@ CREATE TABLE MessageFromUser (
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
-*/
 
+*/
+USE student_stack_overflow;
+ALTER TABLE PostComments MODIFY COLUMN title varchar(100) NULL;
 
 

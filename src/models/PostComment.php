@@ -1,5 +1,5 @@
 <?php
-    namespace Models;
+    namespace models;
     class PostComment {
         private $postCommentId;
         private $postCommentTitle;
