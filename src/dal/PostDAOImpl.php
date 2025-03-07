@@ -1,8 +1,10 @@
 <?php
     namespace DAO;
     use database\Database;
+    use Exception;
     use PDO;
     use DAO\PostDAOI;
+    use PDOException;
 
     class PostDAOImpl implements PostDAOI {
         private $pdo;
@@ -71,7 +73,18 @@
             $stmt->bindParam(":postAssetId", $postAssetId, PDO::PARAM_INT);
             $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
             $stmt->bindParam(":moduleId", $moduleId, PDO::PARAM_INT);
-            return $stmt->execute();
+
+            try {
+                $result = $stmt->execute();
+                if ($result) {
+                    return $conn->lastInsertId(); // return id just insert to
+                } else {
+                    throw new Exception("Failed to insert comment: " . print_r($stmt->errorInfo(), true));
+                }
+            } catch (PDOException $e) {
+                error_log("PDO Error: " . $e->getMessage());
+                throw $e;
+            }
         }
 
         public function updatePost($postId, $title, $content, $postAssetId, $moduleId, $updatedTimestamp)
@@ -81,50 +94,46 @@
             $sql = "";
         }
 
-        public function updatePostTitle($postId, $title, $updatedTimestamp)
+        public function updatePostTitle($postId, $title)
         {
             // TODO: Implement updatePostTitle() method.
             $conn = $this->pdo;
-            $sql = "UPDATE Posts SET title = :title, update_timestamp = :updatedTimestamp WHERE post_id = :postId";
+            $sql = "UPDATE Posts SET title = :title WHERE post_id = :postId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":title", $title, PDO::PARAM_STR);
-            $stmt->bindParam(":updatedTimestamp", $updatedTimestamp, PDO::PARAM_INT);
             $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
             return $stmt->execute();
         }
 
-        public function updatePostContent($postId, $content, $updatedTimestamp)
+        public function updatePostContent($postId, $content)
         {
             // TODO: Implement updatePostContent() method.
             $conn = $this->pdo;
-            $sql = "UPDATE Posts SET content = :content, update_timestamp = :updatedTimestamp WHERE post_id = :postId";
+            $sql = "UPDATE Posts SET content = :content WHERE post_id = :postId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":content", $content, PDO::PARAM_STR);
-            $stmt->bindParam(":updatedTimestamp", $updatedTimestamp, PDO::PARAM_INT);
             $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
             return $stmt->execute();
         }
 
-        public function updatePostAsset($postId, $assetId, $updatedTimestamp)
+        public function updatePostAsset($postId, $assetId)
         {
             // TODO: Implement updatePostAsset() method.
             $conn = $this->pdo;
-            $sql = "UPDATE Posts SET post_assets_id = :asset_id, update_timestamp = :updatedTimestamp WHERE post_id = :postId";
+            $sql = "UPDATE Posts SET post_assets_id = :asset_id WHERE post_id = :postId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":assetId", $assetId, PDO::PARAM_INT);
-            $stmt->bindParam(":updatedTimestamp", $updatedTimestamp, PDO::PARAM_INT);
             $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
             return $stmt->execute();
         }
 
-        public function updatePostModule($postId, $moduleId, $updatedTimestamp)
+        public function updatePostModule($postId, $moduleId)
         {
             // TODO: Implement updatePostModule() method.
             $conn = $this->pdo;
-            $sql = "UPDATE Posts SET module_id = :module_id, update_timestamp = :updatedTimestamp WHERE post_id = :postId";
+            $sql = "UPDATE Posts SET module_id = :module_id WHERE post_id = :postId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":moduleId", $moduleId, PDO::PARAM_INT);
-            $stmt->bindParam(":updatedTimestamp", $updatedTimestamp, PDO::PARAM_INT);
             $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
             return $stmt->execute();
         }

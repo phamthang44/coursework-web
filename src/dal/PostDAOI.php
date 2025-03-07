@@ -7,11 +7,11 @@
         public function getPost($postId);
         public function getPostByTitle($postTitle);
         public function createPost($title, $content, $postAssetId, $userId, $moduleId);
-        public function updatePost($postId, $title, $content, $postAssetId, $moduleId, $updatedTimestamp);
-        public function updatePostTitle($postId, $title, $updatedTimestamp);
-        public function updatePostContent($postId, $content, $updatedTimestamp);
-        public function updatePostAsset($postId, $assetId, $updatedTimestamp);
-        public function updatePostModule($postId, $moduleId, $updatedTimestamp);
+        public function updatePost($postId, $title, $content, $postAssetId, $moduleId);
+        public function updatePostTitle($postId, $title);
+        public function updatePostContent($postId, $content);
+        public function updatePostAsset($postId, $assetId);
+        public function updatePostModule($postId, $moduleId);
         public function updateScore($postId, $voteScore);
         public function deletePost($postId);
         public function increaseVoteScore($postId, $voteScore);
