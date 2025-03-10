@@ -7,6 +7,7 @@ use Exception;
 use PDO;
 use models\Post;
 use PDOException;
+
 require_once __DIR__ . '/../models/Post.php';
 
 
@@ -28,13 +29,13 @@ class PostDAOImpl implements PostDAOI
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        // Fetch dữ liệu dưới dạng mảng kết hợp
+
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $posts = [];
 
         // Chuyển mỗi dòng dữ liệu thành đối tượng Post
-        return $this->convertResultRowToPostObj($result, $posts); // Trả về mảng các đối tượng Post
+        return $this->convertResultRowToPostObj($result, $posts); // return array object Post
     }
 
 
@@ -47,7 +48,7 @@ class PostDAOImpl implements PostDAOI
         $stmt->bindParam(":postId", $postId);
         $stmt->execute();
         $row = $stmt->fetch();
-        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp'], $row['post_assets_id']);
+        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
     }
 
     public function getPostByTitle($postTitle)
@@ -62,7 +63,7 @@ class PostDAOImpl implements PostDAOI
         // If only 1 result, return object Post
         if (count($rows) === 1) {
             $row = $rows[0];
-            return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp'], $row['post_assets_id']);
+            return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
         }
 
         // If more than 1 row then create an array posts
@@ -70,15 +71,14 @@ class PostDAOImpl implements PostDAOI
         return $this->convertResultRowToPostObj($rows, $posts);
     }
 
-    public function createPost($title, $content, $postAssetId, $userId, $moduleId)
+    public function createPost($title, $content, $userId, $moduleId)
     {
         // TODO: Implement createPost() method.
         $conn = $this->pdo;
-        $sql = "INSERT INTO Posts (post_title, post_content, post_asset_id, user_id, module_id) VALUES (:title, :content, :postAssetId, :userId, :moduleId)";
+        $sql = "INSERT INTO Posts (title, content, user_id, module_id) VALUES (:title, :content, :userId, :moduleId)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
         $stmt->bindParam(":content", $content, PDO::PARAM_STR);
-        $stmt->bindParam(":postAssetId", $postAssetId, PDO::PARAM_INT);
         $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
         $stmt->bindParam(":moduleId", $moduleId, PDO::PARAM_INT);
 
@@ -186,10 +186,20 @@ class PostDAOImpl implements PostDAOI
     public function convertResultRowToPostObj(array $result, array $posts): array
     {
         foreach ($result as $row) {
-            $post = new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp'], $row['post_assets_id']);
+            $post = new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
             $posts[] = $post;
         }
 
         return $posts;
+    }
+
+    public function getLastPostId()
+    {
+        $conn = $this->pdo;
+        $sql = "SELECT MAX(post_id) AS last_id FROM Posts";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['last_id'];
     }
 }

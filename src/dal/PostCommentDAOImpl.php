@@ -3,12 +3,9 @@
 namespace DAO;
 
 use database\Database;
-use DateTime;
 use Exception;
-use InvalidArgumentException;
 use PDO;
 use PDOException;
-use DAO\PostCommentI;
 
 class PostCommentDAOImpl implements PostCommentI
 {
