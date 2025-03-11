@@ -54,6 +54,8 @@
     endif;
     ?>
 
+    <a href="/index.php?action=login">LOGIN</a>
+
     <script>
         // Select all delete buttons
         let deleteLinks = document.querySelectorAll("#delete-btn");

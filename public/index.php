@@ -19,10 +19,12 @@ require_once __DIR__ . "/../config/database.php";
 // require_once __DIR__ . '/../src/dal/PostAssetDAOImpl.php'; // Bao gồm file PostAssetDAOImpl
 // require_once __DIR__ . '/../src/models/PostAsset.php';
 // // Include file controller
+
+use controllers\AuthController;
 use controllers\PostController;
 
-$controller = new PostController();
-
+$postController = new PostController();
+$authController = new AuthController();
 //$controller->index(); // Gọi hàm index
 
 
@@ -30,20 +32,23 @@ $action = $_GET['action'] ?? 'index';
 
 switch ($action) {
     case 'create':
-        $controller->create();
+        $postController->create();
         break;
     case 'store':
-        $controller->store();
+        $postController->store();
         break;
     case 'delete':
-        $controller->delete($_GET['postId']);
+        $postController->delete($_GET['postId']);
         break;
     case 'update':
-        $controller->update($_GET['postId']);
+        $postController->update($_GET['postId']);
         break;
     case 'edit':
-        $controller->edit($_GET['postId']);
+        $postController->edit($_GET['postId']);
+        break;
+    case 'login':
+        $authController->login();
         break;
     default:
-        $controller->index();
+        $postController->index();
 }

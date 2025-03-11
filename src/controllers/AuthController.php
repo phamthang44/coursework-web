@@ -30,7 +30,12 @@ class AuthController
                 echo "Invalid credentials";
             }
         } else {
-            include 'views/login.php';
+            $file = dirname(__DIR__) . "/views/users/login.php";
+            if (file_exists($file)) {
+                include($file);
+            } else {
+                die("File login.php not found!");
+            }
         }
     }
 
