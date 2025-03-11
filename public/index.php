@@ -19,6 +19,8 @@ require_once __DIR__ . "/../config/database.php";
 // require_once __DIR__ . '/../src/dal/PostAssetDAOImpl.php'; // Bao gồm file PostAssetDAOImpl
 // require_once __DIR__ . '/../src/models/PostAsset.php';
 // // Include file controller
+require_once __DIR__ . '/../src/views/layouts/header.php';
+require_once __DIR__ . '/../src/views/layouts/footer.php';
 
 use controllers\AuthController;
 use controllers\PostController;
@@ -26,6 +28,7 @@ use controllers\PostController;
 $postController = new PostController();
 $authController = new AuthController();
 //$controller->index(); // Gọi hàm index
+
 
 
 $action = $_GET['action'] ?? 'index';

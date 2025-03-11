@@ -4,11 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/tailwind.css" rel="stylesheet">
     <title>Document</title>
 </head>
 
 <body>
     <?php
+    // Include the header component
+    require_once __DIR__ . '/../layouts/header.php';
+
+    // Render the header
+    $user_logged_in = '';
+    $user_name = '';
+    $user_avatar = '';
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar);
+
     // Giả sử bạn đã gửi mảng $posts từ controller
 
     if (!empty($postsData)):
@@ -32,15 +42,12 @@
                         <td><?php echo htmlspecialchars($postData['post']->getContent()); ?></td>
                         <td><a href="/index.php?action=create&postId=<?= $postData['post']->getPostId(); ?>">Create</a></td>
                         <td><a href="/index.php?action=edit&postId=<?= $postData['post']->getPostId(); ?>">Update</a></td>
-                        <td><a id="delete-btn" href="/index.php?action=delete&postId=<?= $postData['post']->getPostId(); ?>">Delete</a></td>
+                        <td><a class="delete-btn" href="/index.php?action=delete&postId=<?= $postData['post']->getPostId(); ?>">Delete</a></td>
                         <td><?php echo htmlspecialchars($postData['post']->getModuleId()); ?></td>
                         <td>
                             <?php if (!empty($postData['assets'])): ?>
                                 <?php foreach ($postData['assets'] as $asset): ?>
                                     <img src="<?php echo htmlspecialchars('/' . $asset->getMediaKey()); ?>" alt="Post image" width="100" height="100">
-
-                                    <!-- src="/uploads/bd1fa0748aadcc13365f8be654d4dbc7.png" -->
-
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </td>
@@ -55,10 +62,12 @@
     ?>
 
     <a href="/index.php?action=login">LOGIN</a>
-
+    <?php
+    echo render_quora_footer();
+    ?>
     <script>
         // Select all delete buttons
-        let deleteLinks = document.querySelectorAll("#delete-btn");
+        let deleteLinks = document.querySelectorAll(".delete-btn");
 
         function askConfirm(event) {
             event.preventDefault(); // Prevent the default link behavior
