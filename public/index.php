@@ -34,7 +34,7 @@ switch ($action) {
         $controller->store();
         break;
     case 'delete':
-        $controller->delete();
+        $controller->delete($_GET['postId']);
         break;
     case 'update':
         $controller->update($_GET['postId']);

@@ -109,7 +109,10 @@ class PostController
 
                 // Create post and take id
                 $userId = 1; // Hard-coded tạm thời
-                $moduleId = 1; // Hard-coded tạm thời
+                $moduleId = htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8');
+                if (empty($moduleId)) {
+                    throw new Exception("Module is required");
+                }
                 $postId = $this->postDAO->createPost($title, $content, $userId, $moduleId);
                 error_log("Post created successfully");
 
@@ -203,14 +206,16 @@ class PostController
 
                 $newTitle = trim(htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8'));
                 $newContent = trim(htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8'));
-                $newModule = trim(htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8'));
+                $newModule = htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8');
+                if (empty($newModule)) {
+                    throw new Exception("Module is required");
+                }
+
                 if (empty($newContent)) {
                     throw new Exception("Title and content are required");
                 }
 
                 error_log("Title and content validated successfully");
-
-                //module is required here 
 
                 //take the old post
                 $post = $this->postDAO->getPost($postId);
@@ -299,6 +304,28 @@ class PostController
                 header("Location: /index.php?action=index");
                 exit();
             }
+        }
+    }
+
+    public function delete($postId)
+    {
+        try {
+            $post = $this->postDAO->getPost($postId);
+            if (!$post) {
+                $_SESSION['error'] = "Post not found";
+                header("Location: /index.php?action=index");
+                exit();
+            }
+
+            $this->postDAO->deletePost($postId);
+            $_SESSION['success'] = "Post has been deleted successfully!";
+            header("Location: /index.php?action=index");
+            exit();
+        } catch (Exception $e) {
+            error_log("Error in delete method: " . $e->getMessage());
+            $_SESSION['error'] = $e->getMessage();
+            header("Location: /index.php?action=index");
+            exit();
         }
     }
     /*
