@@ -20,9 +20,9 @@ if (!empty($postsData)):
                 <tr>
                     <td><?php echo htmlspecialchars($postData['post']->getTitle()); ?></td>
                     <td><?php echo htmlspecialchars($postData['post']->getContent()); ?></td>
-                    <td><a href="/index.php?action=create">Create</a></td>
-                    <td><a href="#!">Update</a></td>
-                    <td><a href="#!">Delete</a></td>
+                    <td><a href="/index.php?action=create&postId=<?= $postData['post']->getPostId(); ?>">Create</a></td>
+                    <td><a href="/index.php?action=edit&postId=<?= $postData['post']->getPostId(); ?>">Update</a></td>
+                    <td><a href="/index.php?action=update&postId=<?= $postData['post']->getPostId(); ?>">Delete</a></td>
                     <td><?php echo htmlspecialchars($postData['post']->getModuleId()); ?></td>
                     <td>
                         <?php if (!empty($postData['assets'])): ?>

@@ -6,13 +6,15 @@ function Validator(options) {
       }
       element = element.parentElement; //VIP
     }
+    console.log("getParent: element or parentElement is null", element);
+    return null;
   }
 
   let selectorRules = {};
 
   function validate(inputElement, rule) {
     let errorMessage;
-
+    console.log(inputElement.parentElement);
     let errorElement = getParent(
       inputElement,
       options.formGroupSelector
@@ -31,6 +33,9 @@ function Validator(options) {
           errorMessage = rules[i](
             formElement.querySelector(rule.selector + ":checked")
           );
+          break;
+        case "textarea":
+          errorMessage = rules[i](inputElement.value);
           break;
         default:
           errorMessage = rules[i](inputElement.value);
@@ -63,7 +68,10 @@ function Validator(options) {
       let isFormValid = true;
 
       options.rules.forEach((rule) => {
+        console.log(typeof rule.selector);
+        console.log(formElement.querySelector(rule.selector));
         let inputElement = formElement.querySelector(rule.selector);
+        //please ensure the inputElement is not null in the file which is form because when throw an undefined selector will get error
         validate(inputElement, rule);
         let isValid = validate(inputElement, rule);
 

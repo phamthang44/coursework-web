@@ -95,7 +95,7 @@ class PostDAOImpl implements PostDAOI
         }
     }
 
-    public function updatePost($postId, $title, $content, $postAssetId, $moduleId)
+    public function updatePost($postId, $title, $content, $moduleId)
     {
         // TODO: Implement updatePost() method.
         $conn = $this->pdo;

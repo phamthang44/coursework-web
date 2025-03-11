@@ -10,7 +10,7 @@ interface PostDAOI
     public function getPost($postId);
     public function getPostByTitle($postTitle);
     public function createPost($title, $content, $userId, $moduleId);
-    public function updatePost($postId, $title, $content, $postAssetId, $moduleId);
+    public function updatePost($postId, $title, $content, $moduleId);
     public function updatePostTitle($postId, $title);
     public function updatePostContent($postId, $content);
     public function updatePostAsset($postId, $assetId);

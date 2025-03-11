@@ -30,6 +30,10 @@
         .error {
             color: red;
         }
+
+        .form-message {
+            color: red;
+        }
     </style>
 </head>
 
@@ -47,14 +51,14 @@
             <!-- Content Field (Required) -->
             <div class="form-group">
                 <label for="content">Content (Required):</label>
-                <textarea id="content" name="content" rows="5" required placeholder="Enter content"></textarea>
+                <textarea id="content" name="content" rows="5" placeholder="Enter content"></textarea>
                 <span class="form-message"></span>
             </div>
 
             <!-- Module Select -->
             <div class="form-group">
                 <label for="module">Module Name:</label>
-                <select id="module" name="module" required>
+                <select id="module" name="module">
                     <option value="">-- Select Module --</option>
                     <?php foreach ($modules as $module): ?>
                         <option value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
@@ -68,6 +72,12 @@
                 <label for="image">Upload Image:</label>
                 <input type="file" id="image" name="image" accept="image/*">
                 <span class="form-message"></span>
+            </div>
+
+            <!-- Preview Image -->
+            <div id="preview-container" style="display:none;">
+                <h3>Preview Image:</h3>
+                <img id="preview" src="" alt="Preview Image" style="width: 200px;" />
             </div>
 
             <!-- Submit Button -->
@@ -84,10 +94,27 @@
             formGroupSelector: ".form-group",
             formMessage: ".form-message",
             rules: [
-                Validator.isRequired("#username"),
                 Validator.isRequired("#content"),
                 Validator.isRequiredSelection("#module"),
             ],
+        });
+
+        const image = document.getElementById("image");
+        image.addEventListener('change', function(e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+
+            //read file, show image
+            reader.onload = function(e) {
+                let preview = document.getElementById("preview");
+                preview.src = e.target.result;
+                document.getElementById("preview-container").style.display = "block"; // Show preview container
+            };
+
+            //if file , start read
+            if (file) {
+                reader.readAsDataURL(file);
+            }
         });
     </script>
 </body>

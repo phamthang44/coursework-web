@@ -9,6 +9,7 @@ use DAO\ModuleDAOImpl;
 use DAO\PostAssetDAOImpl;
 use DAO\PostDAOImpl;
 use Exception;
+use finfo;
 
 
 class PostController
@@ -58,7 +59,7 @@ class PostController
     {
         //http://localhost/index.php?action=create
 
-        // Nếu not POST request, show thị form
+        // If not POST request, show form
         $posts = $this->postDAO->getAllPosts();
         $modules = $this->moduleDAO->getAllModules();
         require_once __DIR__ . '/../views/posts/createpost.php';
@@ -70,7 +71,7 @@ class PostController
             $postDAO = new PostDAOImpl();
             $postAssetService = new PostAssetDAOImpl();
 
-            // Lấy thông tin post
+            // Take the information of post
             $post = $postDAO->getPost($postId);
             if (!$post) {
                 $_SESSION['error'] = "Post not found";
@@ -78,10 +79,10 @@ class PostController
                 exit();
             }
 
-            // Lấy danh sách asset
+            // Get the list asset
             $assets = $postAssetService->getByPostId($postId);
 
-            // Truyền dữ liệu sang view
+            // Move the data into view
             require_once __DIR__ . '/../views/posts/viewpost.php';
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -97,8 +98,8 @@ class PostController
                 error_log("Store method called");
 
                 // Validate input
-                $title = htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8');
-                $content = htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8');
+                $title = trim(htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8'));
+                $content = trim(htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8'));
 
                 if (empty($content)) {
                     throw new Exception("Title and content are required");
@@ -120,24 +121,40 @@ class PostController
                         mkdir($uploadDir, 0777, true);
                     }
 
-                    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                    $maxFileSize = 100 * 1024 * 1024; // 100mb
+                    $maxFileSize = 100 * 1024 * 1024; // 100MB
 
-                    // Validate file
-                    if (!in_array($_FILES['image']['type'], $allowedTypes)) {
+                    // Check error when uploading file
+                    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+                        throw new Exception("File upload error: " . $_FILES['image']['error']);
+                    }
+
+                    // Check real MIME type
+                    $finfo = new finfo(FILEINFO_MIME_TYPE);
+                    $mime = $finfo->file($_FILES['image']['tmp_name']);
+                    $extensions = [
+                        'image/jpeg' => 'jpg',
+                        'image/png'  => 'png',
+                        'image/gif'  => 'gif'
+                    ];
+
+                    $extension = $extensions[$mime] ?? null;
+                    if (!$extension) {
                         throw new Exception("Only JPG, PNG, GIF files are allowed");
                     }
 
+                    // check the size of file image
                     if ($_FILES['image']['size'] > $maxFileSize) {
-                        throw new Exception("File size must not exceed 2MB");
+                        throw new Exception("File size must not exceed 100MB");
                     }
 
-                    // Create media_key unique
-                    $media_key = bin2hex(random_bytes(16));
-                    $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                    $fileName = $media_key . '.' . $extension;
-                    $filePath = $uploadDir . $fileName;
+                    // make the unique filename
+                    do {
+                        $media_key = bin2hex(random_bytes(16));
+                        $fileName = $media_key . '.' . $extension;
+                        $filePath = $uploadDir . $fileName;
+                    } while (file_exists($filePath));
 
+                    // move file to uploads
                     if (!move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
                         throw new Exception("Failed to upload image");
                     }
@@ -146,6 +163,124 @@ class PostController
                     $this->postAssetDAO->create($imagePath, $postId);
                     error_log("Image uploaded successfully: " . $imagePath);
                 }
+
+                $_SESSION['success'] = "The post has been created successfully!";
+                header("Location: /index.php?action=index");
+                exit();
+            } catch (Exception $e) {
+                error_log("Error in store method: " . $e->getMessage());
+                $_SESSION['error'] = $e->getMessage();
+                header("Location: /index.php?action=index");
+                exit();
+            }
+        }
+    }
+    public function edit($postId)
+    {
+        try {
+            $post = $this->postDAO->getPost($postId);
+            if (!$post) {
+                $_SESSION['error'] = "Post not found";
+                header("Location: /index.php?action=index");
+                exit();
+            }
+
+            $modules = $this->moduleDAO->getAllModules();
+            require_once __DIR__ . '/../views/posts/updatepost.php';
+        } catch (Exception $e) {
+            error_log("Error in edit method: " . $e->getMessage());
+            header("Location: /index.php?action=index");
+            exit();
+        }
+    }
+
+    public function update($postId)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                error_log("Store method called");
+                // Validate input
+
+                $newTitle = trim(htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8'));
+                $newContent = trim(htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8'));
+                $newModule = trim(htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8'));
+                if (empty($content)) {
+                    throw new Exception("Title and content are required");
+                }
+
+                error_log("Title and content validated successfully");
+
+                //module is required here 
+
+                //take the old post
+                $post = $this->postDAO->getPost($postId);
+
+                $oldTitle = $post->getTitle();
+                $oldContent = $post->getContent();
+                $oldModule = $post->getModuleId();
+
+                if ($newTitle === $oldTitle && $newContent === $oldContent && $newModule === $oldModule) {
+                    throw new Exception("No changes were made");
+                }
+
+                if (!$post) {
+                    throw new Exception("Post not found");
+                }
+
+
+                error_log("Post created successfully");
+
+                $imagePath = null;
+                // process upload file
+                if (!empty($_FILES['image']['name'])) {
+                    $uploadDir = __DIR__ . '/../../uploads/';
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+
+                    $maxFileSize = 100 * 1024 * 1024; // 100MB
+
+                    // Check error when uploading file
+                    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+                        throw new Exception("File upload error: " . $_FILES['image']['error']);
+                    }
+
+                    // Check real MIME type
+                    $finfo = new finfo(FILEINFO_MIME_TYPE);
+                    $mime = $finfo->file($_FILES['image']['tmp_name']);
+                    $extensions = [
+                        'image/jpeg' => 'jpg',
+                        'image/png'  => 'png',
+                        'image/gif'  => 'gif'
+                    ];
+
+                    $extension = $extensions[$mime] ?? null;
+                    if (!$extension) {
+                        throw new Exception("Only JPG, PNG, GIF files are allowed");
+                    }
+
+                    // check the size of file image
+                    if ($_FILES['image']['size'] > $maxFileSize) {
+                        throw new Exception("File size must not exceed 100MB");
+                    }
+
+                    // make the unique filename
+                    do {
+                        $media_key = bin2hex(random_bytes(16));
+                        $fileName = $media_key . '.' . $extension;
+                        $filePath = $uploadDir . $fileName;
+                    } while (file_exists($filePath));
+
+                    // move file to uploads
+                    if (!move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
+                        throw new Exception("Failed to upload image");
+                    }
+
+                    $imagePath = 'uploads/' . $fileName;
+                    $this->postAssetDAO->create($imagePath, $postId);
+                    error_log("Image uploaded successfully: " . $imagePath);
+                }
+
                 $_SESSION['success'] = "The post has been created successfully!";
                 header("Location: /index.php?action=index");
                 exit();

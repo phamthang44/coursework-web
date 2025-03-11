@@ -36,6 +36,12 @@ switch ($action) {
     case 'delete':
         $controller->delete();
         break;
+    case 'update':
+        $controller->update($_GET['postId']);
+        break;
+    case 'edit':
+        $controller->edit($_GET['postId']);
+        break;
     default:
         $controller->index();
 }
