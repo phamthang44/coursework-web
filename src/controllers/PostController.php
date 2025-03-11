@@ -204,7 +204,7 @@ class PostController
                 $newTitle = trim(htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8'));
                 $newContent = trim(htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8'));
                 $newModule = trim(htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8'));
-                if (empty($content)) {
+                if (empty($newContent)) {
                     throw new Exception("Title and content are required");
                 }
 
@@ -223,6 +223,15 @@ class PostController
                     throw new Exception("No changes were made");
                 }
 
+                if ($newModule !== $oldModule && $newTitle === $oldTitle && $newContent === $oldContent) {
+                    $this->postDAO->updatePostModule($postId, $newModule);
+                } else if ($newModule === $oldModule && $newTitle !== $oldTitle && $newContent === $oldContent) {
+                    $this->postDAO->updatePostTitle($postId, $newTitle);
+                } else if ($newModule === $oldModule && $newTitle === $oldTitle && $newContent !== $oldContent) {
+                    $this->postDAO->updatePostContent($postId, $newContent);
+                } else {
+                    $this->postDAO->updatePost($postId, $newTitle, $newContent, $newModule);
+                }
                 if (!$post) {
                     throw new Exception("Post not found");
                 }
@@ -277,7 +286,7 @@ class PostController
                     }
 
                     $imagePath = 'uploads/' . $fileName;
-                    $this->postAssetDAO->create($imagePath, $postId);
+                    $this->postAssetDAO->update($post->getPostId(), $imagePath);
                     error_log("Image uploaded successfully: " . $imagePath);
                 }
 

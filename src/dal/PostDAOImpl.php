@@ -99,7 +99,13 @@ class PostDAOImpl implements PostDAOI
     {
         // TODO: Implement updatePost() method.
         $conn = $this->pdo;
-        $sql = "";
+        $sql = "UPDATE Posts SET title = :title, content = :content, module_id = :moduleId WHERE post_id = :postId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":title", $title, PDO::PARAM_STR);
+        $stmt->bindParam(":content", $content, PDO::PARAM_STR);
+        $stmt->bindParam(":moduleId", $moduleId, PDO::PARAM_INT);
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     public function updatePostTitle($postId, $title): bool

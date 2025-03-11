@@ -103,12 +103,12 @@ class PostAssetDAOImpl implements PostAssetDAOI
     /**
      * @throws Exception
      */
-    public function update($post_asset_id, $media_key): bool
+    public function update($post_id, $media_key): bool
     {
         try {
-            $stmt = $this->pdo->prepare("UPDATE postassets SET media_key = :media_key WHERE post_asset_id = :id");
+            $stmt = $this->pdo->prepare("UPDATE postassets SET media_key = :media_key WHERE post_id = :id");
             $stmt->bindParam(':media_key', $media_key);
-            $stmt->bindParam(':id', $post_asset_id);
+            $stmt->bindParam(':id', $post_id);
             return $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Error updating post asset: " . $e->getMessage());
