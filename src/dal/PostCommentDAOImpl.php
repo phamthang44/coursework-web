@@ -1,6 +1,6 @@
 <?php
 
-namespace DAO;
+namespace dal;
 
 use database\Database;
 use Exception;
@@ -86,7 +86,6 @@ class PostCommentDAOImpl implements PostCommentI
             error_log("PDO Error: " . $e->getMessage());
             throw $e;
         }
-
     }
 
     public function updateCommentTitle($postCommentId, $postCommentTitle): bool
@@ -112,7 +111,7 @@ class PostCommentDAOImpl implements PostCommentI
     public function increaseVoteScore($postCommentId, $postCommentVoteScore)
     {
         // TODO: Implement increaseVoteScore() method.
-        if(is_nan($postCommentVoteScore)) {
+        if (is_nan($postCommentVoteScore)) {
             return false;
         }
         $postCommentVoteScore += 1;

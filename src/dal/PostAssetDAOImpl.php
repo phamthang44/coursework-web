@@ -1,6 +1,6 @@
 <?php
 
-namespace DAO;
+namespace dal;
 
 use database\Database;
 use Exception;

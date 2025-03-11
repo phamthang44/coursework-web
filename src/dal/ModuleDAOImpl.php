@@ -1,10 +1,10 @@
 <?php
 
-namespace DAO;
+namespace dal;
 
 use database\Database;
 use models\Module;
-use DAO\ModuleDAOI;
+use dal\ModuleDAOI;
 use PDO;
 
 class ModuleDAOImpl implements ModuleDAOI

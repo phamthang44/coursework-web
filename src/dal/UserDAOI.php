@@ -1,8 +1,9 @@
 <?php
 
-namespace DAO;
+namespace dal;
 
-interface UserDAOI {
+interface UserDAOI
+{
     public function getUserById($userId);
     public function getUserByEmail($email);
     public function getUserByUsername($username);

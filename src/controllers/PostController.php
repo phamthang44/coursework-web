@@ -5,9 +5,9 @@ namespace controllers;
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-use DAO\ModuleDAOImpl;
-use DAO\PostAssetDAOImpl;
-use DAO\PostDAOImpl;
+use dal\ModuleDAOImpl;
+use dal\PostAssetDAOImpl;
+use dal\PostDAOImpl;
 use Exception;
 use finfo;
 

@@ -1,6 +1,9 @@
 <?php
-namespace DAO;
-interface PostAssetDAOI {
+
+namespace dal;
+
+interface PostAssetDAOI
+{
     public function getById($post_asset_id);
     public function getByPostId($post_id);
     public function create($media_key, $post_id);
