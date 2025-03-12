@@ -11,14 +11,26 @@
 
 <body>
     <?php
+    // session_start();
     // Include the header component
-    require_once __DIR__ . '/../layouts/header.php';
+    use controllers\UserController;
 
-    // Render the header
-    $user_logged_in = true;
-    $user_name = "Pham Thang";
-    $user_avatar = '/uploads/avatar.jpg';
-    $user_email = "phamthang@gmail.com";
+    require_once __DIR__ . '/../layouts/header.php';
+    require_once __DIR__ . '/../../controllers/UserController.php';
+    $userController = new UserController();
+    if (isset($_SESSION['user_id'])) {
+        $userId = $_SESSION['user_id'];
+        $user = $userController->getUser($userId);
+        $user_logged_in = true;
+        $user_name = $user->getUsername();
+        $user_avatar = '';
+        $user_email = $user->getEmail();
+    } else {
+        $user_logged_in = false;
+        $user_name = '';
+        $user_avatar = '';
+        $user_email = '';
+    }
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
 
     // Giả sử bạn đã gửi mảng $posts từ controller

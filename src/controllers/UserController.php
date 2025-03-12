@@ -63,4 +63,9 @@ class UserController
         }
         return false;
     }
+
+    public function getUser($userID)
+    {
+        return $this->userDAO->getUserById($userID);
+    }
 }

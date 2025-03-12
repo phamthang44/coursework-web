@@ -16,16 +16,19 @@ class AuthController
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = $_POST['username'];
+            session_start();
+            $email = $_POST['email'];
             $password = $_POST['password'];
 
-            if ($this->auth->login($username, $password)) {
-                $user = $this->auth->login($username, $password);
-                //$_SESSION['role'] = $user->getRole();
-                if ($user->getRole() === 'admin') {
+            $user = $this->auth->login($email, $password);
+
+            if ($user) {
+                if ($_SESSION['role'] === 'admin') {
                     header("Location: /dashboard ");
+                    exit();
                 }
                 header("Location: /index.php"); //temporary need to check role
+                exit();
             } else {
                 echo "Invalid credentials";
             }

@@ -61,12 +61,12 @@ class UserDAOImpl implements UserDAOI
         $stmt->execute();
     }
 
-    public function checkUser($username, $password)
+    public function checkUser($email, $password)
     {  //check account validate
         $conn = $this->pdo;
-        $sql = "SELECT * FROM Users WHERE username = :username AND password = :password";
+        $sql = "SELECT * FROM Users WHERE email = :email AND password = :password";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         return $this->extracted($stmt);
     }
@@ -241,8 +241,25 @@ class UserDAOImpl implements UserDAOI
     public function extracted(\PDOStatement $stmt)
     {
         $stmt->execute();
-        $row = $stmt->fetch();
-        $user = new User($row['user_id'], $row['username'], $row['last_name'], $row['first_name'], $row['email'], $row['password'], $row['profile_image_path'], $row['bio'], $row['role'], $row['account_create_date'], $row['dob']);
-        return $user;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return false; // 
+        }
+
+        // 
+        return new User(
+            $row['user_id'] ?? null,
+            $row['username'] ?? null,
+            $row['last_name'] ?? null,
+            $row['first_name'] ?? null,
+            $row['email'] ?? null,
+            $row['password'] ?? null,
+            $row['profile_image_path'] ?? null,
+            $row['bio'] ?? null,
+            $row['role'] ?? null,
+            $row['account_create_date'] ?? null,
+            $row['dob'] ?? null
+        );
     }
 }

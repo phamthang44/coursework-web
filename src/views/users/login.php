@@ -295,16 +295,16 @@
         <div class="login-form">
             <h2>Welcome back</h2>
 
-            <form action="" class="form-login" id="form-login">
+            <form action="/index.php?action=login" class="form-login" id="form-login" method="POST">
                 <div class="input-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Enter your email" autocomplete="off">
+                    <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off">
                     <span class="form-message"></span>
                 </div>
 
                 <div class="input-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password">
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
                     <span class="form-message"></span>
                 </div>
 

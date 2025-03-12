@@ -68,7 +68,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                         <!-- Dropdown Menu -->
                         <div id="avatar-dropdown" class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 hidden dark:bg-darkmode border border-gray-200 dark:border-gray-700">
                             <!-- User Profile Header -->
-                            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                            <div class="px-2 py-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center">
                                     <?php if ($user_avatar): ?>
                                         <img src="<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3">

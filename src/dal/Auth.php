@@ -13,16 +13,18 @@ class Auth
         $this->userDAO = new UserDAOImpl();
     }
 
-    public function login($username, $password)
+    public function login($email, $password)
     {
 
-        $user = $this->userDAO->checkUser($username, $password);
+        $user = $this->userDAO->checkUser($email, $password);
         if ($user) {
             $_SESSION['user_id'] = $user->getUserId();
             $_SESSION['username'] = $user->getUsername();
+            $_SESSION['role'] = $user->getRole();
+            // //need ....
             return $user;
         }
-        return false;
+        return null;
     }
 
     public function logout()
