@@ -2,7 +2,12 @@
 export default {
   content: ["./src/**/*.{html,js,php}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        darkmode: "#262626",
+      },
+    },
   },
+  darkMode: "class", // Enable dark mode using a class
   plugins: [],
 };

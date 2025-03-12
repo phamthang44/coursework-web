@@ -68,7 +68,6 @@ function Validator(options) {
       let isFormValid = true;
 
       options.rules.forEach((rule) => {
-        console.log(typeof rule.selector);
         console.log(formElement.querySelector(rule.selector));
         let inputElement = formElement.querySelector(rule.selector);
         //please ensure the inputElement is not null in the file which is form because when throw an undefined selector will get error

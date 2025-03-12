@@ -87,7 +87,7 @@
             left: -30px;
         }
 
-        .login-form {
+        .signup-form {
             background: #262626;
             width: 60%;
             padding: 50px;
@@ -96,7 +96,7 @@
             justify-content: center;
         }
 
-        .login-form h2 {
+        .signup-form h2 {
             font-size: 24px;
             margin-bottom: 30px;
             color: var(--text-color);
@@ -161,7 +161,7 @@
             font-weight: 500;
         }
 
-        .login-button {
+        .signup-button {
             width: 100%;
             background-color: var(--primary-color);
             color: white;
@@ -174,28 +174,28 @@
             transition: all 0.3s;
         }
 
-        .login-button:hover {
+        .signup-button:hover {
             background-color: #8f272e;
         }
 
-        .login-button:active {
+        .signup-button:active {
             background-color: #63262a;
         }
 
-        .social-login {
+        .social-signup {
             margin-top: 40px;
             text-align: center;
         }
 
-        .social-login p {
+        .social-signup p {
             color: var(--light-text);
             font-size: 14px;
             margin-bottom: 16px;
             position: relative;
         }
 
-        .social-login p:before,
-        .social-login p:after {
+        .social-signup p:before,
+        .social-signup p:after {
             content: "";
             position: absolute;
             width: 30%;
@@ -204,11 +204,11 @@
             top: 50%;
         }
 
-        .social-login p:before {
+        .social-signup p:before {
             left: 0;
         }
 
-        .social-login p:after {
+        .social-signup p:after {
             right: 0;
         }
 
@@ -257,7 +257,6 @@
         }
 
         .input-group.invalid .form-message {
-
             color: red;
         }
 
@@ -276,7 +275,7 @@
                 padding: 30px;
             }
 
-            .login-form {
+            .signup-form {
                 width: 100%;
                 padding: 30px;
             }
@@ -285,6 +284,8 @@
 </head>
 
 <body>
+    <?php $error = $_GET['error'] ?? ""; ?>
+
     <div class="container">
         <div class="left-panel">
             <h1>KnowledgeHub</h1>
@@ -292,34 +293,43 @@
             <div class="circles"></div>
         </div>
 
-        <div class="login-form">
-            <h2>Welcome back</h2>
+        <div class="signup-form">
+            <h2>Welcome to KnowledgeHub</h2>
 
-            <form action="" class="form-login" id="form-login">
+            <form action="/index.php?action=signup" class="form-signup" id="form-signup" method="POST">
+                <div class="input-group">
+                    <label for="firstName">First name</label>
+                    <input type="firstName" id="firstName" name="firstName" placeholder="Enter your first name" autocomplete="off">
+                    <span class="form-message"></span>
+                </div>
+
+                <div class="input-group">
+                    <label for="lastName">Last name</label>
+                    <input type="lastName" id="lastName" name="lastName" placeholder="Enter your last name" autocomplete="off">
+                    <span class="form-message"></span>
+                </div>
+
                 <div class="input-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Enter your email" autocomplete="off">
-                    <span class="form-message"></span>
+                    <input type="email" id="email" name="email" splaceholder="Enter your email" autocomplete="off">
+                    <span class="form-message"><?php echo $error ?? ""; ?></span>
                 </div>
 
                 <div class="input-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password">
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
                     <span class="form-message"></span>
                 </div>
 
-                <div class="remember-forgot">
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <a href="#!" class="forgot-password">Forgot password?</a>
+                <div class="input-group">
+                    <label for="confirm-password">Confirm your password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm your password">
+                    <span class="form-message"></span>
                 </div>
-
-                <button type="submit" class="login-button">Log In</button>
+                <button type="submit" class="signup-button">Sign up</button>
             </form>
 
-            <div class="social-login">
+            <div class="social-signup">
                 <p>Or continue with</p>
                 <div class="social-icons">
                     <button>
@@ -344,20 +354,31 @@
             </div>
 
             <div class="signup-link">
-                <p>Don't have an account? <a href="index.php?action=signup">Sign up</a></p>
+                <p>Already had an account? <a href="index.php?action=login">Login</a></p>
             </div>
         </div>
     </div>
     <script src="/js/validator.js"></script>
     <script>
         Validator({
-            form: "#form-login",
+            form: "#form-signup",
             formGroupSelector: ".input-group",
             formMessage: ".form-message",
             rules: [
+                Validator.isRequired("#firstName"),
+                Validator.isRequired("#lastName"),
                 Validator.isRequired("#email"),
                 Validator.isEmail("#email"),
                 Validator.isRequired("#password"),
+                Validator.isRequired("#confirm-password"),
+                Validator.isConfirmed("#confirm-password", function() {
+                    return document.querySelector("#password").value;
+                }, "Passwords do not match"),
+                Validator.hasNoWhiteSpace("#firstName"),
+                Validator.hasNoWhiteSpace("#lastName"),
+                Validator.hasNoWhiteSpace("#email"),
+                Validator.hasNoWhiteSpace("#password"),
+                Validator.hasNoWhiteSpace("#confirm-password"),
             ],
         });
     </script>

@@ -24,9 +24,11 @@ require_once __DIR__ . '/../src/views/layouts/footer.php';
 
 use controllers\AuthController;
 use controllers\PostController;
+use controllers\UserController;
 
 $postController = new PostController();
 $authController = new AuthController();
+$userController = new UserController();
 //$controller->index(); // Gọi hàm index
 
 
@@ -51,6 +53,10 @@ switch ($action) {
         break;
     case 'login':
         $authController->login();
+        break;
+
+    case 'signup':
+        $userController->signup();
         break;
     default:
         $postController->index();

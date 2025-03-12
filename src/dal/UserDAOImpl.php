@@ -4,6 +4,7 @@ namespace dal;
 
 use database\Database;
 use models\User;
+use PDO;
 
 class UserDAOImpl implements UserDAOI
 {
@@ -32,8 +33,18 @@ class UserDAOImpl implements UserDAOI
         return $this->extracted($stmt);
     }
 
+    public function signUpUser($email, $password, $username)
+    {
+        $conn = $this->pdo;
+        $sql = "INSERT INTO Users (email, password, username) VALUES (:email, :password, :username)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+    }
 
-    public function createUser($username, $lastName, $firstName, $email, $password, $profileImage, $bio, $dob)
+    public function createUser($username, $lastName, $firstName, $email, $password, $profileImage = NULL, $bio = NULL, $dob = NULL)
     {
         $conn = $this->pdo;
         $sql = "INSERT INTO Users (username, last_name, first_name, email, password, profile_image_path, bio, dob) VALUES (:username, :lastName, :firstName, :email, :password, :profileImage, :bio, :dob)";
@@ -43,9 +54,10 @@ class UserDAOImpl implements UserDAOI
         $stmt->bindParam(':firstName', $firstName);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
-        $stmt->bindParam(':profileImage', $profileImage);
-        $stmt->bindParam(':bio', $bio);
-        $stmt->bindParam(':dob', $dob);
+        // if value is NULL, use PDO::PARAM_NULL
+        $stmt->bindValue(':profileImage', $profileImage ?? null, PDO::PARAM_NULL);
+        $stmt->bindValue(':bio', $bio ?? null, PDO::PARAM_NULL);
+        $stmt->bindValue(':dob', $dob ?? null, PDO::PARAM_NULL);
         $stmt->execute();
     }
 
@@ -199,6 +211,27 @@ class UserDAOImpl implements UserDAOI
         $row = $stmt->fetch();
         $user = new User($row['user_id'], $row['username'], $row['last_name'], $row['first_name'], $row['email'], $row['password'], $row['profile_image_path'], $row['bio'], $row['role'], $row['account_create_date'], $row['dob']);
         return $user;
+    }
+
+    public function checkExistedEmail($email)
+    {
+        $conn = $this->pdo;
+        $sql = "SELECT COUNT(*) FROM Users WHERE email = :email";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $emailExists =  $stmt->fetchColumn();
+        return $emailExists;
+    }
+
+    public function getLastUserID()
+    {
+        $conn = $this->pdo;
+        $sql = "SELECT MAX(user_id) AS last_id FROM Users";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['user_id'] ?? 0;
     }
 
     /**

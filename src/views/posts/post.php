@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/tailwind.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <title>Document</title>
 </head>
 
@@ -14,15 +15,17 @@
     require_once __DIR__ . '/../layouts/header.php';
 
     // Render the header
-    $user_logged_in = '';
-    $user_name = '';
-    $user_avatar = '';
-    echo render_quora_header($user_logged_in, $user_name, $user_avatar);
+    $user_logged_in = true;
+    $user_name = "Pham Thang";
+    $user_avatar = '/uploads/avatar.jpg';
+    $user_email = "phamthang@gmail.com";
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
 
     // Giả sử bạn đã gửi mảng $posts từ controller
 
     if (!empty($postsData)):
     ?>
+
         <table border="1">
             <thead>
                 <tr>
@@ -55,13 +58,11 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-    <?php
-    else:
+    <?php else:
         echo "No posts available.";
     endif;
     ?>
 
-    <a href="/index.php?action=login">LOGIN</a>
     <?php
     echo render_quora_footer();
     ?>
@@ -81,6 +82,66 @@
         deleteLinks.forEach(function(deleteLink) {
             deleteLink.addEventListener('click', askConfirm);
         });
+
+
+        // // // Toggle dark mode
+        // var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        // var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // // Change the icons inside the button based on previous settings
+        // if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        //     themeToggleLightIcon.classList.remove('hidden');
+        // } else {
+        //     themeToggleDarkIcon.classList.remove('hidden');
+        // }
+
+        // var themeToggleBtn = document.getElementById('theme-toggle');
+
+        // themeToggleBtn.addEventListener('click', function() {
+
+        //     // toggle icons inside button
+        //     themeToggleDarkIcon.classList.toggle('hidden');
+        //     themeToggleLightIcon.classList.toggle('hidden');
+
+        //     // if set via local storage previously
+        //     if (localStorage.getItem('color-theme')) {
+        //         if (localStorage.getItem('color-theme') === 'light') {
+        //             document.documentElement.classList.add('dark');
+        //             localStorage.setItem('color-theme', 'dark');
+        //         } else {
+        //             document.documentElement.classList.remove('dark');
+        //             localStorage.setItem('color-theme', 'light');
+        //         }
+
+        //         // if NOT set via local storage previously
+        //     } else {
+        //         if (document.documentElement.classList.contains('dark')) {
+        //             document.documentElement.classList.remove('dark');
+        //             localStorage.setItem('color-theme', 'light');
+        //         } else {
+        //             document.documentElement.classList.add('dark');
+        //             localStorage.setItem('color-theme', 'dark');
+        //         }
+        //     }
+
+        // });
+        // let checkbox = document.querySelector("input[name=theme_switch]");
+
+        // if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        //     document.documentElement.setAttribute("data-theme", "dark");
+        //     checkbox.checked = true;
+        // } else {
+        //     document.documentElement.setAttribute("data-theme", "light");
+        //     checkbox.checked = false;
+        // }
+
+        // // switch theme if checkbox is engaged
+        // checkbox.addEventListener("change", (cb) => {
+        //     document.documentElement.setAttribute(
+        //         "data-theme",
+        //         cb.target.checked ? "dark" : "light"
+        //     );
+        // });
     </script>
 </body>
 
