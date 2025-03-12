@@ -45,7 +45,7 @@ class AuthController
     public function logout()
     {
         $this->auth->logout();
-        header("Location: /login");
+        header("Location: index.php?action=login");
     }
 
     public function checkRoleAdmin()
