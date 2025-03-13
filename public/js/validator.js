@@ -187,6 +187,17 @@ Validator.minLength = function (selector, min, message) {
   };
 };
 
+Validator.maxLength = function (selector, max, message) {
+  return {
+    selector: selector,
+    test: function (value) {
+      return value.length <= max
+        ? undefined
+        : message || `Please input at most ${max} characters`;
+    },
+  };
+};
+
 Validator.isConfirmed = function (selector, getConfirmedValue, message) {
   return {
     selector: selector,

@@ -88,3 +88,212 @@
   width: 0;
   height: 0;
 }
+
+/* Modal */
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity, visibility;
+  transition-duration: 0.4s;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-backdrop.show .modal-container {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ebebeb;
+  font-size: 1.3rem;
+  color: #666;
+  line-height: 0;
+}
+
+.modal-close:hover {
+  color: #333;
+  cursor: pointer;
+}
+
+.modal-container {
+  width: min(1100px, 90%);
+  position: relative;
+  padding: 40px;
+  border-radius: 10px;
+  background-color: #fff;
+  transform: scale(0);
+  transition: transform 0.3s;
+  height: 800px;
+}
+
+.modal-content {
+  height: 100%;
+}
+
+.btn {
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
+  width: 100px;
+  height: 40px;
+  border: 1px solid #333;
+  border-radius: 99px;
+  cursor: pointer;
+}
+
+.modal-editable:hover {
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #15a1b7;
+  color: #15a1b7;
+}
+
+.modal-editable:active {
+  transform: scale(0.9);
+}
+
+.modal-detail.title {
+  font-size: 4rem;
+}
+
+/* Confirm card */
+.card {
+  width: 300px;
+  height: fit-content;
+  background: rgb(255, 255, 255);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.068);
+}
+.card-content {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.card-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(27, 27, 27);
+}
+.card-description {
+  line-height: 1.67;
+  font-weight: 400;
+  color: rgb(102, 102, 102);
+}
+.card-button-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.card-button {
+  width: 50%;
+  height: 35px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.primary {
+  background-color: rgb(255, 114, 109);
+  color: white;
+}
+.primary:hover {
+  background-color: rgb(255, 73, 66);
+}
+.secondary {
+  background-color: #ddd;
+}
+.secondary:hover {
+  background-color: rgb(197, 197, 197);
+}
+.exit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+.exit-button:hover svg {
+  fill: black;
+}
+.exit-button svg {
+  fill: rgb(175, 175, 175);
+}
+
+.strong-text {
+  color: red;
+  font-weight: 500;
+}
+
+#form-upload-post {
+  padding: 0;
+}
+/* custom upload */
+.custom-file-upload {
+  font-size: 1.1em;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background var(--transition) ease;
+  display: inline-block;
+  width: 200px;
+  padding: 10px;
+  position: relative;
+}
+
+.custom-file-upload:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+
+.post-card {
+  position: relative;
+}
+
+.post-card-dot {
+  padding: 0;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

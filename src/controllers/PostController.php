@@ -108,7 +108,7 @@ class PostController
                 error_log("Title and content validated successfully");
 
                 // Create post and take id
-                $userId = 1; // Hard-coded tạm thời
+                $userId = $_POST['user_id']; // Hard-coded tạm thời
                 $moduleId = htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8');
                 if (empty($moduleId)) {
                     throw new Exception("Module is required");
@@ -168,12 +168,12 @@ class PostController
                 }
 
                 $_SESSION['success'] = "The post has been created successfully!";
-                header("Location: /posts/index");
+                header("Location: /posts");
                 exit();
             } catch (Exception $e) {
                 error_log("Error in store method: " . $e->getMessage());
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /posts/index");
+                header("Location: /posts");
                 exit();
             }
         }
@@ -184,7 +184,7 @@ class PostController
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
                 $_SESSION['error'] = "Post not found";
-                header("Location: /posts/index");
+                header("Location: /posts");
                 exit();
             }
 
@@ -192,7 +192,7 @@ class PostController
             require_once __DIR__ . '/../views/posts/updatepost.php';
         } catch (Exception $e) {
             error_log("Error in edit method: " . $e->getMessage());
-            header("Location: /posts/index");
+            header("Location: /posts");
             exit();
         }
     }
@@ -296,12 +296,12 @@ class PostController
                 }
 
                 $_SESSION['success'] = "The post has been created successfully!";
-                header("Location: /posts/index");
+                header("Location: /posts");
                 exit();
             } catch (Exception $e) {
                 error_log("Error in store method: " . $e->getMessage());
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /posts/index");
+                header("Location: /posts");
                 exit();
             }
         }
@@ -329,9 +329,14 @@ class PostController
         }
     }
 
+    public function getPostUserId($postId)
+    {
+        $post = $this->postDAO->getPost($postId);
+        return $post->getUserId();
+    }
+
     public function getUserName($userId)
     {
-
         $user = $this->userController->getUser($userId);
         return $user->getUsername();
     }

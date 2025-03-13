@@ -88,15 +88,11 @@ function Modal() {
     backdrop.className = "modal-backdrop";
 
     const container = document.createElement("div");
-    container.className = "modal-container";
+    container.className = "modal-container bg-white dark:bg-darkmode";
 
     const closeBtn = document.createElement("button");
-    closeBtn.className = "modal-close";
+    closeBtn.className = "modal-close dark:bg-white text-black";
     closeBtn.innerHTML = "&times;";
-
-    const editableBtn = document.createElement("button");
-    editableBtn.className = "modal-editable";
-    editableBtn.innerText = "Click to edit";
 
     const cancelEdit = document.createElement("button");
     cancelEdit.className = "cancel";
@@ -107,7 +103,7 @@ function Modal() {
 
     //Append content and elements
     modalContent.innerHTML = content;
-    container.append(closeBtn, modalContent, editableBtn);
+    container.append(closeBtn, modalContent);
     backdrop.append(container);
     document.body.append(backdrop);
 
@@ -118,14 +114,14 @@ function Modal() {
 
     // Attach event listeners
     closeBtn.onclick = () => this.closeModal(backdrop);
-    // backdrop.onclick = (e) => {
-    //   console.log(e.target);
-    //   if (e.target === backdrop) {
-    //     this.closeModal(backdrop);
-    //   }
-    // };
+    backdrop.onclick = (e) => {
+      // console.log(e.target);
+      if (e.target === backdrop) {
+        this.closeModal(backdrop);
+      }
+    };
     let backdropClickListener = (e) => {
-      console.log(e.target);
+      // console.log(e.target);
       if (e.target === backdrop) {
         this.closeModal(backdrop);
       }
@@ -138,18 +134,6 @@ function Modal() {
         this.closeModal(backdrop);
       }
     });
-
-    editableBtn.onclick = () => {
-      backdrop.removeEventListener("click", backdropClickListener);
-      this.changeEditableState(modalContent);
-      container.append(cancelEdit);
-      closeBtn.remove();
-    };
-
-    cancelEdit.onclick = () => {
-      this.cancelEditChange();
-      this.closeModal(backdrop);
-    };
   };
 
   this.closeModal = (modalElement) => {
@@ -158,66 +142,5 @@ function Modal() {
     modalElement.ontransitionend = () => {
       modalElement.remove();
     };
-  };
-
-  this.cancelEditChange = () => {
-    this.originalValues.forEach((value, element) => {
-      let newElement = document.createElement(element.tagName.toLowerCase());
-      newElement.className = element.className;
-      newElement.textContent = value;
-      element.replaceWith(newElement);
-    });
-    this.originalValues.clear();
-  };
-
-  this.changeEditableState = () => {
-    this.originalValues = new Map(); // Map save original content
-    const details = document.querySelectorAll(".modal-detail");
-    details.forEach((detail) => {
-      if (detail.classList.contains("date")) return;
-
-      this.originalValues.set(detail, detail.innerHTML.trim());
-
-      let newElement;
-      let fieldName = detail.classList[1] || "field";
-      let currentValue = detail.textContent.trim();
-
-      if (detail.classList.contains("description")) {
-        // If description use textarea
-        newElement = document.createElement("textarea");
-        newElement.value = detail.textContent.trim();
-        newElement.name = "description";
-        newElement.required = true;
-      } else if (
-        detail.classList.contains("priority") ||
-        detail.classList.contains("status")
-      ) {
-        newElement = document.createElement("select");
-
-        let options = [];
-        if (detail.classList.contains("priority")) {
-          options = ["Low", "Medium", "High"];
-        } else if (detail.classList.contains("status")) {
-          options = ["To start", "In progress", "Done"];
-        }
-
-        options.forEach((option) => {
-          let optElement = document.createElement("option");
-          optElement.value = option;
-          optElement.textContent = option;
-          if (option === currentValue) optElement.selected = true;
-          newElement.appendChild(optElement);
-        });
-      } else {
-        // other -> text
-        newElement = document.createElement("input");
-        newElement.type = "text";
-      }
-      newElement.value = detail.textContent.trim();
-      newElement.name = fieldName;
-      newElement.required = true;
-      newElement.classList.add(...detail.classList);
-      detail.replaceWith(newElement);
-    });
   };
 }

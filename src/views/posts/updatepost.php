@@ -40,7 +40,7 @@
 <body>
     <div class="form-container">
         <h2>Upload Form</h2>
-        <form action="index.php?action=update&postId=<?= $post->getPostId(); ?>" method="POST" enctype="multipart/form-data" id="form-upload-post">
+        <form action="/posts/update/<?= $post->getPostId(); ?>" method="POST" enctype="multipart/form-data" id="form-upload-post">
             <!-- Title Field (Optional) -->
             <div class="form-group">
                 <label for="title">Title (Optional):</label>

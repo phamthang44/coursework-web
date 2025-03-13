@@ -32,7 +32,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
 
             <!-- Navigation -->
             <nav class="hidden md:flex items-center space-x-4">
-                <a href="index.php" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
+                <a href="/posts" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Following</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Answer</a>
                 <!-- <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Spaces</a> -->
@@ -130,7 +130,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <?php endif; ?>
 
                 <!-- Add Question Button -->
-                <a href="/posts/create" class="ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</a>
+                <button class="add-question ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</button>
                 <!-- Dark Mode Toggle -->
                 <label class="ui-switch ml-4">
                     <input type="checkbox" id="dark-mode-toggle">

@@ -40,7 +40,7 @@
 <body>
     <div class="form-container">
         <h2>Upload Form</h2>
-        <form action="index.php?action=store" method="POST" enctype="multipart/form-data" id="form-upload-post">
+        <form action="/posts/store" method="POST" enctype="multipart/form-data" id="form-upload-post">
             <!-- Title Field (Optional) -->
             <div class="form-group">
                 <label for="title">Title (Optional):</label>
@@ -85,7 +85,6 @@
                 <input type="submit" value="Submit">
             </div>
         </form>
-
     </div>
     <script src="/js/validator.js"></script>
     <script>

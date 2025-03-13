@@ -15,7 +15,7 @@
  * @param bool $showControls Whether to show edit/delete controls
  * @return string HTML for the post card
  */
-function render_post_card($post, $assets = [], $showControls = false, $postController = null)
+function render_post_card($post, $assets = [], $showControls = false, $postController = null, $user = null)
 {
     // Extract post data
     $postId = $post->getPostId();
@@ -39,48 +39,64 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     // Start building HTML
     ob_start();
 ?>
-    <div id="post-card-<?= $postId ?>" class="post-card bg-white dark:bg-darkmode rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4" data-post-id="<?= $postId ?>">
-        <!-- Post header with image if available -->
-        <?php if (!empty($assets)): ?>
-            <div class="post-image-container w-full h-48 overflow-hidden bg-gray-100 dark:bg-gray-700">
-                <img src="/<?= htmlspecialchars($assets[0]->getMediaKey()) ?>"
-                    alt="Post image"
-                    class="w-full h-full object-cover">
-            </div>
-        <?php endif; ?>
+    <div id="post-card-<?= $postId ?>" class="post-card bg-white dark:bg-darkmode rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 w-xl h-1vh" data-post-id="<?= $postId ?>">
+        <div class="pl-5 pr-5 pb-5 post-card">
+            <?php
+            $postUserId = $postController->getPostUserId($postId);
+            if ($user->getUserId() == $postUserId) {
+                echo '<button class="post-options"><span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span></button>';
+                echo '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-48 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
+                <a href="/posts/edit/' . $postId . '" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Edit</a>
+                <a href="/posts/delete/' . $postId . '" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Delete</a>
+                </div>';
+            }
 
-        <div class="p-5">
+            ?>
+            <div class="flex justify-between text-xs text-gray-500 dark:text-white-400 items-center w-full">
+                <div class="flex gap-3 mt-4 mb-4">
+                    <!-- Author and dates -->
+                    <?php if ($user->getProfileImage() != null): ?>
+                        <img src="<?php echo $user->getProfileImage(); ?>" alt="<?php echo $user->getUsername(); ?>" class="w-12 h-12 rounded-full cursor-pointer">
+                    <?php else: ?>
+                        <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
+                            <p class="text-lg"><?php echo substr($user->getUsername(), 0, 1); ?></p>
+                        </div>
+                    <?php endif; ?>
+                    <div class="flex gap-1 text-xs flex-col">
+                        <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span></p>
+                        <div class="flex flex-row gap-3">
+                            <p><?= $createdAtFormatted ?></p>
+                            <?php if ($createdAtFormatted != $updatedAtFormatted): ?>
+                                <p>Updated: <?= $updatedAtFormatted ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <!-- Module badge -->
+                <div>
+                    <span class=" inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs px-2 py-1 rounded-full">
+                        Module: <?= htmlspecialchars($moduleId) ?>
+                    </span>
+                </div>
+            </div>
+            <!-- Post header with image if available -->
+            <?php if (!empty($assets)): ?>
+                <div class="post-image-container w-full h-58 overflow-hidden bg-gray-100 dark:bg-gray-700 mt-4 mb-4 rounded-lg">
+                    <img src="/<?= htmlspecialchars($assets[0]->getMediaKey()) ?>"
+                        alt="Post image"
+                        class="w-full h-full object-cover">
+                </div>
+            <?php endif; ?>
             <!-- Post title -->
-            <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-                <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">
-                    <?= htmlspecialchars($title) ?>
-                </h2>
-                <p><?= $createdAtFormatted ?></p>
-                <p>By <span class="font-low"><?= htmlspecialchars($author) ?></span></p>
-            </div>
-            <!-- Module badge -->
-            <div class="mb-3">
-                <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs px-2 py-1 rounded-full">
-                    Module: <?= htmlspecialchars($moduleId) ?>
-                </span>
-            </div>
-
+            <h2 class="text-xl font-bold mb-4 mt-4 text-gray-800 dark:text-gray-100">
+                <?= htmlspecialchars($title) ?>
+            </h2>
             <!-- Post content with line clamp -->
             <div class="mb-4 text-gray-600 dark:text-gray-300 text-sm line-clamp-6">
                 <?= htmlspecialchars($content) ?>
             </div>
-
             <!-- Post metadata and controls -->
-            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                <!-- Author and dates -->
-                <div>
-
-
-                    <?php if ($createdAtFormatted != $updatedAtFormatted): ?>
-                        <p>Updated: <?= $updatedAtFormatted ?></p>
-                    <?php endif; ?>
-                </div>
-
+            <div class="flex items-center justify-between text-xl text-gray-500 dark:text-gray-400">
                 <!-- Vote score -->
                 <div class="vote-score flex items-center" data-score="<?= $voteScore ?>">
                     <button class="upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
@@ -88,11 +104,9 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
-
                     <span class="mx-1 font-bold <?= $voteScore > 0 ? 'text-green-600 dark:text-green-400' : ($voteScore < 0 ? 'text-red-600 dark:text-red-400' : '') ?>">
                         <?= $voteDisplay ?>
                     </span>
-
                     <button class="downvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -100,7 +114,6 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                     </button>
                 </div>
             </div>
-
             <!-- Action buttons -->
             <div class="mt-4 flex justify-between items-center">
                 <div>
@@ -119,7 +132,6 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         </a>
                     <?php endif; ?>
                 </div>
-
                 <!-- Read more link -->
                 <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
                     Read more &rarr;
@@ -138,7 +150,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
  * @param bool $showControls Whether to show edit/delete controls
  * @return string HTML for the post cards grid
  */
-function render_post_cards($postsData, $showControls = false, $postController = null)
+function render_post_cards($postsData, $showControls = false, $postController = null, $user = null)
 {
     ob_start();
 ?>
@@ -147,7 +159,7 @@ function render_post_cards($postsData, $showControls = false, $postController = 
             <?php
             $post = $postData['post'];
             $assets = $postData['assets'] ?? [];
-            echo render_post_card($post, $assets, $showControls, $postController);
+            echo render_post_card($post, $assets, $showControls, $postController, $user);
             ?>
         <?php endforeach; ?>
     </div>
