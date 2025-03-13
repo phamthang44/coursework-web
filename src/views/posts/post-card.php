@@ -44,11 +44,21 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             <?php
             $postUserId = $postController->getPostUserId($postId);
             if ($user->getUserId() == $postUserId) {
-                echo '<button class="post-options"><span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span></button>';
+                echo '<button class="post-options">
+                        <span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span>
+                      </button>';
                 echo '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-48 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
-                <a href="/posts/edit/' . $postId . '" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Edit</a>
-                <a href="/posts/delete/' . $postId . '" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Delete</a>
-                </div>';
+                        <a href="/posts/edit/' . $postId . '" 
+                           data-url="/posts/edit/' . $postId . '" 
+                           class="edit-action block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                           Edit
+                        </a>
+                        <a href="/posts/delete/' . $postId . '" 
+                           data-url="/posts/delete/' . $postId . '" 
+                           class="delete-action block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                           Delete
+                        </a>
+                      </div>';
             }
 
             ?>

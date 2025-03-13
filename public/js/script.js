@@ -4,7 +4,7 @@ function ConfirmCard() {
     backdrop.className = "modal-backdrop";
 
     const confirmCard = document.createElement("div");
-    confirmCard.className = "card";
+    confirmCard.className = "card dark:bg-darkmode dark:text-white";
 
     const closeButton = document.createElement("button");
     closeButton.className = "exit-button";
@@ -22,11 +22,13 @@ function ConfirmCard() {
     const cardConfirmButtonWrapper = document.createElement("div");
     cardConfirmButtonWrapper.className = "card-button-wrapper";
     const buttonCancel = document.createElement("button");
-    buttonCancel.className = "card-button secondary";
+    buttonCancel.className =
+      "card-button secondary dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700";
     buttonCancel.innerText = "Cancel";
 
     const buttonYes = document.createElement("button");
-    buttonYes.className = "card-button primary";
+    buttonYes.className =
+      "card-button primary dark:bg-red-500 dark:text-white dark:hover:bg-red-600";
     buttonYes.innerText = "Yes";
 
     cardConfirmButtonWrapper.append(buttonCancel, buttonYes);
@@ -43,21 +45,20 @@ function ConfirmCard() {
       backdrop.classList.add("show");
     }, 0);
 
+    backdrop.onclick = (e) => {
+      // console.log(e.target);
+      if (e.target === backdrop) {
+        this.closeConfirm(backdrop);
+      }
+    };
+
     buttonYes.onclick = (e) => {
+      e.preventDefault();
       this.closeConfirm(backdrop);
-      const chosenTaskCard = e.target.closest(".card");
-      const taskInfo = chosenTaskCard.querySelector(
-        ".card-description.card-info .strong-text"
-      );
+      const url =
+        cardConfirmContent.querySelector(".confirm-title").dataset.url;
 
-      const taskId = +taskInfo.dataset.taskId;
-
-      if (taskId) {
-        const task = tasks.find((task) => task.id === taskId);
-
-        if (!task) return alert("Task not found!");
-        deleteTask(task);
-      } else return alert("Task ID is missing!");
+      window.location.href = url;
     };
 
     closeButton.onclick = () => this.closeConfirm(backdrop);

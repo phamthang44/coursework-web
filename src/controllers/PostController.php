@@ -48,7 +48,8 @@ class PostController
                 'assets' => $assetsByPostId[$postId] ?? []
             ];
         }
-
+        // $post = $postsData[0]['post'];
+        // $assets = $postsData[0]['assets'];
         // echo "Welcome to the homepage!";
 
         require_once __DIR__ . '/../views/posts/post.php';
@@ -313,18 +314,18 @@ class PostController
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
                 $_SESSION['error'] = "Post not found";
-                header("Location: /posts/index");
+                header("Location: /posts");
                 exit();
             }
 
             $this->postDAO->deletePost($postId);
             $_SESSION['success'] = "Post has been deleted successfully!";
-            header("Location: /posts/index");
+            header("Location: /posts");
             exit();
         } catch (Exception $e) {
             error_log("Error in delete method: " . $e->getMessage());
             $_SESSION['error'] = $e->getMessage();
-            header("Location: /posts/index");
+            header("Location: /posts");
             exit();
         }
     }

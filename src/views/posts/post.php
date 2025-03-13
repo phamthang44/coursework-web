@@ -21,6 +21,7 @@
 <body class="bg-gray-100 dark:bg-darkmode2">
     <?php
     // User authentication setup
+    use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
 
@@ -31,6 +32,7 @@
 
     $userController = new UserController();
     $postController = new PostController();
+    $moduleController = new ModuleController();
     if (isset($_SESSION['user_id'])) {
         $userId = $_SESSION['user_id'];
         $user = $userController->getUser($userId);
@@ -69,6 +71,8 @@
         } else {
             echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
         }
+
+
         ?>
     </div>
 
@@ -228,8 +232,8 @@
         });
 
         //delete confirm
-        const deleteConfirmCard = new ConfirmCard();
-        deleteConfirmCard.openConfirmCard(`test`);
+        // const deleteConfirmCard = new ConfirmCard();
+        // deleteConfirmCard.openConfirmCard(`<h2 class="text-red-600 dark:text-white">Are you sure you want to delete this post?</h2>`);
 
 
         const observer = new MutationObserver((mutations) => {
@@ -239,6 +243,8 @@
                     if (image) {
                         image.addEventListener("change", handleImagePreview);
                     }
+
+
 
                     // Gọi lại Validator khi modal xuất hiện
                     Validator({
@@ -278,10 +284,27 @@
 
         const optionsPostCard = document.querySelectorAll('.post-options');
 
-        optionsPostCard.forEach((option) => {
-            option.addEventListener('click', function() {
-                const dropdown = option.nextElementSibling;
-                dropdown.classList.toggle('hidden');
+        document.addEventListener("DOMContentLoaded", function() {
+            optionsPostCard.forEach((option) => {
+                option.addEventListener("click", function() {
+                    const dropdown = option.nextElementSibling;
+                    dropdown.classList.toggle("hidden");
+                });
+            });
+
+            document.addEventListener("click", function(e) {
+                if (e.target.classList.contains("delete-action")) {
+                    e.preventDefault();
+                    const dropdown = e.target.closest(".post-card-dropdown "); // Tìm dropdown gần nhất
+                    if (dropdown) {
+                        dropdown.classList.add("hidden");
+                    }
+                    const deleteConfirmCard = new ConfirmCard();
+                    deleteConfirmCard.openConfirmCard(`
+                <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+                    Are you sure you want to delete this post?
+                </h2>`);
+                }
             });
         });
     </script>
