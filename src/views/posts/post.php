@@ -47,14 +47,14 @@
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
     ?>
 
-    <div class="container mx-auto py-6">
+    <div class="container mx-auto py-6 w-1/3">
         <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
 
         <?php
         // Render create button if user is logged in
-        if ($user_logged_in) {
-            echo render_create_post_button();
-        }
+        // if ($user_logged_in) {
+        //     echo render_create_post_button();
+        // }
 
         // Render posts with grid layout if posts exist
         if (!empty($postsData)) {

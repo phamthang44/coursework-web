@@ -11,7 +11,7 @@ class Router
      * Add a route to the routing table
      *
      * @param string $method HTTP method (GET, POST, etc.)
-     * @param string $path The route path
+     * @param string $path The route path (e.g., /posts/delete/{id})
      * @param string $controller Controller class
      * @param string $action Method to call in the controller
      */
@@ -19,8 +19,22 @@ class Router
     {
         $this->routes[$method][$path] = [
             'controller' => $controller,
-            'action' => $action
+            'action' => $action,
+            'pattern' => $this->createPattern($path)
         ];
+    }
+
+    /**
+     * Create a regex pattern from the route path
+     *
+     * @param string $path The route path with placeholders (e.g., /posts/delete/{id})
+     * @return string The regex pattern
+     */
+    private function createPattern($path)
+    {
+        // Replace {id} with a regex pattern to capture any alphanumeric value
+        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([a-zA-Z0-9_]+)', $path);
+        return '#^' . $pattern . '$#';
     }
 
     /**
@@ -28,41 +42,49 @@ class Router
      */
     public function dispatch()
     {
-        // Get the current request method and URI
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $this->parseUri();
-        // var_dump("Method: $method, URI: $uri"); // Debug
-        // var_dump($this->routes); // Debug
         error_log("Method: $method, URI: '$uri'");
         error_log("Available routes: " . print_r(array_keys($this->routes[$method] ?? []), true));
-        // Check if the route exists
-        if (isset($this->routes[$method][$uri])) {
-            $route = $this->routes[$method][$uri];
-            $controllerName = $this->controllerNamespace . '\\' . $route['controller'];
-            $action = $route['action'];
-            // var_dump("Controller Name: $controllerName"); // Debug
 
-            if (class_exists($controllerName)) {
-                try {
-                    $controller = new $controllerName();
-                    if (method_exists($controller, $action)) {
-                        $controller->$action();
-                    } else {
-                        error_log("Action not found: $action in $controllerName");
+        foreach ($this->routes[$method] as $path => $route) {
+            if (preg_match($route['pattern'], $uri, $matches)) {
+                $controllerName = $this->controllerNamespace . '\\' . $route['controller'];
+                $action = $route['action'];
+                error_log("Matched Controller Name: $controllerName");
+
+                if (class_exists($controllerName)) {
+                    try {
+                        $controller = new $controllerName();
+                        if (method_exists($controller, $action)) {
+                            // Extract parameters (skip the full match at index 0)
+                            array_shift($matches);
+                            $params = $matches; // Parameters like [id => "1"]
+
+                            // Call the action with parameters
+                            if (empty($params)) {
+                                $controller->$action();
+                            } else {
+                                call_user_func_array([$controller, $action], $params);
+                            }
+                        } else {
+                            error_log("Action not found: $action in $controllerName");
+                            $this->notFound();
+                        }
+                    } catch (\Exception $e) {
+                        error_log("Failed to instantiate controller $controllerName: " . $e->getMessage());
                         $this->notFound();
                     }
-                } catch (\Exception $e) {
-                    error_log("Failed to instantiate controller $controllerName: " . $e->getMessage());
+                } else {
+                    error_log("Class not found: $controllerName");
                     $this->notFound();
                 }
-            } else {
-                error_log("Class not found: $controllerName");
-                $this->notFound();
+                return; // Exit after finding a match
             }
-        } else {
-            error_log("Route not found for $method $uri");
-            $this->notFound();
         }
+
+        error_log("Route not found for $method $uri");
+        $this->notFound();
     }
 
     /**
@@ -80,7 +102,7 @@ class Router
         }
         $uri = trim($uri, '/');
 
-        // Return the base URI or empty string if it's the root
+        // Return the base URI with leading slash
         return '/' . $uri;
     }
 

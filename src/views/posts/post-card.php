@@ -51,10 +51,13 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
 
         <div class="p-5">
             <!-- Post title -->
-            <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">
-                <?= htmlspecialchars($title) ?>
-            </h2>
-
+            <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">
+                    <?= htmlspecialchars($title) ?>
+                </h2>
+                <p><?= $createdAtFormatted ?></p>
+                <p>By <span class="font-low"><?= htmlspecialchars($author) ?></span></p>
+            </div>
             <!-- Module badge -->
             <div class="mb-3">
                 <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs px-2 py-1 rounded-full">
@@ -71,8 +74,8 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                 <!-- Author and dates -->
                 <div>
-                    <p>By <span class="font-medium"><?= htmlspecialchars($author) ?></span></p>
-                    <p>Created: <?= $createdAtFormatted ?></p>
+
+
                     <?php if ($createdAtFormatted != $updatedAtFormatted): ?>
                         <p>Updated: <?= $updatedAtFormatted ?></p>
                     <?php endif; ?>
@@ -102,13 +105,13 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             <div class="mt-4 flex justify-between items-center">
                 <div>
                     <?php if ($showControls): ?>
-                        <a href="/index.php?action=edit&postId=<?= $postId ?>" class="inline-flex items-center px-3 py-1 mr-2 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors">
+                        <a href="/posts/edit/<?= $postId ?>" class="inline-flex items-center px-3 py-1 mr-2 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                             Edit
                         </a>
-                        <a href="/index.php?action=delete&postId=<?= $postId ?>" class="delete-btn inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors">
+                        <a href="/posts/delete/<?= $postId ?>" class="delete-btn inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -139,7 +142,7 @@ function render_post_cards($postsData, $showControls = false, $postController = 
 {
     ob_start();
 ?>
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 p-4">
+    <div>
         <?php foreach ($postsData as $postData): ?>
             <?php
             $post = $postData['post'];
@@ -152,24 +155,5 @@ function render_post_cards($postsData, $showControls = false, $postController = 
     return ob_get_clean();
 }
 
-/**
- * Renders a "Create New Post" button
- * 
- * @return string HTML for the create button
- */
-function render_create_post_button()
-{
-    ob_start();
-?>
-    <div class="flex justify-end p-4">
-        <a href="/index.php?action=create" class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Create New Post
-        </a>
-    </div>
-<?php
-    return ob_get_clean();
-}
+
 ?>

@@ -168,12 +168,12 @@ class PostController
                 }
 
                 $_SESSION['success'] = "The post has been created successfully!";
-                header("Location: /index.php?action=index");
+                header("Location: /posts/index");
                 exit();
             } catch (Exception $e) {
                 error_log("Error in store method: " . $e->getMessage());
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /index.php?action=index");
+                header("Location: /posts/index");
                 exit();
             }
         }
@@ -184,7 +184,7 @@ class PostController
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
                 $_SESSION['error'] = "Post not found";
-                header("Location: /index.php?action=index");
+                header("Location: /posts/index");
                 exit();
             }
 
@@ -192,7 +192,7 @@ class PostController
             require_once __DIR__ . '/../views/posts/updatepost.php';
         } catch (Exception $e) {
             error_log("Error in edit method: " . $e->getMessage());
-            header("Location: /index.php?action=index");
+            header("Location: /posts/index");
             exit();
         }
     }
@@ -296,12 +296,12 @@ class PostController
                 }
 
                 $_SESSION['success'] = "The post has been created successfully!";
-                header("Location: /index.php?action=index");
+                header("Location: /posts/index");
                 exit();
             } catch (Exception $e) {
                 error_log("Error in store method: " . $e->getMessage());
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /index.php?action=index");
+                header("Location: /posts/index");
                 exit();
             }
         }
@@ -313,18 +313,18 @@ class PostController
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
                 $_SESSION['error'] = "Post not found";
-                header("Location: /index.php?action=index");
+                header("Location: /posts/index");
                 exit();
             }
 
             $this->postDAO->deletePost($postId);
             $_SESSION['success'] = "Post has been deleted successfully!";
-            header("Location: /index.php?action=index");
+            header("Location: /posts/index");
             exit();
         } catch (Exception $e) {
             error_log("Error in delete method: " . $e->getMessage());
             $_SESSION['error'] = $e->getMessage();
-            header("Location: /index.php?action=index");
+            header("Location: /posts/index");
             exit();
         }
     }

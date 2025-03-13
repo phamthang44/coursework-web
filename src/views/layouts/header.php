@@ -130,7 +130,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <?php endif; ?>
 
                 <!-- Add Question Button -->
-                <a href="#" class="ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</a>
+                <a href="/posts/create" class="ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</a>
                 <!-- Dark Mode Toggle -->
                 <label class="ui-switch ml-4">
                     <input type="checkbox" id="dark-mode-toggle">
