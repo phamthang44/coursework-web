@@ -295,7 +295,7 @@
         <div class="login-form">
             <h2>Welcome back</h2>
 
-            <form action="/index.php?action=login" class="form-login" id="form-login" method="POST">
+            <form action="/login" class="form-login" id="form-login" method="POST">
                 <div class="input-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off">
@@ -344,7 +344,7 @@
             </div>
 
             <div class="signup-link">
-                <p>Don't have an account? <a href="index.php?action=signup">Sign up</a></p>
+                <p>Don't have an account? <a href="/signup">Sign up</a></p>
             </div>
         </div>
     </div>

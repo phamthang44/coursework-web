@@ -15,7 +15,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
 
     ob_start();
 ?>
-    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm dark:text-white dark:bg-darkmode transition-colors duration-300">
+    <header class="sticky top-0 z-50 bg-white shadow-sm dark:text-white dark:bg-darkmode transition-colors duration-300">
         <div class="container mx-auto px-4 flex items-center justify-between h-14">
             <!-- Logo -->
             <div class="flex items-center">
@@ -114,7 +114,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
 
                             <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
 
-                            <a href="index.php?action=logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-gray-700">
+                            <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-gray-700">
                                 <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -125,8 +125,8 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="/index.php?action=login" class="text-sm text-gray-700 hover:underline mr-4 dark:text-gray-300">Login</a>
-                    <a href="/index.php?action=signup" class="text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Sign up</a>
+                    <a href="/login" class="text-sm text-gray-700 hover:underline mr-4 dark:text-gray-300">Login</a>
+                    <a href="/signup" class="text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Sign up</a>
                 <?php endif; ?>
 
                 <!-- Add Question Button -->

@@ -296,7 +296,7 @@
         <div class="signup-form">
             <h2>Welcome to KnowledgeHub</h2>
 
-            <form action="/index.php?action=signup" class="form-signup" id="form-signup" method="POST">
+            <form action="/signup" class="form-signup" id="form-signup" method="POST">
                 <div class="input-group">
                     <label for="firstName">First name</label>
                     <input type="firstName" id="firstName" name="firstName" placeholder="Enter your first name" autocomplete="off">
@@ -311,7 +311,7 @@
 
                 <div class="input-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" splaceholder="Enter your email" autocomplete="off">
+                    <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off">
                     <span class="form-message"><?php echo $error ?? ""; ?></span>
                 </div>
 
@@ -354,7 +354,7 @@
             </div>
 
             <div class="signup-link">
-                <p>Already had an account? <a href="index.php?action=login">Login</a></p>
+                <p>Already had an account? <a href="/login">Login</a></p>
             </div>
         </div>
     </div>

@@ -68,7 +68,7 @@ class ModuleDAOImpl implements ModuleDAOI
         return $stmt->execute();
     }
 
-    public function getModule($moduleId)
+    public function getModule($moduleId): Module
     {
         // TODO: Implement getModule() method.
         $conn = $this->pdo;
@@ -77,7 +77,7 @@ class ModuleDAOImpl implements ModuleDAOI
         $stmt->bindParam(':moduleId', $moduleId);
         $stmt->execute();
         $row = $stmt->fetch();
-        $module = new Module($row['module_id'], $row['module_name'], $row['module_description']);
+        $module = new Module($row['module_id'], $row['module_name'], $row['description']);
         return $module;
     }
 

@@ -1,32 +1,16 @@
 <?php
+$router->addRoute('GET', '/', 'PostController', 'index');
 
-use utils\Router;
-use controllers\PostController;
-use controllers\AuthController;
-use controllers\UserController;
+// Auth routes
+$router->addRoute('GET', '/login', 'AuthController', 'login');
+$router->addRoute('POST', '/login', 'AuthController', 'login');
+$router->addRoute('GET', '/logout', 'AuthController', 'logout');
+$router->addRoute('GET', '/signup', 'UserController', 'signup');
 
-// Controllers
-$postController = new PostController();
-$authController = new AuthController();
-$userController = new UserController();
-
-// Post Routes
-Router::get('/posts', [$postController, 'index']);  // List all posts
-Router::get('/posts/create', [$postController, 'create']);  // Show create form
-Router::post('/posts', [$postController, 'store']);  // Store new post
-Router::get('/posts/{id}/edit', [$postController, 'edit']);  // Show edit form
-Router::post('/posts/{id}/update', [$postController, 'update']);  // Update post
-Router::post('/posts/{id}/delete', [$postController, 'delete']);  // Delete post
-
-// Auth Routes
-Router::get('/auth/login', [$authController, 'login']);  // Show login form
-Router::post('/auth/login', [$authController, 'login']);  // Process login
-Router::post('/auth/logout', [$authController, 'logout']);  // Logout
-Router::get('/auth/signup', [$authController, 'signup']);  // Show signup form
-Router::post('/auth/signup', [$authController, 'signup']);  // Process signup
-
-// User Routes
-Router::get('/users', [$userController, 'index']);  // List users
-Router::get('/users/{id}/edit', [$userController, 'edit']);  // Show edit form
-Router::post('/users/{id}/update', [$userController, 'update']);  // Update user
-Router::post('/users/{id}/delete', [$userController, 'delete']);  // Delete user
+// Post routes
+$router->addRoute('GET', '/posts', 'PostController', 'index');
+$router->addRoute('GET', '/posts/create', 'PostController', 'create');
+$router->addRoute('POST', '/posts/store', 'PostController', 'store');
+$router->addRoute('GET', '/posts/edit', 'PostController', 'edit');
+$router->addRoute('POST', '/posts/update', 'PostController', 'update');
+$router->addRoute('GET', '/posts/delete', 'PostController', 'delete');

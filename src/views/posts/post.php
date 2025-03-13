@@ -6,18 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Document</title>
+    <title>Posts</title>
+    <style>
+        /* Add required line-clamp utility if not provided by Tailwind */
+        .line-clamp-6 {
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-100 dark:bg-darkmode2">
     <?php
-    // session_start();
-    // Include the header component
+    // User authentication setup
     use controllers\UserController;
+    use controllers\PostController;
 
     require_once __DIR__ . '/../layouts/header.php';
+    require_once __DIR__ . '/../layouts/footer.php';
     require_once __DIR__ . '/../../controllers/UserController.php';
+    require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
+
     $userController = new UserController();
+    $postController = new PostController();
     if (isset($_SESSION['user_id'])) {
         $userId = $_SESSION['user_id'];
         $user = $userController->getUser($userId);
@@ -32,128 +45,82 @@
         $user_email = '';
     }
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
-
-    // Giả sử bạn đã gửi mảng $posts từ controller
-
-    if (!empty($postsData)):
     ?>
 
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Content</th>
-                    <th>Create</th>
-                    <th>Update</th>
-                    <th>Delete</th>
-                    <th>Module ID</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($postsData as $postData): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($postData['post']->getTitle()); ?></td>
-                        <td><?php echo htmlspecialchars($postData['post']->getContent()); ?></td>
-                        <td><a href="/index.php?action=create&postId=<?= $postData['post']->getPostId(); ?>">Create</a></td>
-                        <td><a href="/index.php?action=edit&postId=<?= $postData['post']->getPostId(); ?>">Update</a></td>
-                        <td><a class="delete-btn" href="/index.php?action=delete&postId=<?= $postData['post']->getPostId(); ?>">Delete</a></td>
-                        <td><?php echo htmlspecialchars($postData['post']->getModuleId()); ?></td>
-                        <td>
-                            <?php if (!empty($postData['assets'])): ?>
-                                <?php foreach ($postData['assets'] as $asset): ?>
-                                    <img src="<?php echo htmlspecialchars('/' . $asset->getMediaKey()); ?>" alt="Post image" width="100" height="100">
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else:
-        echo "No posts available.";
-    endif;
-    ?>
+    <div class="container mx-auto py-6">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
+
+        <?php
+        // Render create button if user is logged in
+        if ($user_logged_in) {
+            echo render_create_post_button();
+        }
+
+        // Render posts with grid layout if posts exist
+        if (!empty($postsData)) {
+            echo render_post_cards($postsData, $user_logged_in, $postController);
+        } else {
+            echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
+        }
+        ?>
+    </div>
 
     <?php
     echo render_quora_footer();
     ?>
+
     <script>
-        // Select all delete buttons
-        let deleteLinks = document.querySelectorAll(".delete-btn");
-
-        function askConfirm(event) {
-            event.preventDefault(); // Prevent the default link behavior
-            let confirmation = confirm('Are you sure?');
-            if (confirmation) {
-                window.location.href = event.target.href; // Redirect to the link's href if confirmed
+        // Delete confirmation
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.closest('.delete-btn')) {
+                e.preventDefault();
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (confirm('Are you sure you want to delete this post?')) {
+                    window.location.href = deleteBtn.href;
+                }
             }
-        }
-
-        // Attach the event listener to each delete button
-        deleteLinks.forEach(function(deleteLink) {
-            deleteLink.addEventListener('click', askConfirm);
         });
 
+        // Upvote functionality
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.closest('.upvote-btn')) {
+                const card = e.target.closest('.post-card');
+                const postId = card.dataset.postId;
+                const scoreElement = card.querySelector('.vote-score span');
 
-        // // // Toggle dark mode
-        // var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        // var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+                // Call your vote API here
+                // For demonstration purposes:
+                fetch(`/api/vote?postId=${postId}&direction=up`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update the score display
+                            const newScore = data.newScore;
+                            scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
 
-        // // Change the icons inside the button based on previous settings
-        // if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        //     themeToggleLightIcon.classList.remove('hidden');
-        // } else {
-        //     themeToggleDarkIcon.classList.remove('hidden');
-        // }
+                            // Update color
+                            scoreElement.className = 'mx-1 font-bold ' +
+                                (newScore > 0 ? 'text-green-600 dark:text-green-400' :
+                                    (newScore < 0 ? 'text-red-600 dark:text-red-400' : ''));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        });
 
-        // var themeToggleBtn = document.getElementById('theme-toggle');
-
-        // themeToggleBtn.addEventListener('click', function() {
-
-        //     // toggle icons inside button
-        //     themeToggleDarkIcon.classList.toggle('hidden');
-        //     themeToggleLightIcon.classList.toggle('hidden');
-
-        //     // if set via local storage previously
-        //     if (localStorage.getItem('color-theme')) {
-        //         if (localStorage.getItem('color-theme') === 'light') {
-        //             document.documentElement.classList.add('dark');
-        //             localStorage.setItem('color-theme', 'dark');
-        //         } else {
-        //             document.documentElement.classList.remove('dark');
-        //             localStorage.setItem('color-theme', 'light');
-        //         }
-
-        //         // if NOT set via local storage previously
-        //     } else {
-        //         if (document.documentElement.classList.contains('dark')) {
-        //             document.documentElement.classList.remove('dark');
-        //             localStorage.setItem('color-theme', 'light');
-        //         } else {
-        //             document.documentElement.classList.add('dark');
-        //             localStorage.setItem('color-theme', 'dark');
-        //         }
-        //     }
-
-        // });
-        // let checkbox = document.querySelector("input[name=theme_switch]");
-
-        // if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        //     document.documentElement.setAttribute("data-theme", "dark");
-        //     checkbox.checked = true;
-        // } else {
-        //     document.documentElement.setAttribute("data-theme", "light");
-        //     checkbox.checked = false;
-        // }
-
-        // // switch theme if checkbox is engaged
-        // checkbox.addEventListener("change", (cb) => {
-        //     document.documentElement.setAttribute(
-        //         "data-theme",
-        //         cb.target.checked ? "dark" : "light"
-        //     );
-        // });
+        // Similar implementation for downvote
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.closest('.downvote-btn')) {
+                // Similar implementation as upvote
+            }
+        });
     </script>
 </body>
 

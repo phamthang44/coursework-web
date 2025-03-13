@@ -40,7 +40,7 @@ class UserController
                 }
 
                 $this->userDAO->createUser($username, $lastName, $firstName, $email, $password, NULL, NULL, NULL);
-                header("Location: /index.php?action=login");
+                header("Location: /login");
             } else {
                 $file = dirname(__DIR__) . "/views/users/signup.php";
                 if (file_exists($file)) {
@@ -50,7 +50,7 @@ class UserController
                 }
             }
         } catch (Exception $e) {
-            header("Location: /index.php?action=signup.php?error=" . urlencode($e->getMessage()));
+            header("Location: /signup?error=" . urlencode($e->getMessage()));
             exit();
         }
     }

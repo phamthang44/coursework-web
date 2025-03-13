@@ -1,5 +1,5 @@
 <?php
-// Controller sử dụng lớp Auth
+// Controller use Auth class
 namespace controllers;
 
 use dal\Auth;
@@ -27,7 +27,7 @@ class AuthController
                     header("Location: /dashboard ");
                     exit();
                 }
-                header("Location: /index.php"); //temporary need to check role
+                header("Location: /posts"); //temporary need to check role
                 exit();
             } else {
                 echo "Invalid credentials";
@@ -45,7 +45,7 @@ class AuthController
     public function logout()
     {
         $this->auth->logout();
-        header("Location: index.php?action=login");
+        header("Location: /login");
     }
 
     public function checkRoleAdmin()

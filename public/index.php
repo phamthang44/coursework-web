@@ -1,13 +1,21 @@
 <?php
-// ini_set('display_errors', 1);
-// error_reporting(E_ALL);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require_once __DIR__ . '/../autoload.php';
 
-session_start();
-// // public/index.php
-
 require_once __DIR__ . "/../config/database.php";
+// // public/index.php
+use utils\Router;
+
+session_start();
+$router = new Router();
+require_once __DIR__ . '/../src/routes/web.php'; // Load routes
+// $router->addRoute('GET', '/', 'AuthController', 'login');
+// $router->addRoute('GET', '/create', 'PostController', 'create');
+// $router->addRoute('POST', '/contact', 'ContactController', 'submit');
+
+$router->dispatch();
 // // require_once __DIR__ . '/../src/dal/PostDAOI.php';
 // // require_once __DIR__ . '/../src/dal/PostDAOImpl.php'; // Bao gồm file PostDAOImpl
 // // require_once __DIR__ . '/../src/dal/ModuleDAOI.php';
@@ -19,52 +27,53 @@ require_once __DIR__ . "/../config/database.php";
 // // require_once __DIR__ . '/../src/dal/PostAssetDAOImpl.php'; // Bao gồm file PostAssetDAOImpl
 // // require_once __DIR__ . '/../src/models/PostAsset.php';
 // // // Include file controller
-require_once __DIR__ . '/../src/views/layouts/header.php';
-require_once __DIR__ . '/../src/views/layouts/footer.php';
+// require_once __DIR__ . '/../src/views/layouts/header.php';
+// require_once __DIR__ . '/../src/views/layouts/footer.php';
+// Dispatch the router
 
-use controllers\AuthController;
-use controllers\PostController;
-use controllers\UserController;
+// use controllers\AuthController;
+// use controllers\PostController;
+// use controllers\UserController;
 
-$postController = new PostController();
-$authController = new AuthController();
-$userController = new UserController();
+// $postController = new PostController();
+// $authController = new AuthController();
+// $userController = new UserController();
 //$controller->index(); // Gọi hàm index
 
 // Get the requested URL path
-$request = $_SERVER['REQUEST_URI'];
-$request = strtok($request, '?'); // Remove query string
+// $request = $_SERVER['REQUEST_URI'];
+// $request = strtok($request, '?'); // Remove query string
 
-$action = $_GET['action'] ?? 'index';
+// $action = $_GET['action'] ?? 'index';
 
-switch ($action) {
-    case 'create':
-        $postController->create();
-        break;
-    case 'store':
-        $postController->store();
-        break;
-    case 'delete':
-        $postController->delete($_GET['postId']);
-        break;
-    case 'update':
-        $postController->update($_GET['postId']);
-        break;
-    case 'edit':
-        $postController->edit($_GET['postId']);
-        break;
-    case 'login':
-        $authController->login();
-        break;
-    case 'logout':
-        $authController->logout();
-        break;
-    case 'signup':
-        $userController->signup();
-        break;
-    default:
-        $postController->index();
-}
+// switch ($action) {
+//     case 'create':
+//         $postController->create();
+//         break;
+//     case 'store':
+//         $postController->store();
+//         break;
+//     case 'delete':
+//         $postController->delete($_GET['postId']);
+//         break;
+//     case 'update':
+//         $postController->update($_GET['postId']);
+//         break;
+//     case 'edit':
+//         $postController->edit($_GET['postId']);
+//         break;
+//     case 'login':
+//         $authController->login();
+//         break;
+//     case 'logout':
+//         $authController->logout();
+//         break;
+//     case 'signup':
+//         $userController->signup();
+//         break;
+//     default:
+//         $postController->index();
+// }
 
 //---------------------------------------- version 1 ------------------------------------------------------
 

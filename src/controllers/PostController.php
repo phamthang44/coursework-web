@@ -2,26 +2,24 @@
 
 namespace controllers;
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 use dal\ModuleDAOImpl;
 use dal\PostAssetDAOImpl;
 use dal\PostDAOImpl;
 use Exception;
 use finfo;
 
-
 class PostController
 {
     private $postDAO;
     private $moduleDAO;
     private $postAssetDAO;
+    private $userController;
     function __construct()
     {
         $this->postDAO = new PostDAOImpl();
         $this->moduleDAO = new ModuleDAOImpl();
         $this->postAssetDAO = new PostAssetDAOImpl();
+        $this->userController = new UserController();
     }
 
     /**
@@ -50,6 +48,8 @@ class PostController
                 'assets' => $assetsByPostId[$postId] ?? []
             ];
         }
+
+        // echo "Welcome to the homepage!";
 
         require_once __DIR__ . '/../views/posts/post.php';
     }
@@ -327,6 +327,19 @@ class PostController
             header("Location: /index.php?action=index");
             exit();
         }
+    }
+
+    public function getUserName($userId)
+    {
+
+        $user = $this->userController->getUser($userId);
+        return $user->getUsername();
+    }
+
+    public function getModuleName($moduleId)
+    {
+        $module = $this->moduleDAO->getModule($moduleId);
+        return $module->getModuleName();
     }
     /*
         protected function render($view, $data = [])
