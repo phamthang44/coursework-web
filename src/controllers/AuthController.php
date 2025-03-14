@@ -24,7 +24,7 @@ class AuthController
 
             if ($user) {
                 if ($_SESSION['role'] === 'admin') {
-                    header("Location: /dashboard ");
+                    header("Location: /admin/dashboard");
                     exit();
                 }
                 header("Location: /posts"); //temporary need to check role

@@ -24,16 +24,11 @@ class PostDAOImpl implements PostDAOI
 
     public function getAllPosts(): array
     {
-        $conn = $this->pdo;
         $sql = "SELECT * FROM Posts";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
-
-
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         $posts = [];
-
         // convert each row data to object Post
         return $this->convertResultRowToPostObj($result, $posts); // return array object Post
     }
@@ -42,9 +37,8 @@ class PostDAOImpl implements PostDAOI
     public function getPost($postId): Post
     {
         // TODO: Implement getPost() method.
-        $conn = $this->pdo;
         $sql = "SELECT * FROM Posts WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":postId", $postId);
         $stmt->execute();
         $row = $stmt->fetch();
@@ -74,9 +68,8 @@ class PostDAOImpl implements PostDAOI
     public function createPost($title, $content, $userId, $moduleId)
     {
         // TODO: Implement createPost() method.
-        $conn = $this->pdo;
         $sql = "INSERT INTO Posts (title, content, user_id, module_id) VALUES (:title, :content, :userId, :moduleId)";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
         $stmt->bindParam(":content", $content, PDO::PARAM_STR);
         $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
@@ -85,7 +78,7 @@ class PostDAOImpl implements PostDAOI
         try {
             $result = $stmt->execute();
             if ($result) {
-                return $conn->lastInsertId(); // return id just insert to
+                return $this->pdo->lastInsertId(); // return id just insert to
             } else {
                 throw new Exception("Failed to insert comment: " . print_r($stmt->errorInfo(), true));
             }
@@ -98,9 +91,8 @@ class PostDAOImpl implements PostDAOI
     public function updatePost($postId, $title, $content, $moduleId)
     {
         // TODO: Implement updatePost() method.
-        $conn = $this->pdo;
         $sql = "UPDATE Posts SET title = :title, content = :content, module_id = :moduleId WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
         $stmt->bindParam(":content", $content, PDO::PARAM_STR);
         $stmt->bindParam(":moduleId", $moduleId, PDO::PARAM_INT);
@@ -111,9 +103,8 @@ class PostDAOImpl implements PostDAOI
     public function updatePostTitle($postId, $title): bool
     {
         // TODO: Implement updatePostTitle() method.
-        $conn = $this->pdo;
         $sql = "UPDATE Posts SET title = :title WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":title", $title, PDO::PARAM_STR);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
@@ -122,9 +113,8 @@ class PostDAOImpl implements PostDAOI
     public function updatePostContent($postId, $content): bool
     {
         // TODO: Implement updatePostContent() method.
-        $conn = $this->pdo;
         $sql = "UPDATE Posts SET content = :content WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":content", $content, PDO::PARAM_STR);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
@@ -133,9 +123,8 @@ class PostDAOImpl implements PostDAOI
     public function updatePostAsset($postId, $assetId): bool
     {
         // TODO: Implement updatePostAsset() method.
-        $conn = $this->pdo;
         $sql = "UPDATE Posts SET post_assets_id = :asset_id WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":assetId", $assetId, PDO::PARAM_INT);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
@@ -144,9 +133,8 @@ class PostDAOImpl implements PostDAOI
     public function updatePostModule($postId, $moduleId): bool
     {
         // TODO: Implement updatePostModule() method.
-        $conn = $this->pdo;
         $sql = "UPDATE Posts SET module_id = :module_id WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":moduleId", $moduleId, PDO::PARAM_INT);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
@@ -155,9 +143,8 @@ class PostDAOImpl implements PostDAOI
     public function updateScore($postId, $voteScore): bool
     {
         // TODO: Implement updateScore() method.
-        $conn = $this->pdo;
         $sql = "UPDATE Posts SET vote_score = :voteScore WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":voteScore", $voteScore, PDO::PARAM_INT);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
@@ -166,9 +153,8 @@ class PostDAOImpl implements PostDAOI
     public function deletePost($postId): bool
     {
         // TODO: Implement deletePost() method.
-        $conn = $this->pdo;
         $sql = "DELETE FROM Posts WHERE post_id = :postId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
     }
@@ -201,9 +187,8 @@ class PostDAOImpl implements PostDAOI
 
     public function getLastPostId()
     {
-        $conn = $this->pdo;
         $sql = "SELECT MAX(post_id) AS last_id FROM Posts";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['last_id'];
@@ -211,13 +196,32 @@ class PostDAOImpl implements PostDAOI
 
     public function getPostByIdAndUserId($postId, $userId)
     {
-        $conn = $this->pdo;
         $sql = "SELECT * FROM Posts WHERE post_id = :postId AND user_id = :userId";
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
+    }
+
+    public function getPostByPage($limit, $offset)
+    {
+        $sql = "SELECT * FROM Posts ORDER BY timestamp DESC LIMIT :limit OFFSET :offset";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $posts = $this->convertResultRowToPostObj($rows, []);
+
+        $countStmt = $this->pdo->query("SELECT COUNT(*) FROM posts");
+        $totalPosts = $countStmt->fetchColumn();
+
+        return [
+            'posts' => $posts,
+            'totalPosts' => $totalPosts
+        ];
     }
 }

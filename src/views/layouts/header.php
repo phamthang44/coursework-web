@@ -7,7 +7,7 @@
  * This file can be included in other PHP files.
  */
 
-function render_quora_header($user_logged_in = false, $user_name = '', $user_avatar = '', $user_email = '')
+function render_quora_header($user_logged_in = false, $user_name = '', $user_avatar = '', $user_email = '', $user = null)
 {
     // Sanitize inputs for security
     $user_name = htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8');
@@ -43,8 +43,16 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <a href="/posts" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Following</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Answer</a>
-                <!-- <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Spaces</a> -->
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Notifications</a>
+                <?php
+                if ($user_logged_in) {
+                    if ($user !== null) {
+                        if ($user->getRole() === 'admin') {
+                            echo '<a href="/admin/dashboard" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Admin Dashboard</a>';
+                        }
+                    }
+                }
+                ?>
             </nav>
 
             <!-- Mobile Menu Button -->

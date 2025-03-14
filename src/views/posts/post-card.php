@@ -31,6 +31,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
 
     // Get author if available (assuming post has author method)
     $author = method_exists($post, 'getUserId') ? $postController->getUserName($post->getUserId()) : 'Unknown Author';
+    $authorObj = $postController->getUser($post->getUserId());
 
     // Get vote score if available (assuming post has vote method)
     $voteScore = method_exists($post, 'getVoteScore') ? $post->getVoteScore() : 0;
@@ -69,11 +70,11 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             <div class="flex justify-between text-xs text-gray-500 dark:text-white-400 items-center w-full">
                 <div class="flex gap-3 mt-4 mb-4">
                     <!-- Author and dates -->
-                    <?php if ($user->getProfileImage() != null): ?>
-                        <img src="<?php echo $user->getProfileImage(); ?>" alt="<?php echo $user->getUsername(); ?>" class="w-12 h-12 rounded-full cursor-pointer">
+                    <?php if ($authorObj->getProfileImage() != null): ?>
+                        <img src="<?php echo $authorObj->getProfileImage(); ?>" alt="<?php echo $author; ?>" class="w-12 h-12 rounded-full cursor-pointer">
                     <?php else: ?>
                         <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
-                            <p class="text-lg"><?php echo substr($user->getUsername(), 0, 1); ?></p>
+                            <p class="text-lg"><?php echo substr($author, 0, 1); ?></p>
                         </div>
                     <?php endif; ?>
                     <div class="flex gap-1 text-xs flex-col">
@@ -156,7 +157,6 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
 <?php
     return ob_get_clean();
 }
-
 /**
  * Renders a grid of post cards
  * 

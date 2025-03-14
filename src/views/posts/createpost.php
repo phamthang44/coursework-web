@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create new post</title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
@@ -9,18 +11,15 @@
 
 <body class="bg-white dark:bg-darkmode">
     <?php
-    // User authentication setup
+
     use controllers\ModuleController;
     use controllers\UserController;
-    use controllers\PostController;
 
     require_once __DIR__ . '/../layouts/header.php';
     require_once __DIR__ . '/../layouts/footer.php';
     require_once __DIR__ . '/../../controllers/UserController.php';
-    // require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
 
     $userController = new UserController();
-    $postController = new PostController();
     $moduleController = new ModuleController();
 
 

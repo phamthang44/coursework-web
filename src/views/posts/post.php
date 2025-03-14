@@ -50,12 +50,17 @@
         $user_email = '';
     }
 
+    $userObj = $user;
     $post = $postController->getPostByIdAndUserId($postId, $userId);
     $moduleName = $moduleController->getModule($post->getModuleId());
     $postImageObj = $postController->getPostImage($post->getPostId());
-    $postImageStr = $postImageObj->getMediaKey();
+    if ($postImageObj) {
+        $postImageStr = $postImageObj->getMediaKey();
+    } else {
+        $postImageStr = '';
+    }
     $postImage = $postImageStr ?? '';
-    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>
 
     <div class="container mx-auto py-6 w-1/3">
@@ -83,7 +88,44 @@
 
         ?>
     </div>
+    <div class="flex items-center justify-center space-x-2 mt-8">
+        <!-- Previous Button -->
+        <?php if ($currentPage > 1): ?>
+            <a href="?page=<?= $currentPage - 1 ?>"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                Previous
+            </a>
+        <?php else: ?>
+            <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                Previous
+            </span>
+        <?php endif; ?>
 
+        <!-- Page Numbers -->
+        <div class="flex space-x-1">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>"
+                    class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?=
+                                                                                                    ($i == $currentPage)
+                                                                                                        ? 'bg-red-600 text-white'
+                                                                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+        </div>
+
+        <!-- Next Button -->
+        <?php if ($currentPage < $totalPages): ?>
+            <a href="?page=<?= $currentPage + 1 ?>"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                Next
+            </a>
+        <?php else: ?>
+            <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                Next
+            </span>
+        <?php endif; ?>
+    </div>
     <?php
     echo render_quora_footer();
     ?>
@@ -172,7 +214,6 @@
 
             }
         }
-
         // Upvote functionality
         document.addEventListener('click', function(e) {
             if (e.target && e.target.closest('.upvote-btn')) {
@@ -245,7 +286,6 @@
                     if (imageUpdate) {
                         imageUpdate.addEventListener("change", handleImagePreview);
                     }
-
                     Validator({
                         form: "#form-update-post",
                         formGroupSelector: ".form-group",

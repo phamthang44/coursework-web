@@ -29,10 +29,24 @@ class PostController
      */
     public function index()
     {
+        $postsPerPage = 10;
+
         //all posts object as an array
-        $posts = $this->postDAO->getAllPosts();
+        //$posts = $this->postDAO->getAllPosts();
         $modules = $this->moduleDAO->getAllModules();
 
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $offset = ($currentPage - 1) * $postsPerPage;
+        $data = $this->postDAO->getPostByPage($postsPerPage, $offset);
+
+        $posts = $data['posts'];
+        $totalPosts = $data['totalPosts'];
+
+        $totalPages = ceil($totalPosts / $postsPerPage);
         //all postIds
         $postIds = array_map(function ($post) {
             return $post->getPostId();
@@ -57,10 +71,6 @@ class PostController
     //CRUD first
     public function create()
     {
-        //http://localhost/index.php?action=create
-
-        // If not POST request, show form
-        $posts = $this->postDAO->getAllPosts();
         $modules = $this->moduleDAO->getAllModules();
         require_once __DIR__ . '/../views/posts/createpost.php';
     }
@@ -355,6 +365,11 @@ class PostController
     public function getPostImage($postId)
     {
         return $this->postAssetDAO->getByPostId($postId);
+    }
+
+    public function getUser($userId)
+    {
+        return $this->userController->getUser($userId);
     }
 
     /*
