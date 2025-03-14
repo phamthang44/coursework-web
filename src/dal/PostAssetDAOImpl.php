@@ -90,7 +90,6 @@ class PostAssetDAOImpl implements PostAssetDAOI
         } catch (PDOException $e) {
             throw new Exception("Error getting post assets by post id: " . $e->getMessage());
         }
-        return null;
     }
 
     /**
@@ -168,7 +167,7 @@ class PostAssetDAOImpl implements PostAssetDAOI
         try {
             // Create placeholder cho IN clause
             $placeholders = implode(',', array_fill(0, count($postIds), '?'));
-            $stmt = $this->pdo->prepare("SELECT * FROM postassets WHERE post_id IN ($placeholders)");
+            $stmt = $this->pdo->prepare("SELECT * FROM postassets WHERE post_id IN ($placeholders) ORDER BY post_id ASC");
 
             // Bind post_id
             foreach ($postIds as $index => $postId) {

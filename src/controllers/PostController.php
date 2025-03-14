@@ -202,7 +202,7 @@ class PostController
             require_once __DIR__ . '/../views/posts/updatepost.php';
         } catch (Exception $e) {
             error_log("Error in edit method: " . $e->getMessage());
-            header("Location: /posts");
+            header("Location: /500");
             exit();
         }
     }
@@ -238,25 +238,29 @@ class PostController
                     throw new Exception("No changes were made");
                 }
 
-                if ($newModule !== $oldModule && $newTitle === $oldTitle && $newContent === $oldContent) {
-                    $this->postDAO->updatePostModule($postId, $newModule);
-                } else if ($newModule === $oldModule && $newTitle !== $oldTitle && $newContent === $oldContent) {
-                    $this->postDAO->updatePostTitle($postId, $newTitle);
-                } else if ($newModule === $oldModule && $newTitle === $oldTitle && $newContent !== $oldContent) {
-                    $this->postDAO->updatePostContent($postId, $newContent);
-                } else {
-                    $this->postDAO->updatePost($postId, $newTitle, $newContent, $newModule);
-                }
+                // if ($newModule !== $oldModule && $newTitle === $oldTitle && $newContent === $oldContent) {
+                //     $this->postDAO->updatePostModule($postId, $newModule);
+                // } else if ($newModule === $oldModule && $newTitle !== $oldTitle && $newContent === $oldContent) {
+                //     $this->postDAO->updatePostTitle($postId, $newTitle);
+                // } else if ($newModule === $oldModule && $newTitle === $oldTitle && $newContent !== $oldContent) {
+                //     $this->postDAO->updatePostContent($postId, $newContent);
+                // } else {
+                $this->postDAO->updatePost($postId, $newTitle, $newContent, $newModule);
+                //}
                 if (!$post) {
                     throw new Exception("Post not found");
                 }
 
 
                 error_log("Post created successfully");
+                $imageObj = $this->postAssetDAO->getByPostId($postId);
+                if (!$imageObj) {
+                    $imagePath = null;
+                } else {
+                    $imagePath = $imageObj->getMediaKey();
+                }
 
-                $imagePath = null;
-                // process upload file
-                if (!empty($_FILES['image']['name'])) {
+                if (!empty($_FILES['image']['name']) && $imagePath === null) {
                     $uploadDir = __DIR__ . '/../../uploads/';
                     if (!file_exists($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
@@ -301,17 +305,18 @@ class PostController
                     }
 
                     $imagePath = 'uploads/' . $fileName;
-                    $this->postAssetDAO->update($post->getPostId(), $imagePath);
+                    $this->postAssetDAO->create($imagePath, $postId);
                     error_log("Image uploaded successfully: " . $imagePath);
+                } else {
+                    $this->postAssetDAO->update($post->getPostId(), $imagePath);
                 }
-
                 $_SESSION['success'] = "The post has been created successfully!";
                 header("Location: /posts");
                 exit();
             } catch (Exception $e) {
-                error_log("Error in store method: " . $e->getMessage());
+                error_log("Error in update method: " . $e->getMessage());
                 $_SESSION['error'] = $e->getMessage();
-                header("Location: /posts");
+                header("Location: /500.php");
                 exit();
             }
         }
@@ -341,7 +346,7 @@ class PostController
 
     public function getPostByIdAndUserId($postId, $userId)
     {
-        return $this->postDAO->getPost($postId);
+        return $this->postDAO->getPostByIdAndUserId($postId, $userId);
     }
 
     public function getPostUserId($postId)

@@ -202,12 +202,15 @@ class PostDAOImpl implements PostDAOI
         $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            return null;
+        }
         return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
     }
 
     public function getPostByPage($limit, $offset)
     {
-        $sql = "SELECT * FROM Posts ORDER BY timestamp DESC LIMIT :limit OFFSET :offset";
+        $sql = "SELECT * FROM Posts ORDER BY post_id DESC LIMIT :limit OFFSET :offset";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -215,7 +218,7 @@ class PostDAOImpl implements PostDAOI
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $posts = $this->convertResultRowToPostObj($rows, []);
-
+        //sort($posts);
         $countStmt = $this->pdo->query("SELECT COUNT(*) FROM posts");
         $totalPosts = $countStmt->fetchColumn();
 

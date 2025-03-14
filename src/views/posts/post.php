@@ -51,25 +51,22 @@
     }
 
     $userObj = $user;
-    $post = $postController->getPostByIdAndUserId($postId, $userId);
-    $moduleName = $moduleController->getModule($post->getModuleId());
-    $postImageObj = $postController->getPostImage($post->getPostId());
-    if ($postImageObj) {
-        $postImageStr = $postImageObj->getMediaKey();
-    } else {
-        $postImageStr = '';
-    }
-    $postImage = $postImageStr ?? '';
+    // //$post = $postController->getPostByIdAndUserId($postId, $userId);
+    // $moduleName = $moduleController->getModule($post->getModuleId());
+    // $postImageObj = $postController->getPostImage($post->getPostId());
+    // if ($postImageObj) {
+    //     $postImageStr = $postImageObj->getMediaKey();
+    // } else {
+    //     $postImageStr = '';
+    // }
+    // //$postImage = $postImageStr ?? '';
+
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>
 
     <div class="container mx-auto py-6 w-1/3">
         <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
         <?php
-        // Render create button if user is logged in
-        // if ($user_logged_in) {
-        //     echo render_create_post_button();
-        // }
         if ($user_logged_in) {
             if ($user->getRole() === 'user') {
                 $showControls = false;
@@ -77,8 +74,6 @@
                 $showControls = true;
             }
         }
-
-        // Render posts with grid layout if posts exist
         if (!empty($postsData)) {
             echo render_post_cards($postsData, $showControls, $postController, $user);
         } else {
@@ -348,15 +343,26 @@
                             checkExistingDropdown(e);
                             checkExistingModal();
 
+                            // Get the post ID from the clicked element's data attribute
+                            const postCard = e.target.closest('.post-card');
+                            const postId = postCard.dataset.postId;
+
+                            // Get post data (you'll need to add this data to your HTML elements)
+                            const postTitle = postCard.dataset.title || '';
+                            const postContent = postCard.dataset.content || '';
+                            const postModuleId = postCard.dataset.moduleId || '';
+                            const postModuleName = postCard.dataset.moduleName || '';
+                            const postImage = postCard.dataset.postImage || 'hidden';
+
                             const editModalQuick = new Modal();
                             editModalQuick.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Edit the post</h2>
-                            <form action="/posts/update/<?php echo $post->getPostId(); ?>" method="POST" enctype="multipart/form-data" id="form-update-post" class="space-y-4">
+                            <form action="/posts/update/${postId}" method="POST" enctype="multipart/form-data" id="form-update-post" class="space-y-4">
                                 <!-- Title Field (Optional) -->
                                 <div class="form-group py-4 mb-4">
                                     <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
                                     <input type="text" id="title" name="title" placeholder="Enter title (optional)"
                                         class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                        value="<?php echo $post->getTitle(); ?>">
+                                        value="${postTitle}">
                                     <span class="form-message text-red-500 text-sm"></span>
                                     <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
                                 </div>
@@ -364,7 +370,7 @@
                                 <div class="form-group">
                                     <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
                                     <textarea id="content" name="content" rows="5" placeholder="Enter content"
-                                        class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"><?php echo $post->getContent(); ?></textarea>
+                                        class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${postContent}</textarea>
                                     <span class="form-message text-red-500 font-medium text-sm"></span>
                                 </div>
                                 <!-- Module Select -->
@@ -372,7 +378,7 @@
                                     <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
                                     <select id="module" name="module"
                                         class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
-                                        <option value="" class="text-black dark:text-white">Selected : <?= $moduleName ?></option>
+                                        <option value="" class="text-black dark:text-white">Selected : ${postModuleName}</option>
                                         <?php foreach ($modules as $module): ?>
                                             <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
                                         <?php endforeach; ?>
@@ -391,9 +397,9 @@
                                         <span class="form-message text-red-500 font-medium text-sm"></span>
                                     </div>
                                     <!-- Preview Image -->
-                                    <div id="preview-container" class="absolute -top-[100px] left-[440px]">
+                                    <div id="preview-container" class="${postImage} absolute -top-[100px] left-[440px]">
                                         <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
-                                        <img id="preview" src="<?= $postImage ? $postImage : "" ?>" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
+                                        <img id="preview" src="${postImage}" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
                                     </div>
                                 </div>
                                 <!-- Submit Button -->

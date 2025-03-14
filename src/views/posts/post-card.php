@@ -40,8 +40,13 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     // Start building HTML
     ob_start();
 ?>
-    <div id="post-card-<?= $postId ?>" class="post-card bg-white dark:bg-darkmode rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 w-xl h-1vh" data-post-id="<?= $postId ?>">
-        <div class="pl-5 pr-5 pb-5 post-card">
+    <div id="post-card-<?= $postId ?>" class="post-card bg-white dark:bg-darkmode rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 w-xl h-1vh" data-post-id="<?= $postId ?>"
+        data-title="<?= htmlspecialchars($post->getTitle()) ?>"
+        data-content="<?= htmlspecialchars($post->getContent()) ?>"
+        data-module-id="<?= $post->getModuleId() ?>"
+        data-module-name="<?= htmlspecialchars($moduleId) ?>"
+        data-post-image="<?= !empty($assets) ? $assets[0]->getMediaKey() : '' ?>">
+        <div class="pl-5 pr-5 pb-5">
             <?php
             $postUserId = $postController->getPostUserId($postId);
             if ($user->getUserId() == $postUserId) {
@@ -158,7 +163,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     return ob_get_clean();
 }
 /**
- * Renders a grid of post cards
+ * 
  * 
  * @param array $postsData Array of post data arrays
  * @param bool $showControls Whether to show edit/delete controls

@@ -49,6 +49,8 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                     if ($user !== null) {
                         if ($user->getRole() === 'admin') {
                             echo '<a href="/admin/dashboard" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Admin Dashboard</a>';
+                        } else {
+                            echo '<a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>';
                         }
                     }
                 }
