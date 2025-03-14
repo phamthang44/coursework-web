@@ -25,7 +25,7 @@
     $postController = new PostController();
     $moduleController = new ModuleController();
 
-
+    $user = null;
 
     if (isset($_SESSION['user_id'])) {
         $userId = $_SESSION['user_id'];
@@ -45,7 +45,9 @@
 
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>
-    <div class="container mx-auto py-6 w-1/3 rounded-lg">
+    <?php
+    if (!is_null($userObj)) {
+        echo '<div class="container mx-auto py-6 w-1/3 rounded-lg">
         <h2 class="text-2xl text-red-500 font-bold mb-4">Send Email Message to admin</h2>
         <form action="/contact" method="POST" enctype="multipart/form-data" id="form-send-email" class="space-y-4">
             <!-- Title Field (Optional) -->
@@ -67,10 +69,16 @@
             <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Send">
         </form>
     </div>
-    <div class="mt-[100px]"></div>
-    <?php
-    echo render_quora_footer();
+    <div class="mt-[100px]"></div>';
+        echo render_quora_footer();
+    } else {
+        echo '<div class="flex w-full h-auto flex-col items-center">
+                <h1 class="text-2xl text-red-500 font-bold text-center mt-20 justify-center">Please login to send email to admin</h1>
+                <a href="/login" class="mt-4 bg-red-500 hover:bg-red-600 transition text-white font-bold py-2 px-4 rounded-lg">Login</a>
+            </div>';
+    }
     ?>
+
     <script src="/js/validator.js"></script>
     <script>
         Validator({

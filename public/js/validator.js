@@ -146,11 +146,12 @@ function Validator(options) {
   }
 }
 
-Validator.isRequired = function (selector) {
+Validator.isRequired = function (selector, message) {
   return {
     selector: selector,
     test: function (value) {
-      return value ? undefined : "Please input this field";
+      message = message ?? "Please input this field";
+      return value ? undefined : message;
     },
   };
 };

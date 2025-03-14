@@ -22,10 +22,13 @@ class UserController
     public function contact()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = '';
+            //$email = '';
             $subject = $_POST['title'];
             $message = $_POST['content'];
-            $headers = "From: " . $email;
+            //$headers = "From: " . $email;
+            ini_set("SMTP", "smtp.gre.ac.uk");
+            ini_set("sendmail_from", "pt4251c@gre.ac.uk");
+            mail("pt4251c@gre.ac.uk", $subject, $message);
         } else {
             require_once __DIR__ . '/../views/users/contact.php';
         }

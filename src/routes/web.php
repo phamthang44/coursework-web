@@ -16,3 +16,4 @@ $router->addRoute('POST', '/posts/update/{id}', 'PostController', 'update');
 $router->addRoute('GET', '/posts/delete/{id}', 'PostController', 'delete');
 $router->addRoute('GET', '/admin/dashboard', 'AdminController', 'dashboard');
 $router->addRoute('GET', '/contact', 'UserController', 'contact');
+$router->addRoute('POST', '/contact', 'UserController', 'contact');

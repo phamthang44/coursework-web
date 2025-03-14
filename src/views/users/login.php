@@ -252,8 +252,8 @@
         .form-message {
 
             position: absolute;
-            left: 0;
-            bottom: -25px;
+            right: 0;
+            top: -2px;
         }
 
         .input-group.invalid .form-message {
@@ -355,9 +355,9 @@
             formGroupSelector: ".input-group",
             formMessage: ".form-message",
             rules: [
-                Validator.isRequired("#email"),
+                Validator.isRequired("#email", "(*required)"),
                 Validator.isEmail("#email"),
-                Validator.isRequired("#password"),
+                Validator.isRequired("#password", "(*required)"),
             ],
         });
     </script>

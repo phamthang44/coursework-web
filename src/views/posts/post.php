@@ -34,7 +34,7 @@
     $postController = new PostController();
     $moduleController = new ModuleController();
 
-
+    $user = null;
 
     if (isset($_SESSION['user_id'])) {
         $userId = $_SESSION['user_id'];
@@ -49,8 +49,13 @@
         $user_avatar = '';
         $user_email = '';
     }
+    if (isset($user)) {
+        $userObj = $user;
+    } else {
+        $userObj = null;
+    }
+    $showControls = false;
 
-    $userObj = $user;
     // //$post = $postController->getPostByIdAndUserId($postId, $userId);
     // $moduleName = $moduleController->getModule($post->getModuleId());
     // $postImageObj = $postController->getPostImage($post->getPostId());
@@ -68,10 +73,14 @@
         <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
         <?php
         if ($user_logged_in) {
-            if ($user->getRole() === 'user') {
-                $showControls = false;
+            if (!is_null($user)) {
+                if ($user->getRole() === 'user') {
+                    $showControls = false;
+                } else {
+                    $showControls = true;
+                }
             } else {
-                $showControls = true;
+                $showControls = false;
             }
         }
         if (!empty($postsData)) {
@@ -79,8 +88,6 @@
         } else {
             echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
         }
-
-
         ?>
     </div>
     <div class="flex items-center justify-center space-x-2 mt-8">
