@@ -47,12 +47,16 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                 echo '<button class="post-options">
                         <span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span>
                       </button>';
-                echo '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-48 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
+                echo '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-30 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
                         <a href="/posts/edit/' . $postId . '" 
                            data-url="/posts/edit/' . $postId . '" 
-                           class="edit-action block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                           Edit
+                           class="edit-action-advanced block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                           Edit (advanced)
                         </a>
+                        <button
+                           class="edit-action-quick block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                           Edit (quick)
+                        </button>
                         <a href="/posts/delete/' . $postId . '" 
                            data-url="/posts/delete/' . $postId . '" 
                            class="delete-action block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">

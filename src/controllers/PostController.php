@@ -14,12 +14,14 @@ class PostController
     private $moduleDAO;
     private $postAssetDAO;
     private $userController;
+    //private $postAssetController;
     function __construct()
     {
         $this->postDAO = new PostDAOImpl();
         $this->moduleDAO = new ModuleDAOImpl();
         $this->postAssetDAO = new PostAssetDAOImpl();
         $this->userController = new UserController();
+        //$this->postAssetController = new PostAssetController();
     }
 
     /**
@@ -48,9 +50,6 @@ class PostController
                 'assets' => $assetsByPostId[$postId] ?? []
             ];
         }
-        // $post = $postsData[0]['post'];
-        // $assets = $postsData[0]['assets'];
-        // echo "Welcome to the homepage!";
 
         require_once __DIR__ . '/../views/posts/post.php';
     }
@@ -330,6 +329,11 @@ class PostController
         }
     }
 
+    public function getPostByIdAndUserId($postId, $userId)
+    {
+        return $this->postDAO->getPost($postId);
+    }
+
     public function getPostUserId($postId)
     {
         $post = $this->postDAO->getPost($postId);
@@ -347,6 +351,12 @@ class PostController
         $module = $this->moduleDAO->getModule($moduleId);
         return $module->getModuleName();
     }
+
+    public function getPostImage($postId)
+    {
+        return $this->postAssetDAO->getByPostId($postId);
+    }
+
     /*
         protected function render($view, $data = [])
     {

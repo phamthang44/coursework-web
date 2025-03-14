@@ -144,7 +144,6 @@ button {
   background-color: #fff;
   transform: scale(0);
   transition: transform 0.3s;
-  height: 800px;
 }
 
 .modal-content {

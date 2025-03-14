@@ -45,7 +45,7 @@ class PostAssetDAOImpl implements PostAssetDAOI
     /**
      * @throws Exception
      */
-    public function getByPostId($post_id): array
+    public function getAssetsByPostId($post_id): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT * FROM postassets WHERE post_id = :post_id");
@@ -66,6 +66,31 @@ class PostAssetDAOImpl implements PostAssetDAOI
         } catch (PDOException $e) {
             throw new Exception("Error getting post assets by post id: " . $e->getMessage());
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getByPostId($post_id)
+    {
+        try {
+            $conn = $this->pdo;
+            $sql = "SELECT * FROM postassets WHERE post_id = :post_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return new PostAsset(
+                    $row['post_asset_id'],
+                    $row['media_key'],
+                    $row['post_id']
+                );
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Error getting post assets by post id: " . $e->getMessage());
+        }
+        return null;
     }
 
     /**
@@ -136,23 +161,23 @@ class PostAssetDAOImpl implements PostAssetDAOI
     public function getByPostIds(array $postIds): array
     {
         if (empty($postIds)) {
-            error_log("getByPostIds: postIds array is empty");
+            //error_log("getByPostIds: postIds array is empty");
             return [];
         }
 
         try {
-            // Tạo placeholder cho IN clause
+            // Create placeholder cho IN clause
             $placeholders = implode(',', array_fill(0, count($postIds), '?'));
             $stmt = $this->pdo->prepare("SELECT * FROM postassets WHERE post_id IN ($placeholders)");
 
-            // Bind các post_id
+            // Bind post_id
             foreach ($postIds as $index => $postId) {
                 $stmt->bindValue($index + 1, $postId, PDO::PARAM_INT);
             }
 
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("getByPostIds: fetched results - " . print_r($results, true));
+            //error_log("getByPostIds: fetched results - " . print_r($results, true));
 
             $postAssets = [];
             foreach ($results as $result) {
@@ -162,10 +187,10 @@ class PostAssetDAOImpl implements PostAssetDAOI
                     $result['post_id']
                 );
             }
-            error_log("getByPostIds: postAssets - " . print_r($postAssets, true));
+            //error_log("getByPostIds: postAssets - " . print_r($postAssets, true));
             return $postAssets;
         } catch (PDOException $e) {
-            error_log("Error getting post assets by post ids: " . $e->getMessage());
+            //error_log("Error getting post assets by post ids: " . $e->getMessage());
             throw new Exception("Error getting post assets by post ids: " . $e->getMessage());
         }
     }

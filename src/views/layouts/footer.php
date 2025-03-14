@@ -41,64 +41,21 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
                 <div>
                     <h4 class="text-gray-800 font-semibold mb-4 dark:text-gray-300">About</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">About KnowledgeHub</a></li>
-                        <!-- <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Careers</a></li> -->
+                        <li><button class="about-knowledgehub text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">About KnowledgeHub</button></li>
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Privacy</a></li>
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Terms</a></li>
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Contact</a></li>
                     </ul>
                 </div>
-
                 <!-- Community -->
                 <div>
                     <h4 class="text-gray-800 font-semibold mb-4 dark:text-gray-300">Community</h4>
                     <ul class="space-y-2">
-                        <!-- <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Guidelines</a></li> -->
-                        <!-- <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Spaces</a></li> -->
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Top Contributors</a></li>
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Moderators</a></li>
                     </ul>
                 </div>
-
-                <!-- Resources -->
-                <!-- <div>
-                    <h4 class="text-gray-800 font-semibold mb-4 dark:text-gray-300">Resources</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Help Center</a></li>
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Blog</a></li>
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Business</a></li>
-                        <?php //foreach ($sanitized_links as $title => $url): 
-                        ?>
-                            <li><a href="<?php //echo $url; 
-                                            ?>" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm"><?php //echo $title; 
-                                                                                                                                                ?></a></li>
-                        <?php // endforeach; 
-                        ?>
-                    </ul>
-                </div> -->
-
-                <!-- Languages & Apps -->
-                <!-- <div>
-                    <h4 class="text-gray-800 font-semibold mb-4 dark:text-gray-300">Apps & Languages</h4>
-                    <ul class="space-y-2 mb-6">
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">iOS App</a></li>
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Android App</a></li>
-                    </ul>
-
-                    <div class="flex items-center gap-2 dark:text-gray-300 ">
-                        <select class="text-sm border border-gray-300 rounded-sm px-2 py-1 bg-white dark:bg-darkmode">
-                            <option value="en">English</option>
-                            <option value="es">Español</option>
-                            <option value="fr">Français</option>
-                            <option value="de">Deutsch</option>
-                            <option value="it">Italiano</option>
-                            <option value="pt">Português</option>
-                            <option value="ja">日本語</option>
-                        </select>
-                    </div> 
-                </div> -->
             </div>
-
             <!-- Bottom bar -->
             <div class="border-t border-gray-200 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
                 <div class="text-gray-500 dark:text-gray-300 text-sm">
@@ -128,6 +85,20 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
                 </div>
             </div>
         </div>
+        <script src="/js/script.js"></script>
+        <script>
+            const aboutKnowledgeHub = document.querySelector('.about-knowledgehub');
+            if (aboutKnowledgeHub) {
+                aboutKnowledgeHub.addEventListener('click', () => {
+                    const existingModal = document.querySelector('.modal-backdrop');
+                    if (existingModal) {
+                        existingModal.remove();
+                    }
+                    const aboutModal = new Modal();
+                    aboutModal.openModal(`<p class="text-xl text-black dark:text-white">Knowledge Hub is an online platform where students can post questions and receive answers from their peers. It fosters collaborative learning by allowing students to share knowledge, discuss ideas, and help each other understand complex topics. This interactive environment encourages critical thinking and problem-solving while building a supportive academic community. Whether seeking homework help or exploring new concepts, students can benefit from diverse perspectives and real-time assistance. Knowledge Hub empowers learners by making education more accessible and engaging through peer-to-peer interaction.</p>`)
+                });
+            }
+        </script>
     </footer>
 <?php
     return ob_get_clean();

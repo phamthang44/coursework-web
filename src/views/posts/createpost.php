@@ -2,90 +2,103 @@
 <html lang="en">
 
 <head>
-    <title>Form Upload</title>
-    <style>
-        .form-container {
-            max-width: 500px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 8px;
-        }
-
-        .error {
-            color: red;
-        }
-
-        .form-message {
-            color: red;
-        }
-    </style>
+    <title>Create new post</title>
+    <link href="/css/tailwind.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-    <div class="form-container">
-        <h2>Upload Form</h2>
-        <form action="/posts/store" method="POST" enctype="multipart/form-data" id="form-upload-post">
+<body class="bg-white dark:bg-darkmode">
+    <?php
+    // User authentication setup
+    use controllers\ModuleController;
+    use controllers\UserController;
+    use controllers\PostController;
+
+    require_once __DIR__ . '/../layouts/header.php';
+    require_once __DIR__ . '/../layouts/footer.php';
+    require_once __DIR__ . '/../../controllers/UserController.php';
+    // require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
+
+    $userController = new UserController();
+    $postController = new PostController();
+    $moduleController = new ModuleController();
+
+
+
+    if (isset($_SESSION['user_id'])) {
+        $userId = $_SESSION['user_id'];
+        $user = $userController->getUser($userId);
+        $user_logged_in = true;
+        $user_name = $user->getUsername();
+        $user_avatar = $user->getProfileImage() ?? '';
+        $user_email = $user->getEmail();
+    } else {
+        $user_logged_in = false;
+        $user_name = '';
+        $user_avatar = '';
+        $user_email = '';
+    }
+
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
+
+    ?>
+    <div class="container mx-auto py-6 w-4/5 rounded-lg">
+        <h2 class="text-2xl text-red-500 font-bold mb-4">Create new post</h2>
+        <form action="/posts/store" method="POST" enctype="multipart/form-data" id="form-upload-post" class="space-y-4">
             <!-- Title Field (Optional) -->
-            <div class="form-group">
-                <label for="title">Title (Optional):</label>
-                <input type="text" id="title" name="title" placeholder="Enter title (optional)">
-                <span class="form-message"></span>
+            <div class="form-group py-4 mb-4">
+                <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
+                <input type="text" id="title" name="title" placeholder="Enter title (optional)"
+                    class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">
+                <span class="form-message text-red-500 text-sm"></span>
+                <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
             </div>
 
             <!-- Content Field (Required) -->
             <div class="form-group">
-                <label for="content">Content (Required):</label>
-                <textarea id="content" name="content" rows="5" placeholder="Enter content"></textarea>
-                <span class="form-message"></span>
+                <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                <textarea id="content" name="content" rows="5" placeholder="Enter content"
+                    class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
+                <span class="form-message text-red-500 font-medium text-sm"></span>
             </div>
 
             <!-- Module Select -->
             <div class="form-group">
-                <label for="module">Module Name:</label>
-                <select id="module" name="module">
-                    <option value="">-- Select Module --</option>
+                <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
+                <select id="module" name="module"
+                    class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
+                    <option value="" class="text-black dark:text-white">-- Select Module --</option>
                     <?php foreach ($modules as $module): ?>
-                        <option value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
+                        <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
                     <?php endforeach; ?>
                 </select>
-                <span class="form-message"></span>
+                <span class="form-message text-red-500 font-medium text-sm ml-5"></span>
             </div>
 
             <!-- Image Upload -->
-            <div class="form-group">
-                <label for="image">Upload Image:</label>
-                <input type="file" id="image" name="image" accept="image/*">
-                <span class="form-message"></span>
-            </div>
-
-            <!-- Preview Image -->
-            <div id="preview-container" style="display:none;">
-                <h3>Preview Image:</h3>
-                <img id="preview" src="" alt="Preview Image" style="width: 200px;" />
-            </div>
-
-            <!-- Submit Button -->
-            <div class="form-group">
-                <input type="submit" value="Submit">
+            <div class="form-group flex gap-7 flex-col relative">
+                <div>
+                    <label for="image" class="block font-medium text-gray-700 dark:text-white mb-2">Upload Image:</label>
+                    <label class="custom-file-upload text-gray-700 dark:text-white">
+                        <input type="file" id="image" name="image" accept="image/*"
+                            class="w-2 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none title">
+                        Choose an image
+                    </label>
+                    <span class="form-message text-red-500 font-medium text-sm"></span>
+                </div>
+                <!-- Preview Image -->
+                <div id="preview-container" class="hidden absolute -top-[110px] right-[400px] mt-4 p-4">
+                    <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
+                    <img id="preview" src="" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-2 rounded-lg border border-gray-300" />
+                </div>
+                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create new post">
             </div>
         </form>
     </div>
+    <div class="mt-[300px]"></div>
+    <?php
+    echo render_quora_footer();
+    ?>
     <script src="/js/validator.js"></script>
     <script>
         Validator({

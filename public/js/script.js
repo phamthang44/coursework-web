@@ -130,18 +130,30 @@ function Modal() {
 
     backdrop.addEventListener("click", backdropClickListener);
 
-    document.addEventListener("keydown", (e) => {
+    this.handleEscape = (e) => {
       if (e.key === "Escape") {
-        this.closeModal(backdrop);
+        const existingModal = document.querySelector(".modal-backdrop");
+        if (existingModal) {
+          this.closeModal(existingModal);
+        }
       }
-    });
+    };
+
+    document.removeEventListener("keydown", this.handleEscape);
+    document.addEventListener("keydown", this.handleEscape);
   };
 
   this.closeModal = (modalElement) => {
     modalElement.classList.remove("show");
     // document.body.removeChild(modalElement);
-    modalElement.ontransitionend = () => {
+    modalElement.addEventListener("transitionend", () => {
       modalElement.remove();
-    };
+    });
+    // If transition does not work, still ensure Modal be removed after 300ms
+    setTimeout(() => {
+      if (document.body.contains(modalElement)) {
+        modalElement.remove();
+      }
+    }, 300);
   };
 }

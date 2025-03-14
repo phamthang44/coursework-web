@@ -19,14 +19,22 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
         <div class="container mx-auto px-4 flex items-center justify-between h-14">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="index.php" class="text-red-600 font-bold text-2xl mr-4">Quora</a>
+                <a href="/posts" class="text-red-600 font-bold text-2xl mr-4">KnowledgeHub</a>
 
                 <!-- Search Bar -->
                 <div class="relative hidden md:block">
-                    <input type="text" placeholder="Search Quora" class="w-64 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-sm pl-10 pr-4 py-1 border border-gray-300 focus:outline-none focus:border-red-400 text-sm">
+                    <?php if ($user_logged_in) {
+                        if ($_SERVER['REQUEST_URI'] === '/posts/create/') {
+                            echo '';
+                        } else if (str_contains($_SERVER['REQUEST_URI'], '/posts/edit/')) {
+                            echo '';
+                        } else {
+                            echo '<input type="text" placeholder="Search KnowledgeHub" class="w-64 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-sm pl-10 pr-4 py-1 border border-gray-300 focus:outline-none focus:border-red-400 text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-2 text-gray-500 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    </svg>';
+                        }
+                    } ?>
                 </div>
             </div>
 
@@ -130,7 +138,29 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <?php endif; ?>
 
                 <!-- Add Question Button -->
-                <button class="add-question ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</button>
+                <?php if ($user_logged_in) {
+                    if ($_SERVER['REQUEST_URI'] === '/posts/create/') {
+                        echo '';
+                    } else if (str_contains($_SERVER['REQUEST_URI'], '/posts/edit/')) {
+                        echo '';
+                    } else {
+                        echo '<button class="add-question ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</button>';
+                    }
+                }
+
+                ?>
+                <!-- Drop down menu to choose option -->
+                <div class="add-question-dropdown hidden absolute right-12 top-[45px] mt-2 py-2 w-54 bg-white border border-red-700 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
+                    <a href="/posts/create/"
+                        class="create-new-post-ad block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        Create new post (advanced)
+                    </a>
+                    <button
+                        class="create-new-post-quick block w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        Create new post (quick)
+                    </button>
+                </div>
+
                 <!-- Dark Mode Toggle -->
                 <label class="ui-switch ml-4">
                     <input type="checkbox" id="dark-mode-toggle">

@@ -2,6 +2,8 @@
 
 namespace dal;
 
+use models\PostAsset;
+
 interface PostAssetDAOI
 {
     public function getById($post_asset_id);

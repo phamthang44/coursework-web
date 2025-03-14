@@ -34,7 +34,7 @@ class PostDAOImpl implements PostDAOI
 
         $posts = [];
 
-        // Chuyển mỗi dòng dữ liệu thành đối tượng Post
+        // convert each row data to object Post
         return $this->convertResultRowToPostObj($result, $posts); // return array object Post
     }
 
@@ -207,5 +207,17 @@ class PostDAOImpl implements PostDAOI
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['last_id'];
+    }
+
+    public function getPostByIdAndUserId($postId, $userId)
+    {
+        $conn = $this->pdo;
+        $sql = "SELECT * FROM Posts WHERE post_id = :postId AND user_id = :userId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
     }
 }
