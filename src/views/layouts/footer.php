@@ -44,7 +44,7 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
                         <li><button class="about-knowledgehub text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">About KnowledgeHub</button></li>
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Privacy</a></li>
                         <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Terms</a></li>
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Contact</a></li>
+                        <li><a href="/contact" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Contact</a></li>
                     </ul>
                 </div>
                 <!-- Community -->

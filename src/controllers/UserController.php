@@ -19,6 +19,18 @@ class UserController
         $this->userDAO = new UserDAOImpl();
     }
 
+    public function contact()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = '';
+            $subject = $_POST['title'];
+            $message = $_POST['content'];
+            $headers = "From: " . $email;
+        } else {
+            require_once __DIR__ . '/../views/users/contact.php';
+        }
+    }
+
     public function signup()
     {
         try {

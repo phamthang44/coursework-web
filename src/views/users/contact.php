@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/tailwind.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Contact to admin</title>
+</head>
+
+<body class="bg-gray-100 dark:bg-darkmode2">
+    <?php
+    // User authentication setup
+    use controllers\ModuleController;
+    use controllers\UserController;
+    use controllers\PostController;
+
+    require_once __DIR__ . '/../layouts/header.php';
+    require_once __DIR__ . '/../layouts/footer.php';
+    require_once __DIR__ . '/../../controllers/UserController.php';
+    require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
+
+    $userController = new UserController();
+    $postController = new PostController();
+    $moduleController = new ModuleController();
+
+
+
+    if (isset($_SESSION['user_id'])) {
+        $userId = $_SESSION['user_id'];
+        $user = $userController->getUser($userId);
+        $user_logged_in = true;
+        $user_name = $user->getUsername();
+        $user_avatar = $user->getProfileImage() ?? '';
+        $user_email = $user->getEmail();
+    } else {
+        $user_logged_in = false;
+        $user_name = '';
+        $user_avatar = '';
+        $user_email = '';
+    }
+
+    $userObj = $user;
+
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
+    ?>
+    <div class="container mx-auto py-6 w-1/3 rounded-lg">
+        <h2 class="text-2xl text-red-500 font-bold mb-4">Send Email Message to admin</h2>
+        <form action="/contact" method="POST" enctype="multipart/form-data" id="form-send-email" class="space-y-4">
+            <!-- Title Field (Optional) -->
+            <div class="form-group py-4 mb-4">
+                <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
+                <input type="text" id="title" name="title" placeholder="Enter title (optional)"
+                    class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">
+                <span class="form-message text-red-500 text-sm"></span>
+                <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
+            </div>
+
+            <!-- Content Field (Required) -->
+            <div class="form-group">
+                <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                <textarea id="content" name="content" rows="5" placeholder="Enter content"
+                    class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
+                <span class="form-message text-red-500 font-medium text-sm"></span>
+            </div>
+            <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Send">
+        </form>
+    </div>
+    <div class="mt-[100px]"></div>
+    <?php
+    echo render_quora_footer();
+    ?>
+    <script src="/js/validator.js"></script>
+    <script>
+        Validator({
+            form: "#form-send-email",
+            formGroupSelector: ".form-group",
+            formMessage: ".form-message",
+            rules: [
+                Validator.isRequired("#content"),
+                Validator.isRequired("#title"),
+            ],
+        });
+
+        const image = document.getElementById("image");
+        image.addEventListener('change', function(e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+
+            //read file, show image
+            reader.onload = function(e) {
+                let preview = document.getElementById("preview");
+                preview.src = e.target.result;
+                document.getElementById("preview-container").style.display = "block"; // Show preview container
+            };
+
+            //if file , start read
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+
+</html>

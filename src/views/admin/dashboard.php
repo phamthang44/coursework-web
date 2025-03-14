@@ -7,49 +7,6 @@
     <title>Management System - Admin Dashboard</title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            light: '#3f51b5',
-                            dark: '#b92b27' // Quora red
-                        },
-                        secondary: {
-                            light: '#f50057',
-                            dark: '#f50057'
-                        },
-                        background: {
-                            light: '#f5f5f5',
-                            dark: '#262626'
-                        },
-                        card: {
-                            light: '#ffffff',
-                            dark: '#1e1e1e'
-                        },
-                        border: {
-                            light: '#e0e0e0',
-                            dark: '#2e2e2e'
-                        },
-                        success: {
-                            light: '#4caf50',
-                            dark: '#4caf50'
-                        },
-                        warning: {
-                            light: '#ff9800',
-                            dark: '#ff9800'
-                        },
-                        danger: {
-                            light: '#f44336',
-                            dark: '#f44336'
-                        }
-                    }
-                }
-            }
-        };
-    </script>
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -135,7 +92,7 @@
                 <div class="flex justify-between items-center mb-5 pb-4 border-b border-border-light dark:border-border-dark">
                     <h2 class="text-2xl font-medium">Dashboard Overview</h2>
                     <div class="flex gap-3">
-                        <button class="flex items-center px-4 py-2 bg-primary-light dark:bg-primary-dark text-white rounded hover:opacity-90 transition-opacity">
+                        <button class="flex items-center px-4 py-2 bg-primary-light dark:bg-primary-dark text-black dark:text-white rounded hover:opacity-90 transition-opacity">
                             <i class="fas fa-sync-alt mr-2"></i> Refresh
                         </button>
                     </div>
