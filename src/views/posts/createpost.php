@@ -38,7 +38,7 @@
         $user_email = '';
     }
 
-    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $user);
 
     ?>
     <div class="container mx-auto py-6 w-4/5 rounded-lg">
@@ -127,6 +127,8 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        const avatarDropdown = document.getElementById("avatar-dropdown");
     </script>
 </body>
 

@@ -15,6 +15,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
     }
     $user_name = htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8');
     //$user_avatar = htmlspecialchars($user_avatar, ENT_QUOTES, 'UTF-8');
+    $profileLink = '';
     if (!is_null($user)) {
         $profileLink = $user->getFirstName() . "-" . $user->getLastName() . "-" . $user->getUserId();
     }
@@ -75,7 +76,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                     <div class="relative">
                         <button id="avatar-menu-button" class="flex items-center space-x-2 focus:outline-none">
                             <?php if ($user_avatar): ?>
-                                <img src="<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-8 h-8 rounded-full cursor-pointer">
+                                <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-8 h-8 rounded-full cursor-pointer">
                             <?php else: ?>
                                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
                                     <?php echo substr($user_name, 0, 1); ?>
@@ -94,7 +95,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                             <div class="px-2 py-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center">
                                     <?php if ($user_avatar): ?>
-                                        <img src="<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3">
+                                        <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3">
                                     <?php else: ?>
                                         <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 mr-3">
                                             <?php echo substr($user_name, 0, 1); ?>

@@ -42,7 +42,7 @@
     $postImageObj = $postController->getPostImage($post->getPostId());
     $postImageStr = $postImageObj->getMediaKey();
     $postImage = $postImageStr ?? '';
-    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email);
+    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $user);
     ?>
     <div class="container mx-auto py-6 w-4/5 rounded-lg">
         <h2 class="text-2xl text-red-500 font-bold mb-4">Edit post</h2>

@@ -172,7 +172,26 @@ class UserDAOImpl implements UserDAOI
         return $result;
     }
     //2025-03-04 03:39:56 format Current_Timestamp of MySQL and need all format datetime look like this
+    public function updateProfile($userId, $username, $firstName, $lastName, $email, $profileImage, $bio)
+    {
+        $conn = $this->pdo;
+        $sql = "UPDATE Users SET username = :username, first_name = :firstName, last_name = :lastName, email = :email, profile_image_path = :profileImage, bio = :bio WHERE user_id = :userId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':firstName', $firstName);
+        $stmt->bindParam(':lastName', $lastName);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':profileImage', $profileImage);
+        $stmt->bindParam(':bio', $bio);
+        $stmt->bindParam(':userId', $userId);
+        if (!$stmt->execute()) {
+            // Log or display the error
+            $errorInfo = $stmt->errorInfo();
+            throw new \Exception("Database error: " . $errorInfo[2]);
+        }
 
+        return true;
+    }
 
 
     //need to consider again this function because need to see in controller to more detail

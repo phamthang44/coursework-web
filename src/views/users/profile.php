@@ -21,6 +21,8 @@
 
         $firstName = $user->getFirstName();
         $lastName = $user->getLastName();
+        $username = $user->getUsername();
+        $profileImage = $user->getProfileImage() ?? '';
         $email = $user->getEmail();
         $bio = $user->getBio() ?? 'Write a description about yourself';
         $accountCreated = $user->getCreatedAccountDate();
@@ -36,9 +38,14 @@
                 <div class="bg-white dark:bg-darkmode rounded-lg shadow-md p-6">
                     <div class="flex flex-col items-center">
                         <div class="relative group">
-                            <div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">
-                                T
-                            </div>
+                            <?php
+                            if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) {
+                                echo '<div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">' . strtoupper(substr($username, 0, 1)) . '</div>';
+                            } else {
+                                echo '
+                                <div class="w-32 h-32 rounded-full"><img id="preview" src="/' . $profileImage . '" alt="Preview Image" class="w-full h-full object-cover rounded-full border border-gray-300" /></div>';
+                            }
+                            ?>
                             <div class="absolute bottom-0 right-0 bg-gray-100 dark:bg-gray-700 rounded-full p-2 cursor-pointer">
                                 <i class="fas fa-camera text-gray-700 dark:text-gray-300"></i>
                             </div>
@@ -116,7 +123,6 @@
                                 Create New Post
                             </a>
                         </div>
-
                         <!-- Example Post (hidden by default, remove hidden class to show) -->
                         <div class="border dark:border-gray-700 rounded-lg p-4 mb-4 hidden">
                             <div class="flex justify-between">
@@ -142,7 +148,7 @@
                                     I'm working on a project with a large dataset and need advice on optimizing my database queries for better performance.
                                 </p>
                                 <div class="mt-3">
-                                    <img src="/api/placeholder/600/300" alt="Database diagram" class="rounded-lg w-full">
+                                    <img src="" alt="Database diagram" class="rounded-lg w-full">
                                 </div>
                             </div>
 
@@ -173,6 +179,7 @@
 
     </div> -->
     <script src="/js/script.js"></script>
+    <script src="/js/Validator.js"></script>
     <script>
         // console.log(Modal)
         document.querySelector('.edit-profile').addEventListener('click', function() {
@@ -181,46 +188,135 @@
             <div class="flex justify-between items-center border-b dark:border-gray-700 p-4">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Profile</h3>
             </div>
-            <div class="p-4">
+            <form class="pr-4 pt-4 pb-4" action="/users/update/<?= $user->getUserId() ?>" method="POST" id="edit-profile-form" enctype="multipart/form-data">
+                <input type="hidden" name="userId" value="<?= $user->getUserId() ?>">
                 <div class="flex flex-col md:flex-row md:space-x-4">
-                    <div class="md:w-1/3 flex flex-col items-center mb-4 md:mb-0">
-                        <div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">
-                            T
+                    <div class="md:w-1/3 flex flex-col items-center mb-3 md:mb-0">
+                        <div id="preview-container" class="w-32 h-32 rounded-full overflow-hidden mb-4">
+                        <?php
+                        if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) {
+                            echo '<div class="w-full h-full rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">' . strtoupper(substr($username, 0, 1)) . '</div>';
+                        } else {
+                            echo '<img id="preview" src="/' . $profileImage . '" alt="Preview Image" class="w-full h-full object-cover rounded-full border border-gray-300" />';
+                        }
+                        ?>
                         </div>
-                        <button class="mt-4 text-primary-light dark:text-primary-dark text-sm hover:underline">
-                            Change Avatar
-                        </button>
+                        <div class="form-group mt-4">
+                            <label class="w-[50px] p-2 text-lg text-center bg-gray-300 border-none rounded-xl shadow-lg cursor-pointer transition-all duration-300 ease-in-out hover:bg-gray-200 text-gray-700 dark:text-white dark:bg-gray-700 dark:hover:bg-gray-600" for="image">
+                                <input type="file" id="image" name="image" accept="image/*" class="hidden">
+                                Change Avatar
+                            </label>
+                            <span class="form-message text-red-500 font-medium text-sm"></span>
+                        </div>
+
                     </div>
                     <div class="md:w-2/3">
-                        <div class="mb-4">
+                        <div class="mb-4 form-group relative">
                             <label class="block text-gray-700 dark:text-gray-300 mb-2">First Name</label>
-                            <input type="text" value="<?= $firstName ?>" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
+                            <input type="text" id="firstName" name="firstName" value="<?= $firstName ?>" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
+                            <span class="form-message text-red-500 font-medium text-sm absolute top-0 right-0"></span>
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4 form-group relative">
                             <label class="block text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
-                            <input type="text" value="<?= $lastName ?>" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
+                            <input type="text" id="lastName" name="lastName" value="<?= $lastName ?>" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
+                            <span class="form-message text-red-500 font-medium text-sm absolute top-0 right-0"></span>
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4 form-group relative">
                             <label class="block text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                            <input type="email" value="<?= $email ?>" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
+                            <input type="email" id="email" name="email" value="<?= $email ?>" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
+                            <span class="form-message text-red-500 font-medium text-sm absolute top-0 right-0"></span>
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4 form-group">
                             <label class="block text-gray-700 dark:text-gray-300 mb-2">Bio</label>
-                            <textarea rows="3" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark"><?php echo $bio ?></textarea>
+                            <textarea rows="3" id="bio" name="bio" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark"><?php echo $bio ?></textarea>
+                            <span class="form-message text-red-500 font-medium text-sm"></span>
                         </div>
                     </div>
                 </div>
                 <div class="flex justify-end space-x-2 mt-6">
-                    <button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-md transition-colors duration-200">Cancel</button>
-                    <button class="bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200">Save Changes</button>
+                    <button type="button" class="cancel-edit-profile bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-md transition-colors duration-200">Cancel</button>
+                    <button type="submit" class="bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200">Save Changes</button>
                 </div>
-            </div>
+            </form>
         </div>`);
         });
 
         // document.querySelector('#editProfileModal button').addEventListener('click', function() {
         //     document.getElementById('editProfileModal').classList.add('hidden');
         // });
+
+        function handleImagePreview(e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+
+            reader.onload = function(e) {
+                let preview = document.getElementById("preview");
+                if (preview) {
+                    preview.src = e.target.result;
+                } else {
+                    let imgElement = document.createElement("img");
+                    imgElement.id = "preview";
+                    imgElement.src = e.target.result;
+                    imgElement.className = "w-full h-full object-cover rounded-full border border-gray-300";
+
+                    let container = document.getElementById("preview-container");
+                    container.innerHTML = "";
+                    container.appendChild(imgElement);
+                }
+                document.getElementById("preview-container").style.display = "block";
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === "childList") {
+                    const image = document.querySelector("#image");
+                    if (image) {
+                        image.addEventListener("change", handleImagePreview);
+                    }
+                    // Call again Validator when modal appear
+                    Validator({
+                        form: "#edit-profile-form",
+                        formGroupSelector: ".form-group",
+                        formMessage: ".form-message",
+                        rules: [
+                            Validator.isRequired("#firstName"),
+                            Validator.isRequired("#lastName"),
+                            Validator.isRequired("#email"),
+                            Validator.isEmail("#email"),
+                        ],
+                    });
+                    const cancelEditProfile = document.querySelector('.cancel-edit-profile');
+                    if (cancelEditProfile) {
+                        cancelEditProfile.onclick = function(e) {
+                            const modalElement = document.querySelector('.modal-backdrop');
+                            if (modalElement) {
+                                modalElement.classList.remove("show");
+                                modalElement.addEventListener("transitionend", () => {
+                                    modalElement.remove();
+                                });
+                                // If transition does not work, still ensure Modal be removed after 300ms
+                                setTimeout(() => {
+                                    if (document.body.contains(modalElement)) {
+                                        modalElement.remove();
+                                    }
+                                }, 300);
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Observe change in body (or container of modal)
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
 
         const addBioContainer = document.querySelector('.add-bio-container');
         const saveButton = document.querySelector('.save-bio');

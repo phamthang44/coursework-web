@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Posts</title>
+    <title>KnowledgeHub</title>
     <style>
         /* Add required line-clamp utility if not provided by Tailwind */
         .line-clamp-6 {
