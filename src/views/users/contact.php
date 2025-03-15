@@ -71,11 +71,13 @@
     </div>
     <div class="mt-[100px]"></div>';
         echo render_quora_footer();
-    } else {
+    } else if (is_null($userObj)) {
         echo '<div class="flex w-full h-auto flex-col items-center">
                 <h1 class="text-2xl text-red-500 font-bold text-center mt-20 justify-center">Please login to send email to admin</h1>
                 <a href="/login" class="mt-4 bg-red-500 hover:bg-red-600 transition text-white font-bold py-2 px-4 rounded-lg">Login</a>
             </div>';
+    } else {
+        echo '<h1 class="text-2xl text-red-500 font-bold text-center mt-20 justify-center">✔️ Email has been sent!</h1>';
     }
     ?>
 
@@ -89,24 +91,6 @@
                 Validator.isRequired("#content"),
                 Validator.isRequired("#title"),
             ],
-        });
-
-        const image = document.getElementById("image");
-        image.addEventListener('change', function(e) {
-            let file = e.target.files[0];
-            let reader = new FileReader();
-
-            //read file, show image
-            reader.onload = function(e) {
-                let preview = document.getElementById("preview");
-                preview.src = e.target.result;
-                document.getElementById("preview-container").style.display = "block"; // Show preview container
-            };
-
-            //if file , start read
-            if (file) {
-                reader.readAsDataURL(file);
-            }
         });
     </script>
 </body>

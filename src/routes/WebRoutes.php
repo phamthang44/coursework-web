@@ -48,5 +48,7 @@ class WebRoutes
         // Contact routes
         $router->addRoute('GET', '/contact', 'UserController', 'contact');
         $router->addRoute('POST', '/contact', 'UserController', 'contact');
+        $router->addRoute('GET', '/emailsuccess', 'UserController', 'emailsuccess');
+        $router->addRoute('GET', '/emailfail', 'UserController', 'emailfail');
     }
 }

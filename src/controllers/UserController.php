@@ -28,33 +28,38 @@ class UserController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //$email = '';
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-            $dotenv->load();
+            // $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+            // $dotenv->load();
+            ini_set('SMTP', 'smtp.gmail.com');
+            ini_set('smtp_port', 587);
+            ini_set('sendmail_from', 'phamthang5331@gmail.com');
             $subject = $_POST['title'];
             $message = $_POST['content'];
-
-            try {
-                $mail = new PHPMailer(true);
-                $mail->isSMTP();
-                $mail->Host = getenv('MAIL_HOST');
-                $mail->SMTPAuth = true;
-                $mail->Username = getenv('MAIL_USERNAME') ?: 'pt4251c@gre.ac.uk';
-                $mail->Password = getenv('MAIL_PASSWORD');
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = getenv('MAIL_PORT') ?: 587;
-
-                $mail->setFrom($mail->Username, 'Website Contact Form');
-                $mail->addAddress('pt4251c@gre.ac.uk', 'Pham Thang');
-                if ($mail->send()) {
-                    echo "✔️ Email has been sent!";
-                } else {
-                    echo "❌ Error in sending email: {$mail->ErrorInfo}";
-                }
-            } catch (Exception $e) {
-                echo "❌ Error in sending email: {$mail->ErrorInfo}";
+            $to = 'phamthang5331@gmail.com';
+            $headers = "From: no-reply@localhost\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            if (mail($to, $subject, $message, $headers)) {
+                header("Location: /success");
+            } else {
+                echo "❌ Error in sending email.";
             }
         } else {
             require_once __DIR__ . '/../views/users/contact.php';
+        }
+    }
+
+    public function emailsuccess()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            require_once __DIR__ . '/../views/success/sendmailsucess.php';
+        }
+    }
+
+    public function emailfail()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            require_once __DIR__ . '/../views/errors/sendmailfail.php';
         }
     }
 
