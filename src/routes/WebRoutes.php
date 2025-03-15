@@ -50,5 +50,8 @@ class WebRoutes
         $router->addRoute('POST', '/contact', 'UserController', 'contact');
         $router->addRoute('GET', '/emailsuccess', 'UserController', 'emailsuccess');
         $router->addRoute('GET', '/emailfail', 'UserController', 'emailfail');
+
+        // User routes
+        $router->addRoute('GET', '/profile/{firstname-lastname-id}', 'UserController', 'userProfile');
     }
 }

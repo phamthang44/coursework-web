@@ -10,9 +10,14 @@
 function render_quora_header($user_logged_in = false, $user_name = '', $user_avatar = '', $user_email = '', $user = null)
 {
     // Sanitize inputs for security
+    if ($user_avatar !== null) {
+        $user_avatar = htmlspecialchars($user_avatar, ENT_QUOTES, 'UTF-8');
+    }
     $user_name = htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8');
-    $user_avatar = htmlspecialchars($user_avatar, ENT_QUOTES, 'UTF-8');
-
+    //$user_avatar = htmlspecialchars($user_avatar, ENT_QUOTES, 'UTF-8');
+    if (!is_null($user)) {
+        $profileLink = $user->getFirstName() . "-" . $user->getLastName() . "-" . $user->getUserId();
+    }
     ob_start();
 ?>
     <header class="sticky top-0 z-50 bg-white shadow-sm dark:text-white dark:bg-darkmode transition-colors duration-300">
@@ -103,7 +108,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                             </div>
 
                             <!-- Menu Items -->
-                            <a href="profile.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                            <a href="/profile/<?php echo $profileLink; ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
                                 <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

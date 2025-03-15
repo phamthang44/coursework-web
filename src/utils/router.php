@@ -33,7 +33,7 @@ class Router
     private function createPattern($path)
     {
         // Replace {id} with a regex pattern to capture any alphanumeric value
-        $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([a-zA-Z0-9_]+)', $path);
+        $pattern = preg_replace('/\{([a-zA-Z0-9_-]+)\}/', '([a-zA-Z0-9_-]+)', $path);
         return '#^' . $pattern . '$#';
     }
 
@@ -44,14 +44,14 @@ class Router
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = $this->parseUri();
-        error_log("Method: $method, URI: '$uri'");
-        error_log("Available routes: " . print_r(array_keys($this->routes[$method] ?? []), true));
+        // error_log("Method: $method, URI: '$uri'");
+        // error_log("Available routes: " . print_r(array_keys($this->routes[$method] ?? []), true));
 
         foreach ($this->routes[$method] as $path => $route) {
             if (preg_match($route['pattern'], $uri, $matches)) {
                 $controllerName = $this->controllerNamespace . '\\' . $route['controller'];
                 $action = $route['action'];
-                error_log("Matched Controller Name: $controllerName");
+                // error_log("Matched Controller Name: $controllerName");
 
                 if (class_exists($controllerName)) {
                     try {
@@ -59,14 +59,28 @@ class Router
                         if (method_exists($controller, $action)) {
                             // Extract parameters (skip the full match at index 0)
                             array_shift($matches);
-                            $params = $matches; // Parameters like [id => "1"]
-
-                            // Call the action with parameters
-                            if (empty($params)) {
-                                $controller->$action();
-                            } else {
-                                call_user_func_array([$controller, $action], $params);
+                            $params = $matches;
+                            if (strpos($path, '{firstname-lastname-id}') !== false && !empty($params)) {
+                                $parts = explode('-', $params[0]);
+                                if (count($parts) === 3) {
+                                    call_user_func_array([$controller, $action], $parts);
+                                    return;
+                                } else {
+                                    echo "❌ Error: Invalid format URL!";
+                                    return;
+                                }
                             }
+                            // else {
+                            //     call_user_func_array([$controller, $action], $params);
+                            // }
+                            // Call the action with parameters
+                            if (!empty($params)) {
+                                call_user_func_array([$controller, $action], $params);
+                            } else {
+                                $controller->$action();
+                            }
+                            //call_user_func_array([$controller, $action], $params);
+                            return;
                         } else {
                             error_log("Action not found: $action in $controllerName");
                             $this->notFound();

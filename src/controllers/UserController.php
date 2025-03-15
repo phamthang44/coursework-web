@@ -112,4 +112,10 @@ class UserController
     {
         return $this->userDAO->getUserById($userID);
     }
+
+    public function userProfile($firstName, $lastName, $id)
+    {
+        $user = $this->getUser($id);
+        require_once __DIR__ . '/../views/users/profile.php';
+    }
 }
