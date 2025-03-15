@@ -9,11 +9,16 @@ error_reporting(E_ALL);
 use dal\UserDAOImpl;
 
 use Exception;
-use finfo;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
+use Dotenv\Dotenv;
+
+
 
 class UserController
 {
     private $userDAO;
+
     public function __construct()
     {
         $this->userDAO = new UserDAOImpl();
@@ -23,12 +28,31 @@ class UserController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //$email = '';
+            $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+            $dotenv->load();
             $subject = $_POST['title'];
             $message = $_POST['content'];
-            //$headers = "From: " . $email;
-            ini_set("SMTP", "smtp.gre.ac.uk");
-            ini_set("sendmail_from", "pt4251c@gre.ac.uk");
-            mail("pt4251c@gre.ac.uk", $subject, $message);
+
+            try {
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host = getenv('MAIL_HOST');
+                $mail->SMTPAuth = true;
+                $mail->Username = getenv('MAIL_USERNAME') ?: 'pt4251c@gre.ac.uk';
+                $mail->Password = getenv('MAIL_PASSWORD');
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = getenv('MAIL_PORT') ?: 587;
+
+                $mail->setFrom($mail->Username, 'Website Contact Form');
+                $mail->addAddress('pt4251c@gre.ac.uk', 'Pham Thang');
+                if ($mail->send()) {
+                    echo "✔️ Email has been sent!";
+                } else {
+                    echo "❌ Error in sending email: {$mail->ErrorInfo}";
+                }
+            } catch (Exception $e) {
+                echo "❌ Error in sending email: {$mail->ErrorInfo}";
+            }
         } else {
             require_once __DIR__ . '/../views/users/contact.php';
         }

@@ -1,0 +1,12 @@
+# Skip env file
+.env
+
+# Folder IDE JetBrains
+.idea/
+
+# Temporary folder, log, and build
+/vendor/
+*.log
+
+# Node.js
+node_modules/

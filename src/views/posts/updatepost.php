@@ -90,9 +90,9 @@
                     <span class="form-message text-red-500 font-medium text-sm"></span>
                 </div>
                 <!-- Preview Image -->
-                <div id="preview-container" class="hidden absolute -top-[110px] right-[400px] mt-4 p-4">
+                <div id="preview-container" class="absolute -top-[110px] right-[400px] mt-4 pt-4">
                     <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
-                    <img id="preview" src="<?php echo $postImage ?>" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-2 rounded-lg border border-gray-300" />
+                    <img id="preview" src="/<?php echo $postImage ?>" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />
                 </div>
                 <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create new post">
             </div>
