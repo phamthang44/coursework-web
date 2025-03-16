@@ -54,5 +54,7 @@ class WebRoutes
         // User routes
         $router->addRoute('GET', '/profile/{firstname-lastname-id}', 'UserController', 'userProfile');
         $router->addRoute('POST', '/users/update/{id}', 'UserController', 'update');
+        $router->addRoute('POST', '/users/update-avatar/{id}', 'UserController', 'updateAvatar');
+        $router->addRoute('POST', '/users/update-bio/{id}', 'UserController', 'updateBio');
     }
 }

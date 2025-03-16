@@ -153,6 +153,10 @@ button {
   width: min(600px, 90%);
 }
 
+#profile-page .modal-container:has(#form-upload-post-profile) {
+  width: min(1100px, 90%);
+}
+
 .modal-content {
   height: 100%;
 }

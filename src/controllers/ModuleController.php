@@ -12,8 +12,17 @@ class ModuleController
         $this->moduleDAO = new ModuleDAOImpl();
     }
 
-    public function getModule($moduleId)
+    public function getModuleName($moduleId)
     {
         return $this->moduleDAO->getModule($moduleId)->getModuleName();
+    }
+
+    public function getModuleById($moduleId)
+    {
+        return $this->moduleDAO->getModule($moduleId);
+    }
+    public function getAllModules()
+    {
+        return $this->moduleDAO->getAllModules();
     }
 }

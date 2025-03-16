@@ -227,4 +227,29 @@ class PostDAOImpl implements PostDAOI
             'totalPosts' => $totalPosts
         ];
     }
+
+    public function getPostByPageByUserId($limit, $offset, $userId)
+    {
+        $sql = "SELECT * FROM Posts  WHERE user_id = :userId ORDER BY post_id DESC LIMIT :limit OFFSET :offset";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $posts = $this->convertResultRowToPostObj($rows, []);
+        return $posts;
+    }
+
+    public function getPostsByUserId($userId)
+    {
+        $sql = "SELECT * FROM Posts WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $posts = [];
+        return $this->convertResultRowToPostObj($rows, $posts);
+    }
 }

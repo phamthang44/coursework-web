@@ -14,11 +14,17 @@
 <body class="bg-gray-100 dark:bg-darkmode2 transition-colors duration-200" id="profile-page">
     <?php
 
+    use controllers\PostController;
+    use controllers\ModuleController;
+
     require_once __DIR__ . '/../layouts/header.php';
     require_once __DIR__ . '/../layouts/footer.php';
-    if (!is_null($user)) {
-        echo render_quora_header(true, $user->getUserName(), $user->getProfileImage(), $user->getEmail(), $user);
 
+    if (!is_null($user)) {
+        $postController = new PostController();
+        $moduleController = new ModuleController();
+        echo render_quora_header(true, $user->getUserName(), $user->getProfileImage(), $user->getEmail(), $user);
+        $userId = $user->getUserId();
         $firstName = $user->getFirstName();
         $lastName = $user->getLastName();
         $username = $user->getUsername();
@@ -28,6 +34,15 @@
         $accountCreated = $user->getCreatedAccountDate();
         $datetime = new DateTime($accountCreated);
         $formattedAccountCreated = $datetime->format('F Y');
+
+        $currentPage = $postController->getCurrentPage();
+        $totalPages = $postController->getTotalPages($userId);
+        $modules = $moduleController->getAllModules();
+        $posts = $postController->getPostsByPageByUserId($userId);
+
+        $dob = $user->getDob();
+
+        $profileLink = $firstName . "-" . $lastName . "-" . $userId;
     }
     ?>
     <!-- Profile Section -->
@@ -37,18 +52,23 @@
             <div class="md:w-1/3">
                 <div class="bg-white dark:bg-darkmode rounded-lg shadow-md p-6">
                     <div class="flex flex-col items-center">
-                        <div class="relative group">
-                            <?php
-                            if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) {
-                                echo '<div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">' . strtoupper(substr($username, 0, 1)) . '</div>';
-                            } else {
-                                echo '
-                                <div class="w-32 h-32 rounded-full"><img id="preview" src="/' . $profileImage . '" alt="Preview Image" class="w-full h-full object-cover rounded-full border border-gray-300" /></div>';
-                            }
-                            ?>
-                            <div class="absolute bottom-0 right-0 bg-gray-100 dark:bg-gray-700 rounded-full p-2 cursor-pointer">
-                                <i class="fas fa-camera text-gray-700 dark:text-gray-300"></i>
-                            </div>
+                        <div class="relative group w-34 h-34">
+                            <form class="" action="/users/update-avatar/<?php echo $userId ?>" method="POST" enctype="multipart/form-data" id="form-update-avatar">
+                                <div id="preview-container-avatar" class="w-32 h-32 rounded-full mb-4">
+                                    <label for="image" class="block relative cursor-pointer">
+                                        <?php
+                                        if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) {
+                                            echo '<div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">' . strtoupper(substr($username, 0, 1)) . '</div>';
+                                        } else {
+                                            echo '
+                                <div class="w-32 h-32 rounded-full"><img id="avatar-user" src="/' . $profileImage . '" alt="Preview Image" class="w-32 h-32 object-cover rounded-full border border-gray-300" /></div>';
+                                        }
+                                        ?>
+                                        <i class="w-8 h-8 bg-gray-700 dark:bg-gray-700 rounded-full fas fa-camera text-white dark:text-gray-300 absolute bottom-0 right-0 p-2"></i>
+                                    </label>
+                                </div>
+                                <input type="file" name="image" id="image" accept="image/*" class="hidden">
+                            </form>
                         </div>
 
                         <h2 class="text-2xl font-bold mt-4 text-gray-900 dark:text-white"><?php echo $firstName . " " . $lastName ?></h2>
@@ -59,9 +79,9 @@
                         </button>
 
                         <div class="w-full mt-6 border-t dark:border-gray-700 pt-4">
-                            <form class="mt-4 add-bio-container h-fit" action="/update-bio" method="POST">
+                            <form class="mt-4 add-bio-container h-fit" action="/users/update-bio/<?php echo $userId ?>" method="POST" id="form-update-bio">
                                 <p class="bio-text text-gray-500 dark:text-gray-400 text-sm"><?php echo $bio ?></p>
-                                <button type="button" class="add-bio mt-2 text-primary-light dark:text-primary-dark text-sm hover:underline">Add description</button>
+                                <button type="button" class="add-bio mt-2 text-primary-light dark:text-primary-dark text-sm hover:underline"><?= $bio ? "Change your description" : "Add description" ?></button>
                                 <div class="flex gap-2 mt-2">
                                     <button type="submit" class="save-bio bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200" style="display: none;">Save</button>
                                     <button type="button" class="cancel-bio bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200" style="display: none;">Cancel</button>
@@ -74,6 +94,7 @@
                                     <li class="flex items-center text-sm text-gray-600 dark:text-gray-300">
                                         <i class="fas fa-calendar-alt text-gray-400 dark:text-gray-500 mr-2"></i>
                                         <span>Joined <?php echo $formattedAccountCreated ?></span>
+
                                     </li>
                                 </ul>
                             </div>
@@ -113,60 +134,121 @@
                             </div>
                         </div>
 
-                        <!-- Empty state -->
-                        <div class="flex flex-col items-center justify-center py-16">
-                            <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 mb-4">
+                        <!-- Posts -->
+                        <?php
+
+                        if (empty($posts)) {
+                            echo '<div class="flex flex-col items-center justify-center py-16 hidden">
+                                <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 mb-4">
                                 <i class="fas fa-inbox text-4xl"></i>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-400 mb-6">You haven't shared, answered or posted anything yet.</p>
-                            <a href="#" class="bg-primary-light dark:bg-primary-dark text-white px-6 py-3 rounded-full font-medium hover:bg-red-700 dark:hover:bg-red-800 transition-colors duration-200">
-                                Create New Post
-                            </a>
-                        </div>
-                        <!-- Example Post (hidden by default, remove hidden class to show) -->
-                        <div class="border dark:border-gray-700 rounded-lg p-4 mb-4 hidden">
-                            <div class="flex justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 rounded-full bg-purple-600 dark:bg-purple-700 text-white font-bold flex items-center justify-center mr-3">
-                                        T
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">You haven\'t shared, answered or posted anything yet.</p>
+                            <a href="/posts/create" class="bg-primary-light dark:bg-primary-dark text-white px-6 py-3 rounded-full font-medium hover:bg-red-700 dark:hover:bg-red-800 transition-colors duration-200">Create New Post</a></div>';
+                        } else if (!empty($posts) || !is_null($posts)) {
+                            foreach ($posts as $post) {
+                                $postId = $post->getPostId();
+                                $title = $post->getTitle();
+                                $content = $post->getContent();
+                                $voteScore = $post->getVoteScore();
+                                $timestamp = $post->getTimestamp();
+                                $datetime = new DateTime($timestamp);
+                                $formattedTimestamp = $datetime->format('F j, Y');
+                                $module = $moduleController->getModuleById($post->getModuleId());
+                                $moduleName = $module->getModuleName();
+                                $postImageObj = $postController->getPostImage($postId);
+                                $avatarUserStr = $user->getProfileImage();
+
+                                if (!empty($avatarUserStr)) {
+                                    $avatarUser = '<div class="w-10 h-10 rounded-full">
+                                                        <img src="/' . htmlspecialchars($avatarUserStr, ENT_QUOTES, 'UTF-8') . '" 
+                                                             class="w-full h-full rounded-full object-cover" 
+                                                             alt="avatar user">
+                                                   </div>';
+                                } else {
+                                    $avatarUser = '<div class="w-10 h-10 rounded-full bg-purple-600 text-white text-center flex items-center justify-center">
+                                                        <span class="text-lg font-bold">' . strtoupper(substr($username, 0, 1)) . '</span>
+                                                   </div>';
+                                }
+                                echo '
+                            <div class="card-container">
+                                <div class="border dark:border-gray-700 rounded-lg p-4 mb-4">
+                                    <div class="flex">
+                                        <div class="w-full flex items-center">
+                                            <div class="w-10 h-fit rounded-full">
+                                                ' . $avatarUser . '</div>
+                                            <div class="ml-4">
+                                                <h4 class="font-medium text-gray-900 dark:text-white">' . $firstName . " " . $lastName . '</h4>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Posted on ' . $formattedTimestamp . '</p>
+                                            </div>
+                                            <div class="relative ml-auto">
+                                                <button class="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                            </div>
+                                        </div> 
                                     </div>
-                                    <div>
-                                        <h4 class="font-medium text-gray-900 dark:text-white">Thắng Phạm</h4>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Posted on March 10, 2025</p>
+                                    <div class="mt-3">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">' . $title . '</h3>
+                                        <p class="mt-2 text-gray-700 dark:text-gray-300">
+                                            ' . $content . '</p>
+                                        <div class="mt-3">
+                                            <img src="/' . $postImageObj->getMediaKey() . '" alt="Database diagram" class="rounded-lg w-full object-cover">
                                     </div>
                                 </div>
-                                <div class="relative">
-                                    <button class="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    </button>
+                                <div class="mt-4 flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+                                    <div class="flex space-x-4">
+                                        <button class="flex items-center space-x-1">
+                                            <i class="far fa-thumbs-up"></i>
+                                            <span>' . $voteScore . ' votes</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1">
+                                            <i class="far fa-comment"></i>
+                                            <span>3 Comments</span>
+                                        </button>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>';
+                            }
+                        }
+                        ?>
+                        <div class="flex items-center justify-center space-x-2 mt-8">
+                            <!-- Previous Button -->
+                            <?php if ($currentPage > 1): ?>
+                                <a href="?page=<?= $currentPage - 1 ?>"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                                    Previous
+                                </a>
+                            <?php else: ?>
+                                <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                                    Previous
+                                </span>
+                            <?php endif; ?>
+
+                            <!-- Page Numbers -->
+                            <div class="flex space-x-1">
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <a href="?page=<?= $i ?>"
+                                        class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?=
+                                                                                                                        ($i == $currentPage)
+                                                                                                                            ? 'bg-red-600 text-white'
+                                                                                                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+                                        <?= $i ?>
+                                    </a>
+                                <?php endfor; ?>
                             </div>
 
-                            <div class="mt-3">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">How to optimize database queries?</h3>
-                                <p class="mt-2 text-gray-700 dark:text-gray-300">
-                                    I'm working on a project with a large dataset and need advice on optimizing my database queries for better performance.
-                                </p>
-                                <div class="mt-3">
-                                    <img src="" alt="Database diagram" class="rounded-lg w-full">
-                                </div>
-                            </div>
-
-                            <div class="mt-4 flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
-                                <div class="flex space-x-4">
-                                    <button class="flex items-center space-x-1">
-                                        <i class="far fa-thumbs-up"></i>
-                                        <span>15 Upvotes</span>
-                                    </button>
-                                    <button class="flex items-center space-x-1">
-                                        <i class="far fa-comment"></i>
-                                        <span>3 Comments</span>
-                                    </button>
-                                </div>
-                                <div>
-                                    <span>312 Views</span>
-                                </div>
-                            </div>
+                            <!-- Next Button -->
+                            <?php if ($currentPage < $totalPages): ?>
+                                <a href="?page=<?= $currentPage + 1 ?>"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                                    Next
+                                </a>
+                            <?php else: ?>
+                                <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                                    Next
+                                </span>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -192,18 +274,18 @@
                 <input type="hidden" name="userId" value="<?= $user->getUserId() ?>">
                 <div class="flex flex-col md:flex-row md:space-x-4">
                     <div class="md:w-1/3 flex flex-col items-center mb-3 md:mb-0">
-                        <div id="preview-container" class="w-32 h-32 rounded-full overflow-hidden mb-4">
+                        <div id="preview-container-modal" class="w-32 h-32 rounded-full overflow-hidden mb-4">
                         <?php
                         if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) {
                             echo '<div class="w-full h-full rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">' . strtoupper(substr($username, 0, 1)) . '</div>';
                         } else {
-                            echo '<img id="preview" src="/' . $profileImage . '" alt="Preview Image" class="w-full h-full object-cover rounded-full border border-gray-300" />';
+                            echo '<img src="/' . $profileImage . '" alt="Avatar" class="w-full h-full object-cover rounded-full border border-gray-300" />';
                         }
                         ?>
                         </div>
                         <div class="form-group mt-4">
                             <label class="w-[50px] p-2 text-lg text-center bg-gray-300 border-none rounded-xl shadow-lg cursor-pointer transition-all duration-300 ease-in-out hover:bg-gray-200 text-gray-700 dark:text-white dark:bg-gray-700 dark:hover:bg-gray-600" for="image">
-                                <input type="file" id="image" name="image" accept="image/*" class="hidden">
+                                <input type="file" id="image-modal" name="image" accept="image/*" class="hidden">
                                 Change Avatar
                             </label>
                             <span class="form-message text-red-500 font-medium text-sm"></span>
@@ -241,18 +323,46 @@
         </div>`);
         });
 
-        // document.querySelector('#editProfileModal button').addEventListener('click', function() {
-        //     document.getElementById('editProfileModal').classList.add('hidden');
-        // });
-
         function handleImagePreview(e) {
             let file = e.target.files[0];
             let reader = new FileReader();
 
             reader.onload = function(e) {
-                let preview = document.getElementById("preview");
+                let preview = document.getElementById("preview-update");
                 if (preview) {
                     preview.src = e.target.result;
+                    let container = document.querySelector("#preview-container-create-post");
+                    container.style.display = "block";
+                } else if (document.querySelector("#preview-container-modal")) {
+                    let preview = document.querySelector("#preview-container-modal");
+                    let imgElement = document.createElement("img");
+                    imgElement.id = "preview-update";
+                    imgElement.src = e.target.result;
+                    imgElement.className = "w-full h-full object-cover rounded-full border border-gray-300";
+                    preview.innerHTML = "";
+                    preview.appendChild(imgElement);
+                } else if (document.getElementById("preview-container-avatar")) {
+                    let preview = document.getElementById("preview-container-avatar");
+                    let label = document.createElement("label");
+                    label.htmlFor = "image";
+                    label.className = "block relative cursor-pointer";
+
+                    let divElement = document.createElement("div");
+                    divElement.className = "w-32 h-32 rounded-full";
+
+                    let imgElement = document.createElement("img");
+                    imgElement.id = "avatar-user";
+                    imgElement.src = e.target.result;
+                    imgElement.className = "w-32 h-32 object-cover rounded-full border border-gray-300";
+
+                    let cameraButton = document.createElement("i");
+                    cameraButton.className = "w-8 h-8 bg-gray-700 dark:bg-gray-700 rounded-full fas fa-camera text-white dark:text-gray-300 absolute bottom-0 right-0 p-2";
+
+                    divElement.appendChild(imgElement);
+                    label.appendChild(divElement);
+                    label.appendChild(cameraButton);
+                    preview.innerHTML = "";
+                    preview.appendChild(label);
                 } else {
                     let imgElement = document.createElement("img");
                     imgElement.id = "preview";
@@ -277,6 +387,11 @@
                     const image = document.querySelector("#image");
                     if (image) {
                         image.addEventListener("change", handleImagePreview);
+                    }
+
+                    const imagePostCreateProfile = document.querySelector("#image-post-upload");
+                    if (imagePostCreateProfile) {
+                        imagePostCreateProfile.addEventListener("change", handleImagePreview);
                     }
                     // Call again Validator when modal appear
                     Validator({
@@ -308,6 +423,18 @@
                             }
                         }
                     }
+
+                    Validator({
+                        form: "#form-upload-post",
+                        formGroupSelector: ".form-group",
+                        formMessage: ".form-message",
+                        rules: [
+                            Validator.isRequired("#content"),
+                            Validator.isRequiredSelection("#module"),
+                            Validator.maxLength("#title", 100),
+                        ],
+                    });
+
                 }
             });
         });
@@ -318,37 +445,194 @@
             subtree: true
         });
 
-        const addBioContainer = document.querySelector('.add-bio-container');
-        const saveButton = document.querySelector('.save-bio');
-        const cancelButton = document.querySelector('.cancel-bio');
-        const addBioBtn = document.querySelector('.add-bio');
-        if (addBioContainer) {
-            addBioContainer.onclick = function(e) {
+        const addQuestion = document.querySelector('.add-question');
+
+        if (addQuestion) {
+            addQuestion.onclick = function() {
+                //close old modal
+                const addQuestionDropdown = document.querySelector('.add-question-dropdown');
+                if (addQuestionDropdown) {
+                    addQuestionDropdown.classList.toggle('hidden');
+
+                    addQuestionDropdown.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (e.target.classList.contains('create-new-post-quick')) {
+                            addQuestionDropdown.classList.add('hidden');
+                            checkExistingModal();
+                            const modal = new Modal();
+                            modal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Create new post</h2>
+        <form action="/posts/store" method="POST" enctype="multipart/form-data" id="form-upload-post-profile" class="space-y-4">
+                <!-- Title Field (Optional) -->
+                <div class="form-group py-4 mb-4">
+                    <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
+                    <input type="text" id="title" name="title" placeholder="Enter title (optional)"
+                        class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">
+                    <span class="form-message text-red-500 text-sm"></span>
+                    <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
+                </div>
+
+                <!-- Content Field (Required) -->
+                <div class="form-group">
+                    <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                    <textarea id="content" name="content" rows="5" placeholder="Enter content"
+                        class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
+                    <span class="form-message text-red-500 font-medium text-sm"></span>
+                </div>
+
+                <!-- Module Select -->
+                <div class="form-group">
+                    <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
+                    <select id="module" name="module"
+                        class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
+                        <option value="" class="text-black dark:text-white">-- Select Module --</option>
+                        <?php foreach ($modules as $module): ?>
+                            <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="form-message text-red-500 font-medium text-sm ml-5"></span>
+                </div>
+                <!-- Image Upload -->
+                <div class="form-group flex gap-8 relative">
+                    <div>
+                        <label for="image-post-upload" class="block font-medium text-gray-700 dark:text-white mb-2">Upload Image:</label>
+                        <label class="custom-file-upload text-gray-700 dark:text-white">
+                        <input type="file" id="image-post-upload" name="image" accept="image/*"
+                            class="w-2 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none title">
+                            Choose an image
+                        </label>
+                        <span class="form-message text-red-500 font-medium text-sm"></span>
+                    </div>
+                    <!-- Preview Image -->
+                    <div id="preview-container-create-post" class="hidden absolute -top-[100px] left-[440px]">
+                        <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
+                        <img id="preview-update" src="" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Submit">
+                </div>
+            </form>
+`)
+                        }
+                    });
+                }
+
+            }
+        }
+
+        function checkExistingModal() {
+            const existingModal = document.querySelector(".modal-backdrop");
+            if (existingModal) {
+                existingModal.remove();
+            }
+        }
+
+        async function handleUpdateAvatar() {
+            const form = document.querySelector("#form-update-avatar");
+            const formData = new FormData(form);
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById("avatar-user").src = "/" + data.newAvatarPath;
+                    const avatarsUser = document.querySelectorAll(".avatar-user");
+                    avatarsUser.forEach(avatar => {
+                        avatar.src = "/" + data.newAvatarPath;
+                    });
+                } else {
+                    console.error(data.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        async function handleUpdateBio() {
+            const form = document.querySelector("#form-update-bio");
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    updateBioText(data.newBio);
+                } else {
+                    console.error("Update failed:", data.message);
+                }
+            } catch (error) {
+                console.error("Error updating bio:", error);
+            }
+        }
+
+        function updateBioText(newBio) {
+            const textBio = document.createElement("p");
+            textBio.classList = "bio-text text-gray-500 dark:text-gray-400 text-sm";
+            textBio.innerText = newBio;
+
+            const input = document.querySelector(".bio-input");
+            input.replaceWith(textBio);
+
+            toggleBioEdit(false);
+        }
+
+        function toggleBioEdit(isEditing) {
+            const saveButton = document.querySelector('.save-bio');
+            const cancelButton = document.querySelector('.cancel-bio');
+            const addBioBtn = document.querySelector('.add-bio');
+
+            saveButton.style.display = isEditing ? "inline-block" : "none";
+            cancelButton.style.display = isEditing ? "inline-block" : "none";
+            addBioBtn.classList.toggle('hidden', isEditing);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const formUpdateBio = document.querySelector(".add-bio-container");
+            if (!formUpdateBio) return;
+
+            formUpdateBio.addEventListener("submit", function(e) {
+                e.preventDefault();
+                handleUpdateBio();
+            });
+
+            formUpdateBio.addEventListener("click", function(e) {
                 if (e.target.classList.contains('add-bio')) {
                     e.target.classList.add('hidden');
                     const textBio = document.querySelector(".bio-text");
-                    if (textBio) {
-                        const bioValue = textBio.innerText; //old text
-                        const input = document.createElement("input");
-                        input.type = "text";
-                        input.value = bioValue;
-                        input.classList = "bio-input w-full border dark:border-gray-600 rounded-md ml-auto p-[10px] bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark";
-                        textBio.parentNode.replaceChild(input, textBio);
-                        saveButton.style.display = "inline-block";
-                        cancelButton.style.display = "inline-block";
-                    }
+
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.value = textBio ? textBio.innerText : "";
+                    input.name = "bio-update";
+                    input.classList = "bio-input w-full border dark:border-gray-600 rounded-md ml-auto p-[10px] bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark";
+
+                    textBio?.replaceWith(input);
+                    toggleBioEdit(true);
                 }
-            }
-            cancelButton.onclick = function(e) {
+            });
+
+            document.querySelector('.cancel-bio').addEventListener("click", function() {
                 const input = document.querySelector(".bio-input");
-                const textBio = document.createElement("p");
-                textBio.classList = "bio-text text-gray-500 dark:text-gray-400 text-sm";
-                textBio.innerText = input.value;
-                input.parentNode.replaceChild(textBio, input);
-                saveButton.style.display = "none";
-                cancelButton.style.display = "none";
-                addBioBtn.classList.remove('hidden');
-            }
+                if (input) {
+                    const textBio = document.createElement("p");
+                    textBio.classList = "bio-text text-gray-500 dark:text-gray-400 text-sm";
+                    textBio.innerText = input.value || "No bio set";
+                    input.replaceWith(textBio);
+                }
+                toggleBioEdit(false);
+            });
+        });
+
+
+        const avatar = document.querySelector("#image");
+        if (avatar) {
+            avatar.addEventListener("change", handleUpdateAvatar);
         }
     </script>
 </body>

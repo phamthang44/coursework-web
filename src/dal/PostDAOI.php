@@ -20,4 +20,5 @@ interface PostDAOI
     public function increaseVoteScore($postId, $voteScore);
     public function decreaseVoteScore($postId, $voteScore);
     public function getLastPostId();
+    public function getPostsByUserId($userId);
 }

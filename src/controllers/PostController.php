@@ -105,8 +105,6 @@ class PostController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                error_log("Store method called");
-
                 // Validate input
                 $title = trim(htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8'));
                 $content = trim(htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8'));
@@ -115,8 +113,6 @@ class PostController
                     throw new Exception("Title and content are required");
                 }
 
-                error_log("Title and content validated successfully");
-
                 // Create post and take id
                 $userId = $_POST['user_id']; // Hard-coded tạm thời
                 $moduleId = htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -124,8 +120,6 @@ class PostController
                     throw new Exception("Module is required");
                 }
                 $postId = $this->postDAO->createPost($title, $content, $userId, $moduleId);
-                error_log("Post created successfully");
-
                 $imagePath = null;
                 // process upload file
                 if (!empty($_FILES['image']['name'])) {
@@ -133,14 +127,11 @@ class PostController
                     if (!file_exists($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
-
                     $maxFileSize = 100 * 1024 * 1024; // 100MB
-
                     // Check error when uploading file
                     if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
                         throw new Exception("File upload error: " . $_FILES['image']['error']);
                     }
-
                     // Check real MIME type
                     $finfo = new finfo(FILEINFO_MIME_TYPE);
                     $mime = $finfo->file($_FILES['image']['tmp_name']);
@@ -154,31 +145,31 @@ class PostController
                     if (!$extension) {
                         throw new Exception("Only JPG, PNG, GIF files are allowed");
                     }
-
                     // check the size of file image
                     if ($_FILES['image']['size'] > $maxFileSize) {
                         throw new Exception("File size must not exceed 100MB");
                     }
-
                     // make the unique filename
                     do {
                         $media_key = bin2hex(random_bytes(16));
                         $fileName = $media_key . '.' . $extension;
                         $filePath = $uploadDir . $fileName;
                     } while (file_exists($filePath));
-
                     // move file to uploads
                     if (!move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
                         throw new Exception("Failed to upload image");
                     }
-
                     $imagePath = 'uploads/' . $fileName;
                     $this->postAssetDAO->create($imagePath, $postId);
-                    error_log("Image uploaded successfully: " . $imagePath);
                 }
 
+                $referer = $_SERVER["HTTP_REFERER"] ?? "/posts";
                 $_SESSION['success'] = "The post has been created successfully!";
-                header("Location: /posts");
+                if (strpos($referer, "profile") !== false) {
+                    header("Location: " . $referer);
+                } else {
+                    header("Location: /posts");
+                }
                 exit();
             } catch (Exception $e) {
                 error_log("Error in store method: " . $e->getMessage());
@@ -344,6 +335,11 @@ class PostController
         }
     }
 
+    public function getPostsByUserId($userId)
+    {
+        return $this->postDAO->getPostsByUserId($userId);
+    }
+
     public function getPostByIdAndUserId($postId, $userId)
     {
         return $this->postDAO->getPostByIdAndUserId($postId, $userId);
@@ -377,6 +373,36 @@ class PostController
         return $this->userController->getUser($userId);
     }
 
+    public function getTotalPostsOfUser($userId): int
+    {
+        $totalPostsOfUser = $this->postDAO->getPostsByUserId($userId);
+        return count($totalPostsOfUser);
+    }
+
+    public function getCurrentPage()
+    {
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+        return $currentPage;
+    }
+
+    public function getPostsByPageByUserId($userId)
+    {
+        $postsPerPage = 3;
+        $currentPage = $this->getCurrentPage();
+        $offset = ($currentPage - 1) * $postsPerPage;
+        return $this->postDAO->getPostByPageByUserId($postsPerPage, $offset, $userId);
+    }
+
+    public function getTotalPages($userId)
+    {
+        $postsPerPage = 3;
+        $totalPostsUsers = $this->getTotalPostsOfUser($userId);
+        $totalPagesPostsOfUser = ceil($totalPostsUsers / $postsPerPage);
+        return $totalPagesPostsOfUser;
+    }
     /*
         protected function render($view, $data = [])
     {

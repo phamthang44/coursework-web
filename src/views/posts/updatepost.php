@@ -38,7 +38,7 @@
     }
 
     $post = $postController->getPostByIdAndUserId($postId, $userId);
-    $moduleName = $moduleController->getModule($post->getModuleId());
+    $moduleName = $moduleController->getModuleName($post->getModuleId());
     $postImageObj = $postController->getPostImage($post->getPostId());
     $postImageStr = $postImageObj->getMediaKey();
     $postImage = $postImageStr ?? '';
