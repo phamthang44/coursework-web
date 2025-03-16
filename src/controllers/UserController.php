@@ -144,6 +144,18 @@ class UserController
                 $username = $this->convertUsername($firstName, $lastName);
                 $profileImagePath = $user->getProfileImage();
 
+                if (isset($_POST['dob']) && !empty($_POST['dob'])) {
+                    $dob = $_POST['dob'];
+
+                    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+                        die("Incorrect format YYYY-MM-DD.");
+                    }
+
+                    list($year, $month, $day) = explode('-', $dob);
+                    if (!checkdate((int)$month, (int)$day, (int)$year)) {
+                        die("Invalid date.");
+                    }
+                }
                 // process upload file
                 if (!empty($_FILES['image']['name'])) {
                     $uploadDir = __DIR__ . '/../../uploads/';
@@ -193,7 +205,7 @@ class UserController
                 // Log để kiểm tra trước khi update
                 error_log("Final profileImagePath before updating DB: " . $profileImagePath);
 
-                $this->userDAO->updateProfile($userID, $username, $firstName, $lastName, $email, $profileImagePath, $bio);
+                $this->userDAO->updateProfile($userID, $username, $firstName, $lastName, $email, $profileImagePath, $bio, $dob);
                 error_log("updateProfile called with userId: $userID, username: $username, firstName: $firstName, lastName: $lastName, email: $email, profileImage: $profileImagePath, bio: $bio");
                 //$_SESSION['success'] = "User profile has been updated successfully!";
                 header("Location: /profile/" . $firstName . "-" . $lastName . "-" . $userID);

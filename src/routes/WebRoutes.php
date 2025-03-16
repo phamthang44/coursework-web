@@ -56,5 +56,9 @@ class WebRoutes
         $router->addRoute('POST', '/users/update/{id}', 'UserController', 'update');
         $router->addRoute('POST', '/users/update-avatar/{id}', 'UserController', 'updateAvatar');
         $router->addRoute('POST', '/users/update-bio/{id}', 'UserController', 'updateBio');
+
+        // Admin routes
+        $router->addRoute('GET', '/admin/profile/{firstname-lastname-id}', 'AdminController', 'userProfile');
+        $router->addRoute('POST', '/admin/update/{id}', 'AdminController', 'update');
     }
 }

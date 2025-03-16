@@ -30,13 +30,14 @@
         $userName = $user->getUsername();
         $userAvatar = $user->getProfileImage() ?? '';
         $userEmail = $user->getEmail();
+        // $profileLink = '/profile/' . $user->getFirstName() . '-' . $user->getLastName() . '-' . $user->getUserId();
     } else {
         $user_logged_in = false;
         $userName = '';
         $userAvatar = '';
         $userEmail = '';
     }
-    echo render_quora_header($user_logged_in, $userName, $userAvatar, $userEmail);
+    echo render_quora_header($user_logged_in, $userName, $userAvatar, $userEmail, $user);
     ?>
     <div class="flex min-h-screen">
         <!-- Sidebar Navigation -->

@@ -17,6 +17,7 @@
 
     use controllers\PostController;
     use controllers\ModuleController;
+    use controllers\AdminController;
 
     require_once __DIR__ . '/../layouts/header.php';
     require_once __DIR__ . '/../layouts/footer.php';
@@ -160,6 +161,7 @@
                                 $module = $moduleController->getModuleById($post->getModuleId());
                                 $moduleName = $module->getModuleName();
                                 $postImageObj = $postController->getPostImage($postId);
+
                                 $avatarUserStr = $user->getProfileImage();
 
                                 if (!empty($avatarUserStr)) {
@@ -193,10 +195,8 @@
                                     </div>
                                     <div class="mt-3">
                                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">' . $title . '</h3>
-                                        <p class="mt-2 text-gray-700 dark:text-gray-300">
-                                            ' . $content . '</p>
-                                        <div class="mt-3">
-                                            <img src="/' . (isset($postImageObj) && $postImageObj->getMediaKey() ? '<img src="/' . $postImageObj->getMediaKey() . '" alt="Database diagram" class="rounded-lg w-full object-cover" >' : '')  . '" alt="Database diagram" class="rounded-lg w-full object-cover">
+                                        <p class="mt-2 text-gray-700 dark:text-gray-300">' . $content . '</p>
+                                        <div class="mt-3">' . (isset($postImageObj) && $postImageObj->getMediaKey() ? '<img src="/' . $postImageObj->getMediaKey() . '" alt="Database diagram" class="rounded-lg w-full object-cover">' : '') . '
                                     </div>
                                 </div>
                                 <div class="mt-4 flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">

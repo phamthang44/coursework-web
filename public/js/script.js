@@ -115,20 +115,20 @@ function Modal() {
 
     // Attach event listeners
     closeBtn.onclick = () => this.closeModal(backdrop);
-    backdrop.onclick = (e) => {
-      // console.log(e.target);
-      if (e.target === backdrop) {
-        this.closeModal(backdrop);
-      }
-    };
-    let backdropClickListener = (e) => {
-      // console.log(e.target);
-      if (e.target === backdrop) {
-        this.closeModal(backdrop);
-      }
-    };
+    // backdrop.onclick = (e) => {
+    //   // console.log(e.target);
+    //   if (e.target === backdrop) {
+    //     this.closeModal(backdrop);
+    //   }
+    // };
+    // let backdropClickListener = (e) => {
+    //   // console.log(e.target);
+    //   if (e.target === backdrop) {
+    //     this.closeModal(backdrop);
+    //   }
+    // };
 
-    backdrop.addEventListener("click", backdropClickListener);
+    //backdrop.addEventListener("click", backdropClickListener);
 
     this.handleEscape = (e) => {
       if (e.key === "Escape") {
