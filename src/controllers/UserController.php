@@ -91,7 +91,8 @@ class UserController
                 }
             }
         } catch (Exception $e) {
-            header("Location: /signup?error=" . urlencode($e->getMessage()));
+            $_SESSION['error'] = $e->getMessage();
+            header("Location: /signup");
             exit();
         }
     }

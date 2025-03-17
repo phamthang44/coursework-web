@@ -40,7 +40,7 @@
     $post = $postController->getPostByIdAndUserId($postId, $userId);
     $moduleName = $moduleController->getModuleName($post->getModuleId());
     $postImageObj = $postController->getPostImage($post->getPostId());
-    $postImageStr = $postImageObj->getMediaKey();
+    $postImageStr = (!is_null($postImageObj)) ? $postImageObj->getMediaKey() : '';
     $postImage = $postImageStr ?? '';
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $user);
     ?>
@@ -91,8 +91,14 @@
                 </div>
                 <!-- Preview Image -->
                 <div id="preview-container" class="absolute -top-[110px] right-[400px] mt-4 pt-4">
-                    <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
-                    <img id="preview" src="/<?php echo $postImage ?>" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />
+                    <?php if ($postImage) {
+                        echo '<h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>';
+                        echo '<img id="preview" src="/' . $postImage . '" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />';
+                    } else {
+                        echo '';
+                    }
+
+                    ?>
                 </div>
                 <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create new post">
             </div>

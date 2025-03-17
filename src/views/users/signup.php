@@ -51,7 +51,20 @@
                     <label for="email" class="block mb-2 text-sm text-[#777] font-medium">Email</label>
                     <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off"
                         class="bg-[#181818] w-full py-3 px-4 border border-[#2a2a2a] rounded-lg text-[15px] transition-all text-white focus:outline-none focus:border-[#f42935] focus:shadow">
-                    <span class="form-message absolute right-[40px] -top-[2px] text-red-600"><?php echo $error ?? ""; ?></span>
+                    <?php if (!empty($_SESSION['error'])) {
+                        $error = $_SESSION['error'];
+                        if (strpos($error, 'Duplicate entry') !== false) {
+                            $error = 'Email already exists';
+                        } else {
+                            $error = '';
+                        }
+                        unset($_SESSION['error']);
+                    } else {
+                        $error = '';
+                    }
+                    ?>
+                    <span class="form-message absolute right-[40px] -top-[2px] text-red-600"><?php echo $error; ?></span>
+
                 </div>
 
                 <div class="mb-10 form-group relative">

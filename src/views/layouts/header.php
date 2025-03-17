@@ -18,7 +18,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
     $profileLink = '';
     if (!is_null($user)) {
         if ($user->getRole() === 'user') {
-            $profileLink = '/profile/' . $user->getFirstName() . "-" . $user->getLastName() . "-" . $user->getUserId();
+            $profileLink = 'profile/' . $user->getFirstName() . "-" . $user->getLastName() . "-" . $user->getUserId();
         } else {
             $profileLink = $user->getRole() . '/profile/' . $user->getFirstName() . "-" . $user->getLastName() . "-" . $user->getUserId(); //admin/Thang-Pham-1
         }
@@ -83,7 +83,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                                 <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-8 h-8 rounded-full cursor-pointer avatar-user">
                             <?php else: ?>
                                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
-                                    <?php echo substr($user_name, 0, 1); ?>
+                                    <?php echo strtoupper(substr($user_name, 0, 1)); ?>
                                 </div>
                             <?php endif; ?>
                             <span class="hidden md:inline text-sm dark:text-gray-300"><?php echo $user_name; ?></span>
@@ -102,7 +102,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                                         <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3 avatar-user">
                                     <?php else: ?>
                                         <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 mr-3">
-                                            <?php echo substr($user_name, 0, 1); ?>
+                                            <?php echo strtoupper(substr($user_name, 0, 1)); ?>
                                         </div>
                                     <?php endif; ?>
                                     <div>

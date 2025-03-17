@@ -159,11 +159,34 @@
                                 $datetime = new DateTime($timestamp);
                                 $formattedTimestamp = $datetime->format('F j, Y');
                                 $module = $moduleController->getModuleById($post->getModuleId());
+                                $moduleId = $module->getModuleId();
                                 $moduleName = $module->getModuleName();
                                 $postImageObj = $postController->getPostImage($postId);
-
+                                $postUserId = $post->getUserId();
                                 $avatarUserStr = $user->getProfileImage();
-
+                                if (!is_null($user)) {
+                                    if ($user->getUserId() === $postUserId) {
+                                        $buttonMoreOptions = '<button class="post-options">
+                                                <span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span>
+                                              </button>';
+                                        $postMoreOptionsDropdown = '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-30 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
+                                                <a href="/posts/edit/' . $postId . '" 
+                                                   data-url="/posts/edit/' . $postId . '" 
+                                                   class="edit-action-advanced block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                                   Edit (advanced)
+                                                </a>
+                                                <button
+                                                   class="edit-action-quick block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                                   Edit (quick)
+                                                </button>
+                                                <a href="/posts/delete/' . $postId . '" 
+                                                   data-url="/posts/delete/' . $postId . '" 
+                                                   class="delete-action block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                                   Delete
+                                                </a>
+                                              </div>';
+                                    }
+                                }
                                 if (!empty($avatarUserStr)) {
                                     $avatarUser = '<div class="w-10 h-10 rounded-full">
                                                         <img src="/' . htmlspecialchars($avatarUserStr, ENT_QUOTES, 'UTF-8') . '" 
@@ -176,7 +199,12 @@
                                                    </div>';
                                 }
                                 echo '
-                            <div class="card-container">
+                            <div class="card-container post-card" data-post-id="' . $postId . '" 
+                                data-title="' . $title . '"
+                                data-content="' . $content . '"
+                                data-module-id="' . $moduleId . '"
+                                data-module-name="' . $moduleName . '"
+                                data-post-image="' . (isset($postImageObj) && $postImageObj->getMediaKey() ? $postImageObj->getMediaKey()   : '') . '">
                                 <div class="border dark:border-gray-700 rounded-lg p-4 mb-4">
                                     <div class="flex">
                                         <div class="w-full flex items-center">
@@ -187,9 +215,7 @@
                                                 <p class="text-sm text-gray-500 dark:text-gray-400">Posted on ' . $formattedTimestamp . '</p>
                                             </div>
                                             <div class="relative ml-auto">
-                                                <button class="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
+                                                ' . $buttonMoreOptions . $postMoreOptionsDropdown . '
                                             </div>
                                         </div> 
                                     </div>
@@ -449,7 +475,16 @@
                             Validator.maxLength("#title", 100),
                         ],
                     });
-
+                    Validator({
+                        form: "#form-update-post",
+                        formGroupSelector: ".form-group",
+                        formMessage: ".form-message",
+                        rules: [
+                            Validator.isRequired("#content"),
+                            Validator.isRequiredSelection("#module"),
+                            Validator.maxLength("#title", 100),
+                        ],
+                    });
                 }
             });
         });

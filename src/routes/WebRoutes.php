@@ -33,7 +33,7 @@ class WebRoutes
         $router->addRoute('POST', '/login', 'AuthController', 'login');
         $router->addRoute('GET', '/logout', 'AuthController', 'logout');
         $router->addRoute('GET', '/signup', 'UserController', 'signup');
-
+        $router->addRoute('POST', '/signup', 'UserController', 'signup');
         // Post routes
         $router->addRoute('GET', '/posts', 'PostController', 'index');
         $router->addRoute('GET', '/posts/create', 'PostController', 'create');

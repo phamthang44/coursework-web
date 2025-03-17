@@ -154,7 +154,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         </a>
                     <?php endif; ?>
                 </div>
-                <!-- Read more link -->
+                <!-- Read more link need to fix here-->
                 <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
                     Read more &rarr;
                 </a>
