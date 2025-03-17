@@ -18,14 +18,19 @@
     use controllers\PostController;
     use controllers\ModuleController;
     use controllers\AdminController;
+    use utils\SessionManager;
+    use utils\Template;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../layouts/footer.php';
-
+    Template::header();
+    Template::footer();
+    // $admin = SessionManager::get('admin');
+    // if (!$admin) {
+    //     header('Location: /403');
+    // }
     if (!is_null($user)) {
         $postController = new PostController();
         $moduleController = new ModuleController();
-        echo render_quora_header(true, $user->getUserName(), $user->getProfileImage(), $user->getEmail(), $user);
+        echo render_quora_header(true, $currentUser->getUserName(), $currentUser->getProfileImage(), $currentUser->getEmail(), $currentUser);
         $userId = $user->getUserId();
         $firstName = $user->getFirstName();
         $lastName = $user->getLastName();
@@ -57,17 +62,24 @@
                         <div class="relative group w-34 h-34">
                             <form class="" action="/users/update-avatar/<?php echo $userId ?>" method="POST" enctype="multipart/form-data" id="form-update-avatar">
                                 <div id="preview-container-avatar" class="w-32 h-32 rounded-full mb-4">
-                                    <label for="image" class="block relative cursor-pointer">
-                                        <?php
-                                        if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) {
-                                            echo '<div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">' . strtoupper(substr($username, 0, 1)) . '</div>';
-                                        } else {
-                                            echo '
-                                <div class="w-32 h-32 rounded-full"><img id="avatar-user" src="/' . $profileImage . '" alt="Preview Image" class="w-32 h-32 object-cover rounded-full border border-gray-300" /></div>';
-                                        }
-                                        ?>
-                                        <i class="w-8 h-8 bg-gray-700 dark:bg-gray-700 rounded-full fas fa-camera text-white dark:text-gray-300 absolute bottom-0 right-0 p-2"></i>
-                                    </label>
+                                    <div class="relative">
+                                        <?php if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) { ?>
+                                            <div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">
+                                                <?php echo strtoupper(substr($username, 0, 1)); ?>
+                                            </div>
+                                        <?php } else { ?>
+                                            <div class="w-32 h-32 rounded-full">
+                                                <img id="avatar-user" src="/<?php echo $profileImage; ?>" alt="Profile Image" class="w-32 h-32 object-cover rounded-full border border-gray-300" />
+                                            </div>
+                                        <?php } ?>
+
+                                        <!-- only show edit button when owner -->
+                                        <?php if ($isOwner) { ?>
+                                            <label for="image" class="absolute bottom-0 right-0 cursor-pointer">
+                                                <i class="w-8 h-8 bg-gray-700 dark:bg-gray-700 rounded-full fas fa-camera text-white dark:text-gray-300 p-2"></i>
+                                            </label>
+                                        <?php } ?>
+                                    </div>
                                 </div>
                                 <input type="file" name="image" id="image" accept="image/*" class="hidden">
                             </form>
@@ -76,18 +88,24 @@
                         <h2 class="text-2xl font-bold mt-4 text-gray-900 dark:text-white"><?php echo $firstName . " " . $lastName ?></h2>
                         <p class="text-gray-500 dark:text-gray-400"><?php echo $email ?></p>
 
-                        <button class="edit-profile mt-4 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-semibold py-2 px-4 rounded-md transition-colors duration-200">
+                        <?php
+                        if ($isOwner) {
+                            echo '<button class="edit-profile mt-4 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-semibold py-2 px-4 rounded-md transition-colors duration-200">
                             Edit Profile
-                        </button>
+                        </button>';
+                        }
+                        ?>
 
                         <div class="w-full mt-6 border-t dark:border-gray-700 pt-4">
                             <form class="mt-4 add-bio-container h-fit" action="/users/update-bio/<?php echo $userId ?>" method="POST" id="form-update-bio">
                                 <p class="bio-text text-gray-500 dark:text-gray-400 text-sm"><?php echo $bio ?></p>
-                                <button type="button" class="add-bio mt-2 text-primary-light dark:text-primary-dark text-sm hover:underline"><?= $bio ? "Change your description" : "Add description" ?></button>
-                                <div class="flex gap-2 mt-2">
-                                    <button type="submit" class="save-bio bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200" style="display: none;">Save</button>
-                                    <button type="button" class="cancel-bio bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200" style="display: none;">Cancel</button>
-                                </div>
+                                <?php if ($isOwner) { ?>
+                                    <button type="button" class="add-bio mt-2 text-primary-light dark:text-primary-dark text-sm hover:underline"><?= $bio ? "Change your description" : "Add description" ?></button>
+                                    <div class="flex gap-2 mt-2">
+                                        <button type="submit" class="save-bio bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200" style="display: none;">Save</button>
+                                        <button type="button" class="cancel-bio bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200" style="display: none;">Cancel</button>
+                                    </div>
+                                <?php } ?>
                             </form>
 
                             <div class="mt-4">
@@ -356,7 +374,7 @@
                 </div>
                 <div class="flex justify-end space-x-2 mt-6">
                     <button type="button" class="cancel-edit-profile bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-md transition-colors duration-200">Cancel</button>
-                    <button type="submit" class="bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200">Save Changes</button>
+                    <button type="submit" class="save-changes-profile bg-primary-light dark:bg-primary-dark hover:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors duration-200">Save Changes</button>
                 </div>
             </form>
         </div>`);

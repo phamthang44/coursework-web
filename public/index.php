@@ -7,8 +7,10 @@ require_once __DIR__ . "/../config/database.php";
 // // public/index.php
 use utils\Router;
 use routes\WebRoutes;
+use utils\SessionManager;
 
-session_start();
+SessionManager::start(); // Start session
+
 $router = new Router();
 
 WebRoutes::register($router); // Register routes

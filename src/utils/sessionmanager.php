@@ -34,6 +34,7 @@ class SessionManager
     public static function destroy()
     {
         self::start();
+        session_unset();
         session_destroy();
     }
 }

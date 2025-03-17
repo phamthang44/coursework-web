@@ -9,17 +9,18 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body class="bg-white dark:bg-darkmode">
+<body class="bg-white dark:bg-darkmode2">
     <?php
     // User authentication setup
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\Template;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../layouts/footer.php';
-    require_once __DIR__ . '/../../controllers/UserController.php';
-    // require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
+    Template::header();
+    Template::footer();
+
+
     $userController = new UserController();
     $postController = new PostController();
     $moduleController = new ModuleController();

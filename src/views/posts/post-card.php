@@ -36,7 +36,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     // Get vote score if available (assuming post has vote method)
     $voteScore = method_exists($post, 'getVoteScore') ? $post->getVoteScore() : 0;
     $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
-
+    $profileLink = 'profile/' . $authorObj->getFirstName() . '-' . $authorObj->getLastName() . '-' . $authorObj->getUserId();
     // Start building HTML
     ob_start();
 ?>
@@ -78,11 +78,11 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                 <div class="flex gap-3 mt-4 mb-4">
                     <!-- Author and dates -->
                     <?php if ($authorObj->getProfileImage() != null): ?>
-                        <img src="<?php echo $authorObj->getProfileImage(); ?>" alt="<?php echo $author; ?>" class="w-12 h-12 rounded-full cursor-pointer">
+                        <a href="<?php echo $profileLink; ?>"><img src="<?php echo $authorObj->getProfileImage(); ?>" alt="<?php echo $author; ?>" class="w-12 h-12 rounded-full"></a>
                     <?php else: ?>
-                        <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
-                            <p class="text-lg"><?php echo substr($author, 0, 1); ?></p>
-                        </div>
+                        <a href="<?php echo $profileLink; ?>" class="block w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
+                            <p class="text-lg"><?php echo strtoupper(substr($author, 0, 1)); ?></p>
+                        </a>
                     <?php endif; ?>
                     <div class="flex gap-1 text-xs flex-col">
                         <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span></p>

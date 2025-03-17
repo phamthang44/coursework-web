@@ -15,11 +15,12 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\Template;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../layouts/footer.php';
-    require_once __DIR__ . '/../../controllers/UserController.php';
-    require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
+    Template::header();
+    Template::footer();
+    Template::postCard();
+
 
     $userController = new UserController();
     $postController = new PostController();

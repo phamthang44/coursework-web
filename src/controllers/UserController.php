@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 
 use dal\UserDAOImpl;
-
+use utils\SessionManager;
 use Exception;
 use finfo;
 
@@ -91,7 +91,7 @@ class UserController
                 }
             }
         } catch (Exception $e) {
-            $_SESSION['error'] = $e->getMessage();
+            SessionManager::set('error', $e->getMessage());
             header("Location: /signup");
             exit();
         }
@@ -114,11 +114,24 @@ class UserController
     public function userProfile($firstName, $lastName, $id)
     {
         $user = $this->getUser($id);
+        $currentUser = SessionManager::get('user');
+        if (!$user) {
+            header("Location: /404");
+            exit();
+        }
+
+        $isOwner = $currentUser && method_exists($currentUser, 'getUserId') && $currentUser->getUserId() === $user->getUserId();
         require_once __DIR__ . '/../views/users/profile.php';
     }
 
     public function update($userID)
     {
+        $currentUserId = SessionManager::get('user_id');
+
+        if ($currentUserId != $userID && SessionManager::get('role') !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 error_log("Store method called");
@@ -203,18 +216,14 @@ class UserController
                     }
                     $profileImagePath = 'uploads/' . $fileName;
                 }
-                // Log để kiểm tra trước khi update
-                error_log("Final profileImagePath before updating DB: " . $profileImagePath);
-
                 $this->userDAO->updateProfile($userID, $username, $firstName, $lastName, $email, $profileImagePath, $bio, $dob);
-                error_log("updateProfile called with userId: $userID, username: $username, firstName: $firstName, lastName: $lastName, email: $email, profileImage: $profileImagePath, bio: $bio");
-                //$_SESSION['success'] = "User profile has been updated successfully!";
+
+                SessionManager::set('success', 'User profile has been updated successfully!');
                 header("Location: /profile/" . $firstName . "-" . $lastName . "-" . $userID);
                 exit();
             } catch (Exception $e) {
-                error_log("Error in store method: " . $e->getMessage());
-                $_SESSION['error'] = $e->getMessage();
-                header("Location: /404");
+                SessionManager::set('error', $e->getMessage());
+                header("Location: /profile/" . $firstName . "-" . $lastName . "-" . $userID);
                 exit();
             }
         }
@@ -229,6 +238,13 @@ class UserController
 
     public function updateAvatar($userId)
     {
+        $currentUserId = SessionManager::get('user_id');
+
+        if ($currentUserId != $userId && SessionManager::get('role') !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
         header("Content-Type: application/json");
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -296,6 +312,12 @@ class UserController
     }
     public function updateBio($userId)
     {
+        $currentUserId = SessionManager::get('user_id');
+
+        if ($currentUserId != $userId && SessionManager::get('role') !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
         header("Content-Type: application/json");
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -318,5 +340,27 @@ class UserController
         } catch (Exception $e) {
             echo json_encode(["success" => false, "message" => $e->getMessage()]);
         }
+    }
+
+    private function checkPermission($requiredRole)
+    {
+        $userRole = SessionManager::get('role');
+
+        if ($userRole !== $requiredRole) {
+            header("Location: /403");
+            exit();
+        }
+    }
+    public function manageUsers()
+    {
+        $this->checkPermission('admin'); // Chỉ admin mới truy cập được
+
+        //$users = $this->userDAO->getAllUsers();
+        require_once __DIR__ . '/../views/admin/manage_users.php';
+    }
+
+    public function forbidden()
+    {
+        require_once __DIR__ . '/../views/errors/403.php';
     }
 }

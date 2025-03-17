@@ -3,6 +3,7 @@
 namespace dal;
 
 use dal\UserDAOImpl;
+use utils\SessionManager;
 
 class Auth
 {
@@ -18,28 +19,32 @@ class Auth
 
         $user = $this->userDAO->checkUser($email, $password);
         if ($user) {
-            $_SESSION['user_id'] = $user->getUserId();
-            $_SESSION['username'] = $user->getUsername();
-            $_SESSION['role'] = $user->getRole();
+            SessionManager::set('user_id', $user->getUserId());
+            SessionManager::set('user', $user);
+            SessionManager::set('role', $user->getRole());
             // //need ....
-            return $user;
+            return true;
         }
-        return null;
+        return false;
     }
 
     public function logout()
     {
-        session_unset();
-        session_destroy();
+        SessionManager::destroy();
     }
 
     public function checkAuthentication()
     {
-        return isset($_SESSION['user_id']);
+        return SessionManager::get('user_id') !== null;
     }
 
     public function getUser()
     {
-        return isset($_SESSION['user_id']) ? $_SESSION['username'] : null;
+        return SessionManager::get('user');
+    }
+
+    public function getRole()
+    {
+        return SessionManager::get('role');
     }
 }

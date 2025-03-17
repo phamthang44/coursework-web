@@ -34,6 +34,9 @@ class WebRoutes
         $router->addRoute('GET', '/logout', 'AuthController', 'logout');
         $router->addRoute('GET', '/signup', 'UserController', 'signup');
         $router->addRoute('POST', '/signup', 'UserController', 'signup');
+        $router->addRoute('GET', '/403', 'UserController', 'forbidden');
+
+
         // Post routes
         $router->addRoute('GET', '/posts', 'PostController', 'index');
         $router->addRoute('GET', '/posts/create', 'PostController', 'create');
@@ -59,6 +62,6 @@ class WebRoutes
 
         // Admin routes
         $router->addRoute('GET', '/admin/profile/{firstname-lastname-id}', 'AdminController', 'userProfile');
-        $router->addRoute('POST', '/admin/update/{id}', 'AdminController', 'update');
+        $router->addRoute('GET', '/admin/user-management', 'AdminController', 'userManagement');
     }
 }

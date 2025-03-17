@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+        integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+        crossorigin="anonymous" />
     <title>KnowledgeHub</title>
     <style>
         /* Add required line-clamp utility if not provided by Tailwind */
@@ -25,11 +30,11 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\Template;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../layouts/footer.php';
-    require_once __DIR__ . '/../../controllers/UserController.php';
-    require_once __DIR__ . '/../posts/post-card.php'; // Include our new post-card component
+    Template::header();
+    Template::footer();
+    Template::postCard();
 
     $userController = new UserController();
     $postController = new PostController();
@@ -56,16 +61,6 @@
         $userObj = null;
     }
     $showControls = false;
-
-    // //$post = $postController->getPostByIdAndUserId($postId, $userId);
-    // $moduleName = $moduleController->getModule($post->getModuleId());
-    // $postImageObj = $postController->getPostImage($post->getPostId());
-    // if ($postImageObj) {
-    //     $postImageStr = $postImageObj->getMediaKey();
-    // } else {
-    //     $postImageStr = '';
-    // }
-    // //$postImage = $postImageStr ?? '';
 
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>

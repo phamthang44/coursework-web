@@ -19,9 +19,12 @@
     <?php
 
     use controllers\UserController;
+    use utils\Template;
+    use utils\SessionManager;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../../controllers/UserController.php';
+    Template::header();
+    Template::footer();
+
     $userController = new UserController();
     if (isset($_SESSION['user_id'])) {
         $userId = $_SESSION['user_id'];
@@ -64,7 +67,7 @@
                     </div>
                     <div class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-users mr-3 text-lg"></i>
-                        <span>Users</span>
+                        <a href="/admin/user-management">Users</a>
                     </div>
                     <div class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-book mr-3 text-lg"></i>
