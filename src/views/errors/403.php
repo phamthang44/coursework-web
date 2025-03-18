@@ -8,9 +8,16 @@
 </head>
 
 <body>
+    <?php
+
+    use utils\SessionManager;
+
+    $errorMsg = SessionManager::get('error');
+    ?>
     <h1>403 Forbidden</h1>
-    <p>You do not have permission to access this page.</p>
+    <p><?= $errorMsg ?></p>
     <a href="/">Back to main page</a>
+    <?php SessionManager::remove('error'); ?>
 </body>
 
 </html>

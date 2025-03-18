@@ -30,6 +30,7 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\SessionManager;
     use utils\Template;
 
     Template::header();
@@ -66,6 +67,9 @@
     ?>
 
     <div class="container mx-auto py-6 w-1/3">
+        <?php echo $error = SessionManager::get('error') ? SessionManager::get('error') : '';
+        SessionManager::remove('error'); ?>
+
         <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
         <?php
         if ($user_logged_in) {
@@ -87,6 +91,14 @@
         ?>
     </div>
     <div class="flex items-center justify-center space-x-2 mt-8">
+        <!-- First Button -->
+        <?php if ($currentPage > 1): ?>
+            <a href="?page=1"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                First
+            </a>
+        <?php endif; ?>
+
         <!-- Previous Button -->
         <?php if ($currentPage > 1): ?>
             <a href="?page=<?= $currentPage - 1 ?>"
@@ -101,15 +113,26 @@
 
         <!-- Page Numbers -->
         <div class="flex space-x-1">
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <?php
+            $maxPagesToShow = 5;
+            $startPage = max(1, $currentPage - 2);
+            $endPage = min($totalPages, $currentPage + 2);
+
+            if ($startPage > 1) {
+                echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+            }
+
+            for ($i = $startPage; $i <= $endPage; $i++): ?>
                 <a href="?page=<?= $i ?>"
-                    class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?=
-                                                                                                    ($i == $currentPage)
-                                                                                                        ? 'bg-red-600 text-white'
-                                                                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+                    class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?= ($i == $currentPage) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
                     <?= $i ?>
                 </a>
-            <?php endfor; ?>
+            <?php endfor;
+
+            if ($endPage < $totalPages) {
+                echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+            }
+            ?>
         </div>
 
         <!-- Next Button -->
@@ -122,6 +145,14 @@
             <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
                 Next
             </span>
+        <?php endif; ?>
+
+        <!-- Last Button -->
+        <?php if ($currentPage < $totalPages): ?>
+            <a href="?page=<?= $totalPages ?>"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                Last
+            </a>
         <?php endif; ?>
     </div>
     <?php
@@ -436,6 +467,18 @@
                 dropdown.classList.add("hidden");
             }
         }
+        const deleteBtnsAdmin = document.querySelectorAll(".delete-btn");
+        deleteBtnsAdmin.forEach((btn) => {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                checkExistingModal();
+                const deleteConfirmCard = new ConfirmCard();
+                deleteConfirmCard.openConfirmCard(`
+<h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+    Are you sure you want to delete this post?
+</h2>`);
+            });
+        });
     </script>
 
 </body>

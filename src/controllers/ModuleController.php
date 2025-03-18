@@ -4,12 +4,23 @@ namespace controllers;
 
 use dal\ModuleDAOImpl;
 
+
 class ModuleController
 {
     private $moduleDAO;
     public function __construct()
     {
         $this->moduleDAO = new ModuleDAOImpl();
+
+        // if (!$this->currentUser) {
+        //     header("Location: /login");
+        //     exit();
+        // }
+        // 
+        // if (!$this->currentUser->getRole() !== 'admin') {
+        //     header("Location: /403"); // Trang báo lỗi quyền hạn
+        //     exit();
+        // }
     }
 
     public function getModuleName($moduleId)
@@ -24,5 +35,9 @@ class ModuleController
     public function getAllModules()
     {
         return $this->moduleDAO->getAllModules();
+    }
+    public function getTotalModuleNums()
+    {
+        return $this->moduleDAO->getTotalModuleNums();
     }
 }

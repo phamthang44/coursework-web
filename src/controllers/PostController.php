@@ -5,10 +5,11 @@ namespace controllers;
 use dal\ModuleDAOImpl;
 use dal\PostAssetDAOImpl;
 use dal\PostDAOImpl;
+use utils\SessionManager;
 use Exception;
 use finfo;
 
-class PostController
+class PostController extends BaseController
 {
     private $postDAO;
     private $moduleDAO;
@@ -17,6 +18,7 @@ class PostController
     //private $postAssetController;
     function __construct()
     {
+        parent::__construct(['/posts']);
         $this->postDAO = new PostDAOImpl();
         $this->moduleDAO = new ModuleDAOImpl();
         $this->postAssetDAO = new PostAssetDAOImpl();
@@ -71,6 +73,7 @@ class PostController
     //CRUD first
     public function create()
     {
+
         $modules = $this->moduleDAO->getAllModules();
         require_once __DIR__ . '/../views/posts/createpost.php';
     }
@@ -114,7 +117,7 @@ class PostController
                 }
 
                 // Create post and take id
-                $userId = $_POST['user_id']; // Hard-coded tạm thời
+                $userId = $_POST['user_id'];
                 $moduleId = htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8');
                 if (empty($moduleId)) {
                     throw new Exception("Module is required");
@@ -164,7 +167,7 @@ class PostController
                 }
 
                 $referer = $_SERVER["HTTP_REFERER"] ?? "/posts";
-                $_SESSION['success'] = "The post has been created successfully!";
+                SessionManager::set("success", "The post has been created successfully!");
                 if (strpos($referer, "profile") !== false) {
                     header("Location: " . $referer);
                 } else {
@@ -173,7 +176,7 @@ class PostController
                 exit();
             } catch (Exception $e) {
                 error_log("Error in store method: " . $e->getMessage());
-                $_SESSION['error'] = $e->getMessage();
+                SessionManager::set('error', $e->getMessage());
                 header("Location: /posts");
                 exit();
             }
@@ -181,6 +184,15 @@ class PostController
     }
     public function edit($postId)
     {
+        $postUserId = $this->getPostUserId($postId);
+        $isOwner = $this->currentUser->getUserId() === $postUserId;
+        $isAdmin =  $this->currentUser->getRole() === 'admin';
+        $currentRoute = $_SERVER['REQUEST_URI'];
+        if (!$isOwner && !$isAdmin && $currentRoute === '/posts/edit/' . $postId) {
+            SessionManager::set("error", "You are not authorized to edit this post");
+            header("Location: /posts");
+            exit();
+        }
         try {
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
@@ -193,13 +205,23 @@ class PostController
             require_once __DIR__ . '/../views/posts/updatepost.php';
         } catch (Exception $e) {
             error_log("Error in edit method: " . $e->getMessage());
-            header("Location: /500");
+            header("Location: /404");
             exit();
         }
     }
 
     public function update($postId)
     {
+        $postUserId = $this->getPostUserId($postId);
+        $isOwner = $this->currentUser->getUserId() === $postUserId;
+        $isAdmin = $this->currentUser->getRole() === 'admin';
+        $currentRoute = $_SERVER['REQUEST_URI'];
+        if (!$isOwner && !$isAdmin && $currentRoute !== '/posts') {
+            SessionManager::set("error", "You are not authorized to update this post");
+            header("Location: /posts");
+            exit();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 error_log("Store method called");
@@ -229,19 +251,11 @@ class PostController
                     throw new Exception("No changes were made");
                 }
 
-                // if ($newModule !== $oldModule && $newTitle === $oldTitle && $newContent === $oldContent) {
-                //     $this->postDAO->updatePostModule($postId, $newModule);
-                // } else if ($newModule === $oldModule && $newTitle !== $oldTitle && $newContent === $oldContent) {
-                //     $this->postDAO->updatePostTitle($postId, $newTitle);
-                // } else if ($newModule === $oldModule && $newTitle === $oldTitle && $newContent !== $oldContent) {
-                //     $this->postDAO->updatePostContent($postId, $newContent);
-                // } else {
                 $this->postDAO->updatePost($postId, $newTitle, $newContent, $newModule);
-                //}
+
                 if (!$post) {
                     throw new Exception("Post not found");
                 }
-
 
                 error_log("Post created successfully");
                 $imageObj = $this->postAssetDAO->getByPostId($postId);
@@ -306,7 +320,7 @@ class PostController
                 exit();
             } catch (Exception $e) {
                 error_log("Error in update method: " . $e->getMessage());
-                $_SESSION['error'] = $e->getMessage();
+                SessionManager::set('error', $e->getMessage());
                 header("Location: /500.php");
                 exit();
             }
@@ -315,21 +329,30 @@ class PostController
 
     public function delete($postId)
     {
+        $postUserId = $this->getPostUserId($postId);
+        $isOwner = $this->currentUser->getUserId() === $postUserId;
+        $isAdmin = $this->currentUser->getRole() === 'admin';
+        $currentRoute = $_SERVER['REQUEST_URI'];
+        if (!$isOwner && !$isAdmin && $currentRoute !== '/posts') {
+            SessionManager::set("error", "You are not authorized to delete this post");
+            header("Location: /posts");
+            exit();
+        }
         try {
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
-                $_SESSION['error'] = "Post not found";
+                SessionManager::set("error", "Post not found");
                 header("Location: /posts");
                 exit();
             }
 
             $this->postDAO->deletePost($postId);
-            $_SESSION['success'] = "Post has been deleted successfully!";
+            SessionManager::set("success", "Post deleted successfully");
             header("Location: /posts");
             exit();
         } catch (Exception $e) {
             error_log("Error in delete method: " . $e->getMessage());
-            $_SESSION['error'] = $e->getMessage();
+            SessionManager::set("error", $e->getMessage());
             header("Location: /posts");
             exit();
         }
@@ -402,6 +425,19 @@ class PostController
         $totalPostsUsers = $this->getTotalPostsOfUser($userId);
         $totalPagesPostsOfUser = ceil($totalPostsUsers / $postsPerPage);
         return $totalPagesPostsOfUser;
+    }
+
+    public function getTotalPagesAllPosts()
+    {
+        $postsPerPage = 10;
+        $totalPosts = $this->postDAO->getAllPosts();
+        $totalPages = ceil(count($totalPosts) / $postsPerPage);
+        return $totalPages;
+    }
+
+    public function getPostsByPage($postsPerPage, $offset)
+    {
+        return $this->postDAO->getPostByPage($postsPerPage, $offset);
     }
     /*
         protected function render($view, $data = [])

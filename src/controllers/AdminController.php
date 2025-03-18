@@ -7,12 +7,17 @@ use Exception;
 use finfo;
 use utils\SessionManager;
 
-class AdminController
+class AdminController extends BaseController
 {
     private $userDAO;
     public function __construct()
     {
+        parent::__construct(['/posts'], ['/admin/dashboard', '/admin/user-management', '/admin/module-management']);
         $this->userDAO = new UserDAOImpl();
+        if ($this->currentUser && $this->currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
     }
     public function dashboard()
     {
@@ -114,5 +119,10 @@ class AdminController
     public function  userManagement()
     {
         require_once __DIR__ . '/../views/admin/user_management.php';
+    }
+
+    public function moduleManagement()
+    {
+        require_once __DIR__ . '/../views/admin/module_management.php';
     }
 }

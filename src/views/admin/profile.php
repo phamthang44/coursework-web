@@ -261,6 +261,14 @@
                         }
                         ?>
                         <div class="flex items-center justify-center space-x-2 mt-8">
+                            <!-- First Button -->
+                            <?php if ($currentPage > 1): ?>
+                                <a href="?page=1"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                                    First
+                                </a>
+                            <?php endif; ?>
+
                             <!-- Previous Button -->
                             <?php if ($currentPage > 1): ?>
                                 <a href="?page=<?= $currentPage - 1 ?>"
@@ -275,15 +283,26 @@
 
                             <!-- Page Numbers -->
                             <div class="flex space-x-1">
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <?php
+                                $maxPagesToShow = 3;
+                                $startPage = max(1, $currentPage - 2);
+                                $endPage = min($totalPages, $currentPage + 2);
+
+                                if ($startPage > 1) {
+                                    echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+                                }
+
+                                for ($i = $startPage; $i <= $endPage; $i++): ?>
                                     <a href="?page=<?= $i ?>"
-                                        class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?=
-                                                                                                                        ($i == $currentPage)
-                                                                                                                            ? 'bg-red-600 text-white'
-                                                                                                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+                                        class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?= ($i == $currentPage) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
                                         <?= $i ?>
                                     </a>
-                                <?php endfor; ?>
+                                <?php endfor;
+
+                                if ($endPage < $totalPages) {
+                                    echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+                                }
+                                ?>
                             </div>
 
                             <!-- Next Button -->
@@ -296,6 +315,14 @@
                                 <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
                                     Next
                                 </span>
+                            <?php endif; ?>
+
+                            <!-- Last Button -->
+                            <?php if ($currentPage < $totalPages): ?>
+                                <a href="?page=<?= $totalPages ?>"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                                    Last
+                                </a>
                             <?php endif; ?>
                         </div>
                     </div>

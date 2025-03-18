@@ -20,4 +20,5 @@ interface UserDAOI
     public function updateDateOfBirth($userId, $dateOfBirth);
     public function updateRole($userId, $role);
     public function deleteUser($userId);
+    public function getTotalUserNums();
 }

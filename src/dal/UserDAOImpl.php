@@ -282,4 +282,13 @@ class UserDAOImpl implements UserDAOI
             $row['dob'] ?? null
         );
     }
+
+    public function getTotalUserNums()
+    {
+        $conn = $this->pdo;
+        $sql = "SELECT COUNT(*) FROM Users";
+        $stmt = $conn->query($sql);
+        $totalUsers = $stmt->fetchColumn();
+        return $totalUsers;
+    }
 }

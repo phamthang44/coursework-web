@@ -3,6 +3,7 @@
 namespace controllers;
 
 use dal\Auth;
+use utils\SessionManager;
 
 class AuthController
 {
@@ -23,14 +24,14 @@ class AuthController
             $user = $this->auth->login($email, $password);
 
             if ($user) {
-                if ($_SESSION['role'] === 'admin') {
+                if (SessionManager::get('role') === 'admin') {
                     header("Location: /admin/dashboard");
                     exit();
                 }
                 header("Location: /posts"); //temporary need to check role
                 exit();
             } else {
-                echo "Invalid credentials";
+                SessionManager::set('invalid-credentials', "Invalid credentials");
             }
         } else {
             $file = dirname(__DIR__) . "/views/users/login.php";
@@ -68,5 +69,9 @@ class AuthController
             }
         }
         return false;
+    }
+    public function forbidden()
+    {
+        require_once __DIR__ . '/../views/errors/403.php';
     }
 }

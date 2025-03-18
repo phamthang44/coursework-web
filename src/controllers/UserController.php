@@ -12,21 +12,19 @@ use Exception;
 use finfo;
 
 
-class UserController
+class UserController extends BaseController
 {
     private $userDAO;
 
     public function __construct()
     {
+        parent::__construct(['/posts', '/403', '/404', '/signup', '/login']);
         $this->userDAO = new UserDAOImpl();
     }
 
     public function contact()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            //$email = '';
-            // $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-            // $dotenv->load();
             ini_set('SMTP', 'smtp.gmail.com');
             ini_set('smtp_port', 587);
             ini_set('sendmail_from', 'phamthang5331@gmail.com');
@@ -359,8 +357,8 @@ class UserController
         require_once __DIR__ . '/../views/admin/manage_users.php';
     }
 
-    public function forbidden()
+    public function getTotalUserNums()
     {
-        require_once __DIR__ . '/../views/errors/403.php';
+        return $this->userDAO->getTotalUserNums();
     }
 }

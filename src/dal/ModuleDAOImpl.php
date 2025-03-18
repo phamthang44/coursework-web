@@ -121,4 +121,13 @@ class ModuleDAOImpl implements ModuleDAOI
         }
         return $modules;
     }
+
+    public function getTotalModuleNums()
+    {
+        $conn = $this->pdo;
+        $sql = "SELECT COUNT(*) FROM Modules";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 }
