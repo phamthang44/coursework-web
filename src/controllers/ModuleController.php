@@ -23,6 +23,11 @@ class ModuleController
         // }
     }
 
+    public function moduleManagement()
+    {
+        require_once __DIR__ . '/../views/admin/module_management.php';
+    }
+
     public function getModuleName($moduleId)
     {
         return $this->moduleDAO->getModule($moduleId)->getModuleName();

@@ -35,9 +35,9 @@ class UserController extends BaseController
             $headers .= "MIME-Version: 1.0\r\n";
             $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
             if (mail($to, $subject, $message, $headers)) {
-                header("Location: /success");
+                header("Location: /emailsuccess");
             } else {
-                echo "❌ Error in sending email.";
+                header("Location: /emailfail");
             }
         } else {
             require_once __DIR__ . '/../views/users/contact.php';

@@ -44,13 +44,13 @@ class WebRoutes
         $router->addRoute('GET', '/posts/edit/{id}', 'PostController', 'edit');
         $router->addRoute('POST', '/posts/update/{id}', 'PostController', 'update');
         $router->addRoute('GET', '/posts/delete/{id}', 'PostController', 'delete');
-
+        $router->addRoute('GET', '/404', 'PostController', 'notfound');
         // Contact routes
         $router->addRoute('GET', '/contact', 'UserController', 'contact');
         $router->addRoute('POST', '/contact', 'UserController', 'contact');
         $router->addRoute('GET', '/emailsuccess', 'UserController', 'emailsuccess');
         $router->addRoute('GET', '/emailfail', 'UserController', 'emailfail');
-
+        $router->addRoute('GET', '/404', 'UserController', 'notfound');
         // User routes
         $router->addRoute('GET', '/profile/{firstname-lastname-id}', 'UserController', 'userProfile');
         $router->addRoute('POST', '/users/update/{id}', 'UserController', 'update');

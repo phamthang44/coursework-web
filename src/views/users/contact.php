@@ -15,6 +15,7 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\SessionManager;
     use utils\Template;
 
     Template::header();
@@ -26,10 +27,15 @@
     $postController = new PostController();
     $moduleController = new ModuleController();
 
-    $user = null;
-
-    if (isset($_SESSION['user_id'])) {
-        $userId = $_SESSION['user_id'];
+    $currentUser = SessionManager::get('user');
+    if ($currentUser !== null) {
+        $user_logged_in = true;
+    } else {
+        $user_logged_in = false;
+    }
+    echo render_quora_header($user_logged_in, $currentUser->getUsername(), $currentUser->getProfileImage(),  $currentUser->getEmail(), $currentUser);
+    if ((SessionManager::get('user_id')) !== null) {
+        $userId = SessionManager::get('user_id');
         $user = $userController->getUser($userId);
         $user_logged_in = true;
         $user_name = $user->getUsername();
@@ -42,12 +48,10 @@
         $user_email = '';
     }
 
-    $userObj = $user;
 
-    echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>
     <?php
-    if (!is_null($userObj)) {
+    if (!is_null($user)) {
         echo '<div class="container mx-auto py-6 w-1/3 rounded-lg">
         <h2 class="text-2xl text-red-500 font-bold mb-4">Send Email Message to admin</h2>
         <form action="/contact" method="POST" enctype="multipart/form-data" id="form-send-email" class="space-y-4">
@@ -72,7 +76,7 @@
     </div>
     <div class="mt-[100px]"></div>';
         echo render_quora_footer();
-    } else if (is_null($userObj)) {
+    } else if (is_null($user)) {
         echo '<div class="flex w-full h-auto flex-col items-center">
                 <h1 class="text-2xl text-red-500 font-bold text-center mt-20 justify-center">Please login to send email to admin</h1>
                 <a href="/login" class="mt-4 bg-red-500 hover:bg-red-600 transition text-white font-bold py-2 px-4 rounded-lg">Login</a>

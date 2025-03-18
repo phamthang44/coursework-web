@@ -81,14 +81,14 @@
                         <i class="fas fa-file-alt mr-3 text-lg"></i>
                         <span>Posts</span>
                     </a>
-                    <div class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                    <a href="/admin/user-management" class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-users mr-3 text-lg"></i>
-                        <a href="/admin/user-management">Users</a>
-                    </div>
-                    <div class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                        <span>Users</span>
+                    </a>
+                    <a href="/admin/module-management" class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-book mr-3 text-lg"></i>
                         <span>Modules</span>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="mb-4">

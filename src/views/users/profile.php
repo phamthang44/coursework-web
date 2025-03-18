@@ -190,10 +190,11 @@
                                 $postUserId = $postController->getPostUserId($postId);
                                 if (!is_null($user)) {
                                     if ($user->getUserId() === $postUserId) {
-                                        $buttonMoreOptions = '<button class="post-options">
+                                        if ($isOwner) {
+                                            $buttonMoreOptions = '<button class="post-options">
                                                 <span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span>
                                               </button>';
-                                        $postMoreOptionsDropdown = '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-30 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
+                                            $postMoreOptionsDropdown = '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-30 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
                                                 <a href="/posts/edit/' . $postId . '" 
                                                    data-url="/posts/edit/' . $postId . '" 
                                                    class="edit-action-advanced block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -209,6 +210,10 @@
                                                    Delete
                                                 </a>
                                               </div>';
+                                        } else {
+                                            $buttonMoreOptions = '';
+                                            $postMoreOptionsDropdown = '';
+                                        }
                                     }
                                 }
 

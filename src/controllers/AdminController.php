@@ -12,7 +12,7 @@ class AdminController extends BaseController
     private $userDAO;
     public function __construct()
     {
-        parent::__construct(['/posts'], ['/admin/dashboard', '/admin/user-management', '/admin/module-management']);
+        parent::__construct(['/posts']);
         $this->userDAO = new UserDAOImpl();
         if ($this->currentUser && $this->currentUser->getRole() !== 'admin') {
             header("Location: /403");

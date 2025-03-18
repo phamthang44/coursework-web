@@ -51,7 +51,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
             <!-- Navigation -->
             <nav class="hidden md:flex items-center space-x-4">
                 <a href="/posts" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
-                <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Following</a>
+                <a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Answer</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Notifications</a>
                 <?php
