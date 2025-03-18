@@ -61,6 +61,6 @@ class WebRoutes
         $router->addRoute('GET', '/admin/dashboard', 'AdminController', 'dashboard');
         $router->addRoute('GET', '/admin/profile/{firstname-lastname-id}', 'AdminController', 'userProfile');
         $router->addRoute('GET', '/admin/user-management', 'AdminController', 'userManagement');
-        $router->addRoute('GET', 'admin/module-management', 'AdminController', 'moduleManagement');
+        $router->addRoute('GET', '/admin/module-management', 'AdminController', 'moduleManagement');
     }
 }

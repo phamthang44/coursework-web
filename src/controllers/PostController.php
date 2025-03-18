@@ -358,6 +358,11 @@ class PostController extends BaseController
         }
     }
 
+    public function getPostById($postId)
+    {
+        return $this->postDAO->getPost($postId);
+    }
+
     public function getPostsByUserId($userId)
     {
         return $this->postDAO->getPostsByUserId($userId);

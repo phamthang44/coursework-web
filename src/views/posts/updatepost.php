@@ -15,6 +15,7 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\SessionManager;
     use utils\Template;
 
     Template::header();
@@ -39,6 +40,10 @@
     }
 
     $post = $postController->getPostByIdAndUserId($postId, $userId);
+    $postAdminDisplay = $postController->getPostById($postId);
+    if (SessionManager::get('role') === 'admin') {
+        $post = $postAdminDisplay;
+    }
     $moduleName = $moduleController->getModuleName($post->getModuleId());
     $postImageObj = $postController->getPostImage($post->getPostId());
     $postImageStr = (!is_null($postImageObj)) ? $postImageObj->getMediaKey() : '';
