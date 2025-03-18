@@ -10,10 +10,12 @@ use utils\SessionManager;
 class AdminController extends BaseController
 {
     private $userDAO;
+    private $moduleController;
     public function __construct()
     {
         parent::__construct(['/posts']);
         $this->userDAO = new UserDAOImpl();
+        $this->moduleController = new ModuleController();
         if ($this->currentUser && $this->currentUser->getRole() !== 'admin') {
             header("Location: /403");
             exit();
@@ -124,5 +126,113 @@ class AdminController extends BaseController
     public function moduleManagement()
     {
         require_once __DIR__ . '/../views/admin/module_management.php';
+    }
+
+    public function updateModule($moduleId)
+    {
+        $currentUser = SessionManager::get('user');
+        if (!$currentUser || $currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
+        header("Content-Type: application/json");
+
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(["success" => false, "message" => "Invalid request"]);
+            exit();
+        }
+
+        try {
+            $moduleName = trim(htmlspecialchars($_POST['moduleName'] ?? '', ENT_QUOTES, 'UTF-8'));
+            $moduleDescription = trim(htmlspecialchars($_POST['moduleDescription'] ?? '', ENT_QUOTES, 'UTF-8'));
+
+            if (empty($moduleName) || empty($moduleDescription) || empty($moduleId)) {
+                throw new Exception("Module name, description and ID are required");
+            }
+            $result = $this->moduleController->updateModule($moduleName, $moduleDescription, $moduleId);
+
+            if ($result) {
+                $module = $this->moduleController->getModuleById($moduleId);
+                error_log(print_r($module, true));
+                echo json_encode([
+                    "status" => true,
+                    "module" => $module->toArray()
+                ]);
+            } else {
+                throw new Exception("Failed to update module");
+            }
+        } catch (\Throwable $th) {
+            echo json_encode(["status" => false, "message" => $th->getMessage()]);
+        }
+    }
+
+    public function deleteModule($moduleId)
+    {
+        $currentUser = SessionManager::get('user');
+        if (!$currentUser || $currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
+        header("Content-Type: application/json");
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(["success" => false, "message" => "Invalid request"]);
+            exit();
+        }
+
+        try {
+            $result = $this->moduleController->deleteModule($moduleId);
+            if ($result) {
+                echo json_encode(["status" => true]);
+            } else {
+                throw new Exception("Failed to delete module");
+            }
+        } catch (\Throwable $th) {
+            echo json_encode(["status" => false, "message" => $th->getMessage()]);
+        }
+    }
+
+    public function createModule()
+    {
+        $currentUser = SessionManager::get('user');
+        if (!$currentUser || $currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
+        header("Content-Type: application/json");
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(["success" => false, "message" => "Invalid request"]);
+            exit();
+        }
+
+        try {
+            $moduleName = trim(htmlspecialchars($_POST['moduleName'] ?? '', ENT_QUOTES, 'UTF-8'));
+            $moduleDescription = trim(htmlspecialchars($_POST['moduleDescription'] ?? '', ENT_QUOTES, 'UTF-8'));
+
+            if (empty($moduleName) || empty($moduleDescription)) {
+                throw new Exception("Module name and description are required");
+            }
+
+            $result = $this->moduleController->createModule($moduleName, $moduleDescription);
+
+            if ($result['success']) {
+                $module = $this->moduleController->getModuleById($result['moduleId']);
+                echo json_encode([
+                    "status" => true,
+                    "module" => $module->toArray()
+                ]);
+                // header("Location: /admin/module-management");
+                // exit();
+            } else {
+                throw new Exception("Failed to create module");
+            }
+        } catch (\Throwable $th) {
+            echo json_encode(["status" => false, "message" => $th->getMessage()]);
+        }
     }
 }

@@ -62,5 +62,8 @@ class WebRoutes
         $router->addRoute('GET', '/admin/profile/{firstname-lastname-id}', 'AdminController', 'userProfile');
         $router->addRoute('GET', '/admin/user-management', 'AdminController', 'userManagement');
         $router->addRoute('GET', '/admin/module-management', 'AdminController', 'moduleManagement');
+        $router->addRoute('POST', '/admin/modules/update/{moduleId}', 'AdminController', 'updateModule');
+        $router->addRoute('POST', '/admin/modules/create', 'AdminController', 'createModule');
+        $router->addRoute('GET', '/admin/modules/delete/{moduleId}', 'AdminController', 'deleteModule');
     }
 }

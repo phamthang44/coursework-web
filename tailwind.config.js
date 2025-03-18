@@ -6,6 +6,7 @@ export default {
       colors: {
         darkmode: "#262626",
         darkmode2: "#131313",
+        darkmode3: "#121212",
         primary: {
           light: "#3f51b5",
           dark: "#b92b27", // Quora red

@@ -16,4 +16,8 @@ class Template
     {
         require_once __DIR__ . '/../views/posts/post-card.php';
     }
+    public static function sidebar()
+    {
+        require_once __DIR__ . '/../views/layouts/sidebar.php';
+    }
 }

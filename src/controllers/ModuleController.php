@@ -22,6 +22,10 @@ class ModuleController
         //     exit();
         // }
     }
+    public function getCurrentPage()
+    {
+        return isset($_GET['page']) ? $_GET['page'] : 1;
+    }
 
     public function moduleManagement()
     {
@@ -44,5 +48,24 @@ class ModuleController
     public function getTotalModuleNums()
     {
         return $this->moduleDAO->getTotalModuleNums();
+    }
+    public function getModulesPerPage($offset, $limit)
+    {
+        return $this->moduleDAO->getModulesPerPage($offset, $limit);
+    }
+
+    public function updateModule($moduleName, $moduleDescription, $moduleId)
+    {
+        return $this->moduleDAO->updateModule($moduleName, $moduleDescription, $moduleId);
+    }
+
+    public function deleteModule($moduleId)
+    {
+        return $this->moduleDAO->deleteModule($moduleId);
+    }
+
+    public function createModule($moduleName, $moduleDescription)
+    {
+        return $this->moduleDAO->insertModule($moduleName, $moduleDescription);
     }
 }

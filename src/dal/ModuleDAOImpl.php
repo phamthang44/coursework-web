@@ -19,18 +19,21 @@ class ModuleDAOImpl implements ModuleDAOI
     {
         // TODO: Implement insertModule() method.
         $conn = $this->pdo;
-        $sql = "INSERT INTO module (moduleName, moduleDescription) VALUES (:moduleName, :moduleDescription)";
+        $sql = "INSERT INTO modules (module_name, description) VALUES (:moduleName, :moduleDescription)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':moduleName', $moduleName);
         $stmt->bindParam(':moduleDescription', $moduleDescription);
-        return $stmt->execute();
+        return [
+            "success" => $stmt->execute(),
+            "moduleId" => intval($conn->lastInsertId())
+        ];
     }
 
     public function updateModule($moduleName, $moduleDescription, $moduleId)
     {
         // TODO: Implement updateModule() method.
         $conn = $this->pdo;
-        $sql = "UPDATE Modules SET description = :moduleDescription, module_name = :moduleName WHERE module_id = :moduleId";
+        $sql = "UPDATE modules SET description = :moduleDescription, module_name = :moduleName WHERE module_id = :moduleId";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':moduleDescription', $moduleDescription);
         $stmt->bindParam(':moduleName', $moduleName);
@@ -129,5 +132,21 @@ class ModuleDAOImpl implements ModuleDAOI
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchColumn();
+    }
+
+    public function getModulesPerPage($offset, $limit)
+    {
+        $sql = "SELECT * FROM Modules LIMIT :limit OFFSET :offset";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+        $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $modules = [];
+        foreach ($rows as $row) {
+            $module = new Module($row['module_id'], $row['module_name'], $row['description']);
+            $modules[] = $module;
+        }
+        return $modules;
     }
 }

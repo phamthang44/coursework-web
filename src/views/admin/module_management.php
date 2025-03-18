@@ -9,8 +9,46 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body class="bg-gray-100 dark:bg-darkmode2 min-h-screen">
+<body class="bg-gray-100 dark:bg-darkmode2 min-h-screen" id="module-page">
+    <?php
 
+    use controllers\UserController;
+    use controllers\PostController;
+    use controllers\ModuleController;
+    use utils\Template;
+    use utils\SessionManager;
+
+    Template::header();
+    Template::footer();
+    Template::sidebar();
+
+    $userController = new UserController();
+    $moduleController = new ModuleController();
+
+    if ((SessionManager::get('user_id')) !== null) {
+        $currentUser = $userController->getUser(SessionManager::get('user_id'));
+        $currentUser = SessionManager::get('user');
+        $user_logged_in = true;
+        $userName = $currentUser->getUsername();
+        $userAvatar = $currentUser->getProfileImage() ?? '';
+        $userEmail = $currentUser->getEmail();
+        // $profileLink = '/profile/' . $user->getFirstName() . '-' . $user->getLastName() . '-' . $user->getUserId();
+        $modulesPerPage = 10;
+        $currentPage = $moduleController->getCurrentPage();
+        $offset = ($currentPage - 1) * $modulesPerPage;
+        $totalModuleNums = $moduleController->getTotalModuleNums();
+        $totalPages = ceil($totalModuleNums / $modulesPerPage);
+        $modules = $moduleController->getModulesPerPage($offset, $modulesPerPage);
+        $dashboardLink = '/admin/dashboard';
+        $adminProfileLink = '/admin/profile/' . $currentUser->getFirstName() . '-' . $currentUser->getLastName() . '-' . $currentUser->getUserId();
+    } else {
+        $user_logged_in = false;
+        $userName = '';
+        $userAvatar = '';
+        $userEmail = '';
+    }
+    echo render_quora_header($user_logged_in, $userName, $userAvatar, $userEmail, $currentUser);
+    ?>
     <!-- Main Content -->
 
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
@@ -19,14 +57,14 @@
         <div class="bg-white dark:bg-darkmode rounded-lg shadow p-6">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Modules</h2>
-                <button @click="showModuleModal = true; resetModuleForm()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+                <button class="add-module-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
                     Add Module
                 </button>
             </div>
 
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-                    <thead class="bg-gray-50 dark:bg-darkmode2">
+                    <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Module Name</th>
@@ -34,57 +72,214 @@
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white dark:bg-darkmode divide-y divide-gray-200 dark:divide-gray-600">
+                    <tbody class="bg-white dark:bg-darkmode divide-y divide-gray-200 dark:divide-gray-600 over-flow-y-auto">
                         <!-- Replace this section with dynamic content -->
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">1</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Introduction to Programming</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Learn the basics of programming concepts and logic.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button @click="editModule(module)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">Edit</button>
-                                <button @click="deleteModule(module.id)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">2</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Web Development Basics</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Understand the fundamentals of web development, including HTML, CSS, and JavaScript.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button @click="editModule(module)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">Edit</button>
-                                <button @click="deleteModule(module.id)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Delete</button>
-                            </td>
-                        </tr>
+                        <?php foreach ($modules as $module) { ?>
+                            <tr class="module-item hover:bg-gray-50 dark:hover:bg-gray-700"
+                                data-module-id="<?= htmlspecialchars($module->getModuleId(), ENT_QUOTES, 'UTF-8'); ?>"
+                                data-module-name="<?= htmlspecialchars($module->getModuleName(), ENT_QUOTES, 'UTF-8'); ?>"
+                                data-module-description="<?= htmlspecialchars($module->getModuleDescription(), ENT_QUOTES, 'UTF-8'); ?>">
+
+                                <td class="module-id px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                    <?= htmlspecialchars($module->getModuleId(), ENT_QUOTES, 'UTF-8'); ?>
+                                </td>
+                                <td class="module-name px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                    <?= htmlspecialchars($module->getModuleName(), ENT_QUOTES, 'UTF-8'); ?>
+                                </td>
+                                <td class="module-description px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                    <?= htmlspecialchars($module->getModuleDescription(), ENT_QUOTES, 'UTF-8'); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="edit-module-btn text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                        Edit
+                                    </button>
+                                    <button class="delete-module-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Module Modal -->
-    <!-- <div x-show="showModuleModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-darkmode max-w-md w-full rounded-lg shadow-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4" x-text="editMode ? 'Edit Module' : 'Add Module'"></h3>
-            <form>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Module Name</label>
-                    <input class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:dark-mode-border shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-darkmode2 text-gray-900 dark:text-white" required>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                    <textarea class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:dark-mode-border shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-darkmode2 text-gray-900 dark:text-white" required></textarea>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded mr-2">
-                        Cancel
-                    </button>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div> -->
+    <?php echo render_quora_footer() ?>
+    <script src="/js/validator.js"></script>
+    <script>
+        const moduleItems = document.querySelectorAll('.module-item');
+        moduleItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const moduleModal = new Modal();
+                const moduleId = item.dataset.moduleId;
+                const moduleName = item.dataset.moduleName;
+                const moduleDescription = item.dataset.moduleDescription;
+                if (e.target.classList.contains("edit-module-btn")) {
 
+                    moduleModal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Edit the module</h2>
+                            <form action="/admin/modules/update/${moduleId}" method="POST" enctype="multipart/form-data" id="form-update-module" class="space-y-4">
+                                <div class="form-group py-4 mb-4">
+                                    <label for="moduleName" class="block font-medium text-gray-700 dark:text-white mb-4">Module name (Required):</label>
+                                    <input type="text" id="moduleName" name="moduleName" placeholder="Enter module name (Required)"
+                                        class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
+                                        value="${moduleName}">
+                                    <span class="form-message text-red-500 text-sm"></span>
+                                </div>
+                                <!-- Content Field (Required) -->
+                                <div class="form-group">
+                                    <label for="moduleDescription" class="block font-medium text-gray-700 dark:text-white mb-4">Description (Required):</label>
+                                    <textarea id="moduleDescription" name="moduleDescription" rows="5" placeholder="Enter description (Required)"
+                                        class="w-full h-40 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${moduleDescription}</textarea>
+                                    <span class="form-message text-red-500 font-medium text-sm"></span>
+                                </div>
+                                <!-- Submit Button -->
+                                <div class="flex">
+                                    <button type="button" class="cancel-edit-module-btn bg-gray-300 hover:bg-gray-400 transition text-gray-800 font-bold w-[100px] h-[50px] mr-[20px] rounded-full">
+                                        Cancel
+                                    </button>
+                                    <input class="save-module-btn bg-red-700 hover:bg-red-600 transition text-white font-bold w-[100px] h-[50px] rounded-full" type="submit" value="Save">
+                                </div>
+                            </form>
+`);
+                } else if (e.target.classList.contains("delete-module-btn")) {
+                    e.preventDefault();
+                    checkExistingModal();
+                    const deleteConfirmCard = new ConfirmCard();
+                    deleteConfirmCard.openConfirmCard(`
+<h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+    Are you sure you want to delete this post?
+</h2>`);
+                }
+            });
+        });
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === "childList") {
+                    Validator({
+                        form: "#form-update-module",
+                        formGroupSelector: ".form-group",
+                        formMessage: ".form-message",
+                        rules: [
+                            Validator.isRequired("#moduleName"),
+                            Validator.isRequired("#moduleDescription"),
+                            Validator.maxLength("#moduleName", 100),
+                        ],
+                    });
+
+                    Validator({
+                        form: "#form-create-module",
+                        formGroupSelector: ".form-group",
+                        formMessage: ".form-message",
+                        rules: [
+                            Validator.isRequired("#moduleName"),
+                            Validator.isRequired("#moduleDescription"),
+                            Validator.maxLength("#moduleName", 100),
+                        ],
+                    });
+                    const cancelEditModuleBtn = document.querySelector(".cancel-edit-module-btn");
+                    if (cancelEditModuleBtn) {
+                        cancelEditModuleBtn.addEventListener("click", () => {
+                            const modalElement = document.querySelector('.modal-backdrop');
+                            if (modalElement) {
+                                modalElement.classList.remove("show");
+                                modalElement.addEventListener("transitionend", () => {
+                                    modalElement.remove();
+                                });
+                                // If transition does not work, still ensure Modal be removed after 300ms
+                                setTimeout(() => {
+                                    if (document.body.contains(modalElement)) {
+                                        modalElement.remove();
+                                    }
+                                }, 300);
+                            }
+                        });
+                    }
+
+
+
+                }
+            });
+        });
+
+        // Observe change in body (or container of modal)
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        document.addEventListener("submit", async function(event) {
+            const form = event.target;
+            if (form.id === "form-update-module") {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status && data.module) {
+                        checkExistingModal();
+                        document.querySelector(".module-name").textContent = data.module.moduleName;
+                        document.querySelector(".module-description").textContent = data.module.moduleDescription;
+                        document.querySelector(".module-id").textContent = data.module.moduleId;
+                        document.querySelector(".module-item").setAttribute("data-module-name", data.module.moduleName);
+                        document.querySelector(".module-item").setAttribute("data-module-description", data.module.moduleDescription);
+                        document.querySelector(".module-item").setAttribute("data-module-id", data.module.moduleId);
+                    } else {
+                        console.error("Error from server:", data.message);
+                    }
+                } catch (error) {
+                    console.error("Error fetch:", error);
+                }
+            }
+        });
+
+
+        function checkExistingModal() {
+            const existingModal = document.querySelector(".modal-backdrop");
+            if (existingModal) {
+                existingModal.remove();
+            }
+        }
+
+        //         const addModuleBtn = document.querySelector(".add-module-btn");
+        //         addModuleBtn.addEventListener("click", () => {
+        //             const moduleModal = new Modal();
+        //             moduleModal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Add new module</h2>
+        //                             <form action="/admin/modules/create" method="POST" enctype="multipart/form-data" id="form-create-module" class="space-y-4">
+        //                                 <div class="form-group py-4 mb-4">
+        //                                     <label for="moduleName" class="block font-medium text-gray-700 dark:text-white mb-4">Module name (Required):</label>
+        //                                     <input type="text" id="moduleName" name="moduleName" placeholder="Enter module name (Required)"
+        //                                         class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
+        //                                         value="">
+        //                                     <span class="form-message text-red-500 text-sm"></span>
+        //                                 </div>
+        //                                 <!-- Content Field (Required) -->
+        //                                 <div class="form-group">
+        //                                     <label for="moduleDescription" class="block font-medium text-gray-700 dark:text-white mb-4">Description (Required):</label>
+        //                                     <textarea id="moduleDescription" name="moduleDescription" rows="5" placeholder="Enter description (Required)"
+        //                                         class="w-full h-40 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
+        //                                     <span class="form-message text-red-500 font-medium text-sm"></span>
+        //                                 </div>
+        //                                 <!-- Submit Button -->
+        //                                 <div class="flex">
+        //                                     <input class="create-module-btn bg-red-700 hover:bg-red-600 transition text-white font-bold w-[150px] h-[50px] rounded-full" type="submit" value="Add new module">
+        //                                 </div>
+        //                             </form>
+        // `);
+        //         });
+
+        const addQuestion = document.querySelector(".add-question");
+        addQuestion.style.display = "none";
+    </script>
 </body>
 
 </html>

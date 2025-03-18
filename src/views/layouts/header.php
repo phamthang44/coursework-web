@@ -99,7 +99,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                             <div class="px-2 py-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center">
                                     <?php if ($user_avatar): ?>
-                                        <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3 avatar-user">
+                                        <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3 avatar-user object-cover">
                                     <?php else: ?>
                                         <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 mr-3">
                                             <?php echo strtoupper(substr($user_name, 0, 1)); ?>

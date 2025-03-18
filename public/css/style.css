@@ -466,3 +466,12 @@ input[type="date"]:focus {
   color: rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
+
+/* Module page */
+#module-page .modal-container:has(#form-update-module) {
+  width: min(600px, 90%);
+}
+
+#module-page .modal-container:has(#form-create-module) {
+  width: min(600px, 90%);
+}

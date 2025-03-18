@@ -233,7 +233,7 @@
 
                 <!-- Submit Button -->
                 <div class="flex justify-end">
-                    <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Submit">
+                    <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create post">
                 </div>
             </form>
 `);

@@ -68,4 +68,13 @@ class Module
     {
         $this->moduleDescription = $moduleDescription;
     }
+
+    public function toArray()
+    {
+        return [
+            'moduleId' => $this->moduleId,
+            'moduleName' => $this->moduleName,
+            'moduleDescription' => $this->moduleDescription,
+        ];
+    }
 }

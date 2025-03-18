@@ -13,4 +13,5 @@ interface ModuleDAOI
     public function getModulesByName($moduleName);
     public function getAllModules();
     public function getTotalModuleNums();
+    public function getModulesPerPage($offset, $limit);
 }

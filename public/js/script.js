@@ -321,15 +321,3 @@ function toast({
     main.appendChild(toast);
   }
 }
-
-// const deleteBtnsAdmin = document.querySelectorAll(".delete-btn");
-// deleteBtnsAdmin.forEach((btn) => {
-//   btn.addEventListener("click", function (e) {
-//     e.preventDefault();
-//     const deleteConfirmCard = new ConfirmCard();
-//     deleteConfirmCard.openConfirmCard(`
-// <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
-//     Are you sure you want to delete this post?
-// </h2>`);
-//   });
-// });

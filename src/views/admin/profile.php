@@ -7,12 +7,21 @@
     <title>Profile - KnowledgeHub</title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .line-clamp-6 {
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
-<body class="bg-gray-100 dark:bg-darkmode2 transition-colors duration-200" id="profile-page">
+<body class="bg-gray-100 dark:bg-darkmode3 transition-colors duration-200" id="profile-page">
     <?php
 
     use controllers\PostController;
@@ -239,7 +248,7 @@
                                     </div>
                                     <div class="mt-3">
                                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">' . $title . '</h3>
-                                        <p class="mt-2 text-gray-700 dark:text-gray-300">' . $content . '</p>
+                                        <p class="mt-2 text-gray-700 dark:text-gray-300 line-clamp-6">' . $content . '</p>
                                         <div class="mt-3">' . (isset($postImageObj) && $postImageObj->getMediaKey() ? '<img src="/' . $postImageObj->getMediaKey() . '" alt="Database diagram" class="rounded-lg w-full object-cover">' : '') . '
                                     </div>
                                 </div>
