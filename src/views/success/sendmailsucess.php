@@ -7,24 +7,7 @@
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <title>Success</title>
-    <script>
-        // autoback after 5 seconds
-        setTimeout(function() {
-            window.location.href = '/contact';
-        }, 5000);
 
-        // countdown
-        window.onload = function() {
-            let timeLeft = 5;
-            const countdown = document.getElementById('countdown');
-            setInterval(function() {
-                timeLeft--;
-                if (timeLeft >= 0) {
-                    countdown.textContent = timeLeft;
-                }
-            }, 1000);
-        };
-    </script>
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode2">
@@ -33,10 +16,10 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\Template;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../layouts/footer.php';
-    require_once __DIR__ . '/../../controllers/UserController.php';
+    Template::header();
+    Template::footer();
 
     $userController = new UserController();
     $postController = new PostController();
@@ -76,6 +59,27 @@
             </div>';
     }
     ?>
+    <?php
+    echo render_quora_footer();
+    ?>
+    <script>
+        // autoback after 5 seconds
+        setTimeout(function() {
+            window.location.href = '/contact';
+        }, 5000);
+
+        // countdown
+        window.onload = function() {
+            let timeLeft = 5;
+            const countdown = document.getElementById('countdown');
+            setInterval(function() {
+                timeLeft--;
+                if (timeLeft >= 0) {
+                    countdown.textContent = timeLeft;
+                }
+            }, 1000);
+        };
+    </script>
 </body>
 
 </html>

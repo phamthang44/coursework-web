@@ -8,6 +8,7 @@ error_reporting(E_ALL);
 
 use dal\UserDAOImpl;
 use utils\SessionManager;
+use dal\MessageFromUserDAOImpl;
 use Exception;
 use finfo;
 
@@ -15,32 +16,51 @@ use finfo;
 class UserController extends BaseController
 {
     private $userDAO;
-
+    private $userMsgDAO;
     public function __construct()
     {
         parent::__construct(['/posts', '/403', '/404', '/signup', '/login']);
         $this->userDAO = new UserDAOImpl();
+        $this->userMsgDAO = new MessageFromUserDAOImpl();
     }
 
     public function contact()
     {
+        $currentUser = SessionManager::get('user');
+        if ($currentUser === null) {
+            SessionManager::set('error', 'You need to login to access this page');
+            header("Location: /login");
+            exit();
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            require_once __DIR__ . '/../views/users/contact.php';
+        }
+    }
+
+    public function sendEmail()
+    {
+        $currentUser = SessionManager::get('user');
+        if ($currentUser === null) {
+            SessionManager::set('error', 'You need to login to access this page');
+            header("Location: /login");
+            exit();
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            ini_set('SMTP', 'smtp.gmail.com');
-            ini_set('smtp_port', 587);
-            ini_set('sendmail_from', 'phamthang5331@gmail.com');
-            $subject = $_POST['title'];
-            $message = $_POST['content'];
-            $to = 'phamthang5331@gmail.com';
-            $headers = "From: no-reply@localhost\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            if (mail($to, $subject, $message, $headers)) {
+            $title = trim(htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8'));
+            $currentUserId = SessionManager::get('user_id');
+            $message = trim(htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8'));
+            if (empty($title) || empty($message)) {
+                SessionManager::set('error', 'Title and message must not be empty');
+                header("Location: /contact");
+                exit();
+            }
+            $result = $this->userMsgDAO->insertMessage($title, $message, $currentUserId);
+
+            if ($result) {
                 header("Location: /emailsuccess");
             } else {
                 header("Location: /emailfail");
             }
-        } else {
-            require_once __DIR__ . '/../views/users/contact.php';
         }
     }
 

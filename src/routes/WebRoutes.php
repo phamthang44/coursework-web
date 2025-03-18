@@ -47,7 +47,7 @@ class WebRoutes
         $router->addRoute('GET', '/404', 'PostController', 'notfound');
         // Contact routes
         $router->addRoute('GET', '/contact', 'UserController', 'contact');
-        $router->addRoute('POST', '/contact', 'UserController', 'contact');
+        $router->addRoute('POST', '/sendemail', 'UserController', 'sendEmail');
         $router->addRoute('GET', '/emailsuccess', 'UserController', 'emailsuccess');
         $router->addRoute('GET', '/emailfail', 'UserController', 'emailfail');
         $router->addRoute('GET', '/404', 'UserController', 'notfound');

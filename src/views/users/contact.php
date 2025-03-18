@@ -54,7 +54,7 @@
     if (!is_null($user)) {
         echo '<div class="container mx-auto py-6 w-1/3 rounded-lg">
         <h2 class="text-2xl text-red-500 font-bold mb-4">Send Email Message to admin</h2>
-        <form action="/contact" method="POST" enctype="multipart/form-data" id="form-send-email" class="space-y-4">
+        <form action="/sendemail" method="POST" enctype="multipart/form-data" id="form-send-email" class="space-y-4">
             <!-- Title Field (Optional) -->
             <div class="form-group py-4 mb-4">
                 <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
