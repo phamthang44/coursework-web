@@ -486,3 +486,19 @@ input[type="date"]:focus {
 #home-page .modal-container:has(.error-modal) {
   width: min(450px, 90%);
 }
+
+.modal-backdrop:has(#search__bar) {
+  margin-top: 50px;
+  padding-left: 50px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.modal-backdrop:has(#search__bar) .modal-container {
+  width: min(600px, 90%);
+  height: 600px;
+}
+
+.modal-backdrop:has(#search__bar) .modal-close {
+  visibility: hidden;
+}

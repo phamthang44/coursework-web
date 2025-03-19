@@ -252,4 +252,16 @@ class PostDAOImpl implements PostDAOI
         $posts = [];
         return $this->convertResultRowToPostObj($rows, $posts);
     }
+
+    public function searchPosts($search)
+    {
+        $searchTerm = "%{$search}%";
+        $sql = "SELECT * FROM Posts WHERE title LIKE :search OR content LIKE :search";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $posts = [];
+        return $this->convertResultRowToPostObj($rows, $posts);
+    }
 }

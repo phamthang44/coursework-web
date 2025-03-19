@@ -28,7 +28,7 @@ class AuthController extends BaseController
                     header("Location: /admin/dashboard");
                     exit();
                 }
-                header("Location: /posts"); //temporary need to check role
+                header("Location: /quorae"); //temporary need to check role
                 exit();
             } else {
                 SessionManager::set('invalid-credentials', "Invalid credentials");

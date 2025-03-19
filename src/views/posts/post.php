@@ -24,7 +24,8 @@
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-darkmode2" id="home-page">
+<body class="bg-gray-100 dark:bg-darkmode2 relative" id="home-page">
+    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-60 transition-opacity duration-300"></div>
     <?php
     // User authentication setup
     use controllers\ModuleController;
@@ -63,96 +64,96 @@
         $userObj = null;
     }
     $showControls = false;
-
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>
-
-    <div class="container mx-auto py-6 w-1/3">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
-        <?php
-        if ($user_logged_in) {
-            if (!is_null($user)) {
-                if ($user->getRole() === 'user') {
-                    $showControls = false;
-                } else {
-                    $showControls = true;
-                }
-            } else {
-                $showControls = false;
-            }
-        }
-        if (!empty($postsData)) {
-            echo render_post_cards($postsData, $showControls, $postController, $currentUser);
-        } else {
-            echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
-        }
-        ?>
-    </div>
-    <div class="flex items-center justify-center space-x-2 mt-8">
-        <!-- First Button -->
-        <?php if ($currentPage > 1): ?>
-            <a href="?page=1"
-                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
-                First
-            </a>
-        <?php endif; ?>
-
-        <!-- Previous Button -->
-        <?php if ($currentPage > 1): ?>
-            <a href="?page=<?= $currentPage - 1 ?>"
-                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
-                Previous
-            </a>
-        <?php else: ?>
-            <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
-                Previous
-            </span>
-        <?php endif; ?>
-
-        <!-- Page Numbers -->
-        <div class="flex space-x-1">
+    <main>
+        <div class="container mx-auto py-6 w-1/3">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
             <?php
-            $maxPagesToShow = 5;
-            $startPage = max(1, $currentPage - 2);
-            $endPage = min($totalPages, $currentPage + 2);
-
-            if ($startPage > 1) {
-                echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+            if ($user_logged_in) {
+                if (!is_null($user)) {
+                    if ($user->getRole() === 'user') {
+                        $showControls = false;
+                    } else {
+                        $showControls = true;
+                    }
+                } else {
+                    $showControls = false;
+                }
             }
-
-            for ($i = $startPage; $i <= $endPage; $i++): ?>
-                <a href="?page=<?= $i ?>"
-                    class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?= ($i == $currentPage) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
-                    <?= $i ?>
-                </a>
-            <?php endfor;
-
-            if ($endPage < $totalPages) {
-                echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+            if (!empty($postsData)) {
+                echo render_post_cards($postsData, $showControls, $postController, $user);
+            } else {
+                echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
             }
             ?>
         </div>
+        <div class="flex items-center justify-center space-x-2 mt-8">
+            <!-- First Button -->
+            <?php if ($currentPage > 1): ?>
+                <a href="?page=1"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                    First
+                </a>
+            <?php endif; ?>
 
-        <!-- Next Button -->
-        <?php if ($currentPage < $totalPages): ?>
-            <a href="?page=<?= $currentPage + 1 ?>"
-                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
-                Next
-            </a>
-        <?php else: ?>
-            <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
-                Next
-            </span>
-        <?php endif; ?>
+            <!-- Previous Button -->
+            <?php if ($currentPage > 1): ?>
+                <a href="?page=<?= $currentPage - 1 ?>"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                    Previous
+                </a>
+            <?php else: ?>
+                <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                    Previous
+                </span>
+            <?php endif; ?>
 
-        <!-- Last Button -->
-        <?php if ($currentPage < $totalPages): ?>
-            <a href="?page=<?= $totalPages ?>"
-                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
-                Last
-            </a>
-        <?php endif; ?>
-    </div>
+            <!-- Page Numbers -->
+            <div class="flex space-x-1">
+                <?php
+                $maxPagesToShow = 5;
+                $startPage = max(1, $currentPage - 2);
+                $endPage = min($totalPages, $currentPage + 2);
+
+                if ($startPage > 1) {
+                    echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+                }
+
+                for ($i = $startPage; $i <= $endPage; $i++): ?>
+                    <a href="?page=<?= $i ?>"
+                        class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?= ($i == $currentPage) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor;
+
+                if ($endPage < $totalPages) {
+                    echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+                }
+                ?>
+            </div>
+
+            <!-- Next Button -->
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="?page=<?= $currentPage + 1 ?>"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                    Next
+                </a>
+            <?php else: ?>
+                <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                    Next
+                </span>
+            <?php endif; ?>
+
+            <!-- Last Button -->
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="?page=<?= $totalPages ?>"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                    Last
+                </a>
+            <?php endif; ?>
+        </div>
+    </main>
     <?php
     echo render_quora_footer();
     ?>
@@ -173,7 +174,7 @@
                         console.log(e.target)
                         if (e.target.classList.contains('create-new-post-quick')) {
                             //addQuestionDropdown.classList.add('hidden');
-                            // checkExistingDropdown();
+                            checkExistingDropdown(e);
                             checkExistingModal();
                             const modal = new Modal();
                             modal.openModal(`
@@ -328,19 +329,24 @@
 
                     if (document.querySelector(".modal-backdrop")) {
                         if (document.querySelector(".modal-container")) {
-                            document.getElementById("content").addEventListener("input", function() {
-                                const text = this.value.trim();
-                                const wordCount = text ? text.split(/\s+/).length : 0;
-                                document.getElementById("wordCount").textContent = wordCount;
-                            });
+                            const content = document.getElementById("content");
+                            const title = document.getElementById("title");
+                            if (content && title) {
+                                content.addEventListener("input", function() {
+                                    const text = this.value.trim();
+                                    const wordCount = text ? text.split(/\s+/).length : 0;
+                                    document.getElementById("wordCount").textContent = wordCount;
+                                });
 
-                            document.getElementById("title").addEventListener("input", function() {
-                                const text = this.value.trim();
-                                const wordCount = text ? text.length : 0;
-                                document.getElementById("characterCount").textContent = wordCount;
-                            });
+                                title.addEventListener("input", function() {
+                                    const text = this.value.trim();
+                                    const wordCount = text ? text.length : 0;
+                                    document.getElementById("characterCount").textContent = wordCount;
+                                });
+                            }
                         }
                     }
+
                 }
             });
         });

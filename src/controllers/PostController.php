@@ -440,29 +440,9 @@ class PostController extends BaseController
     {
         return $this->postDAO->getPostByPage($postsPerPage, $offset);
     }
-    /*
-        protected function render($view, $data = [])
-    {
-        extract($data);
-        require_once __DIR__ . "/../views/posts/$view.php";
-    }
-        public function index()
-    {
-        $this->render('post', [
-            'posts' => $this->postDAO->getAllPosts(),
-            'modules' => $this->moduleDAO->getAllModules()
-        ]);
-    }
 
-    public function create()
+    public function getResultSearch($search)
     {
-        $this->render('createpost', [
-            'posts' => $this->postDAO->getAllPosts(),
-            'modules' => $this->moduleDAO->getAllModules()
-        ]);
+        return $this->postDAO->searchPosts($search);
     }
-
-    //this way look closely to framework Laravel
-
-     */
 }

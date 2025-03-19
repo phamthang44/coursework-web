@@ -216,8 +216,53 @@ function checkExistingModal() {
 }
 
 function checkExistingDropdown(e) {
+  const addQuestionDropDown = e.target.closest(".add-question-dropdown");
   const dropdown = e.target.closest(".post-card-dropdown ");
   if (dropdown) {
     dropdown.classList.add("hidden");
   }
+  if (addQuestionDropDown) {
+    addQuestionDropDown.classList.add("hidden");
+  }
 }
+
+const searchBar = document.querySelector(".search-input");
+const overLay = document.querySelector(".overlay");
+const searchResults = document.querySelector(".search-results");
+searchBar.addEventListener("focus", () => {
+  overLay.classList.remove("hidden");
+  setTimeout(() => {
+    overLay.classList.remove("opacity-0");
+  }, 10);
+
+  searchResults.innerHTML = "";
+});
+searchBar.addEventListener("blur", () => {
+  overLay.classList.add("opacity-0");
+  setTimeout(() => {
+    overLay.classList.add("hidden");
+  }, 300);
+  setTimeout(() => {
+    searchResults.classList.add("-translate-y-1/2");
+  }, 10);
+  setTimeout(() => {
+    searchResults.classList.add("hidden");
+  }, 300);
+});
+searchBar.addEventListener("input", () => {
+  if (searchBar.value.length > 0) {
+    setTimeout(() => {
+      searchResults.classList.add("translate-y-1/2");
+    }, 10);
+    setTimeout(() => {
+      searchResults.classList.remove("hidden");
+    }, 500);
+  } else {
+    setTimeout(() => {
+      searchResults.classList.add("-translate-y-1/2");
+    }, 10);
+    setTimeout(() => {
+      searchResults.classList.add("hidden");
+    }, 500);
+  }
+});

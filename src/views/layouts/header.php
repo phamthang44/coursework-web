@@ -29,22 +29,23 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
         <div class="container mx-auto px-4 flex items-center justify-between h-14">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="/quorae" class="text-red-600 font-bold text-2xl mr-4">KnowledgeHub</a>
+                <a href="/quorae" class="text-red-600 font-bold text-2xl mr-4">QuoraeHub</a>
 
                 <!-- Search Bar -->
-                <div class="relative hidden md:block">
+                <div class="relative hidden md:block search-bar">
                     <?php if ($user_logged_in) {
                         if ($_SERVER['REQUEST_URI'] === '/posts/create/') {
                             echo '';
                         } else if (str_contains($_SERVER['REQUEST_URI'], '/posts/edit/')) {
                             echo '';
                         } else {
-                            echo '<input type="text" placeholder="Search KnowledgeHub" class="w-64 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-sm pl-10 pr-4 py-1 border border-gray-300 focus:outline-none focus:border-red-400 text-sm">
+                            echo '<input type="text" placeholder="Search QuoraeHub" class="search-input w-64 bg-gray-100 dark:bg-[#181818] dark:text-white rounded-xs pl-10 pr-4 py-1 border border-[#2b2b2b] focus:outline-none focus:border-red-400 text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-2 text-gray-500 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>';
                         }
                     } ?>
+                    <div class="search-results absolute -top-[120px] left-0 bg-white dark:bg-darkmode border border-[#2b2b2b] w-[256px] h-[300px] z-[60] hidden transition-all duration-500"></div>
                 </div>
             </div>
 
@@ -52,7 +53,6 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
             <nav class="hidden md:flex items-center space-x-4">
                 <a href="/quorae" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
                 <a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>
-                <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Answer</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Notifications</a>
                 <?php
                 if ($user_logged_in) {
@@ -60,7 +60,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                         if ($user->getRole() === 'admin') {
                             echo '<a href="/admin/dashboard" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Admin Dashboard</a>';
                         } else {
-                            echo '<a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>';
+                            echo '';
                         }
                     }
                 }
