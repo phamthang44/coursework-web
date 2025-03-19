@@ -189,6 +189,11 @@ button {
 }
 
 /* Confirm card */
+
+.modal-backdrop.show .card {
+  transform: scale(1);
+}
+
 .card {
   width: 300px;
   height: fit-content;
@@ -202,6 +207,8 @@ button {
   padding: 30px;
   position: relative;
   box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.068);
+  transform: scale(0);
+  transition: transform 0.3s;
 }
 .card-content {
   width: 100%;

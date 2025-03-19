@@ -99,9 +99,73 @@
                                 </td>
                             </tr>
                         <?php } ?>
-
                     </tbody>
                 </table>
+                <div class="flex items-center justify-center space-x-2 mt-8">
+                    <!-- First Button -->
+                    <?php if ($currentPage > 1): ?>
+                        <a href="?page=1"
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                            First
+                        </a>
+                    <?php endif; ?>
+
+                    <!-- Previous Button -->
+                    <?php if ($currentPage > 1): ?>
+                        <a href="?page=<?= $currentPage - 1 ?>"
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                            Previous
+                        </a>
+                    <?php else: ?>
+                        <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                            Previous
+                        </span>
+                    <?php endif; ?>
+
+                    <!-- Page Numbers -->
+                    <div class="flex space-x-1">
+                        <?php
+                        $maxPagesToShow = 3;
+                        $startPage = max(1, $currentPage - 2);
+                        $endPage = min($totalPages, $currentPage + 2);
+
+                        if ($startPage > 1) {
+                            echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+                        }
+
+                        for ($i = $startPage; $i <= $endPage; $i++): ?>
+                            <a href="?page=<?= $i ?>"
+                                class="px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 <?= ($i == $currentPage) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+                                <?= $i ?>
+                            </a>
+                        <?php endfor;
+
+                        if ($endPage < $totalPages) {
+                            echo '<span class="px-4 py-2 text-sm font-medium text-gray-400">...</span>';
+                        }
+                        ?>
+                    </div>
+
+                    <!-- Next Button -->
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a href="?page=<?= $currentPage + 1 ?>"
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                            Next
+                        </a>
+                    <?php else: ?>
+                        <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                            Next
+                        </span>
+                    <?php endif; ?>
+
+                    <!-- Last Button -->
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a href="?page=<?= $totalPages ?>"
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200">
+                            Last
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
@@ -116,8 +180,8 @@
                 const moduleId = item.dataset.moduleId;
                 const moduleName = item.dataset.moduleName;
                 const moduleDescription = item.dataset.moduleDescription;
-                if (e.target.classList.contains("edit-module-btn")) {
 
+                if (e.target.classList.contains("edit-module-btn")) {
                     moduleModal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Edit the module</h2>
                             <form action="/admin/modules/update/${moduleId}" method="POST" enctype="multipart/form-data" id="form-update-module" class="space-y-4">
                                 <div class="form-group py-4 mb-4">
@@ -141,16 +205,17 @@
                                     </button>
                                     <input class="save-module-btn bg-red-700 hover:bg-red-600 transition text-white font-bold w-[100px] h-[50px] rounded-full" type="submit" value="Save">
                                 </div>
-                            </form>
-`);
+                            </form> 
+                            
+                            `);
                 } else if (e.target.classList.contains("delete-module-btn")) {
                     e.preventDefault();
                     checkExistingModal();
                     const deleteConfirmCard = new ConfirmCard();
                     deleteConfirmCard.openConfirmCard(`
-<h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
-    Are you sure you want to delete this post?
-</h2>`);
+    <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+        Are you sure you want to delete this post?
+    </h2>`);
                 }
             });
         });
@@ -167,6 +232,35 @@
                             Validator.isRequired("#moduleDescription"),
                             Validator.maxLength("#moduleName", 100),
                         ],
+                        onSubmit: async function(data) {
+                            const form = document.querySelector("#form-update-module");
+                            const formData = new FormData(form);
+                            try {
+                                const response = await fetch(form.action, {
+                                    method: "POST",
+                                    body: formData,
+                                    headers: {
+                                        "Accept": "application/json"
+                                    }
+                                });
+                                const data = await response.json();
+                                if (data.status) {
+                                    console.log(data)
+                                    const moduleItem = document.querySelector(`.module-item[data-module-id="${data.module.moduleId}"]`);
+
+                                    checkExistingModal();
+                                    moduleItem.querySelector(".module-id").textContent = data.module.moduleId;
+                                    moduleItem.querySelector(".module-name").textContent = data.module.moduleName;
+                                    moduleItem.querySelector(".module-description").textContent = data.module.moduleDescription;
+                                    moduleItem.setAttribute("data-module-name", data.module.moduleName);
+                                    moduleItem.setAttribute("data-module-description", data.module.moduleDescription);
+                                    moduleItem.setAttribute("data-module-id", data.module.moduleId);
+
+                                }
+                            } catch (error) {
+                                console.error("Error:", error);
+                            }
+                        }
                     });
 
                     Validator({
@@ -178,28 +272,58 @@
                             Validator.isRequired("#moduleDescription"),
                             Validator.maxLength("#moduleName", 100),
                         ],
+                        onSubmit: async function(data) {
+                            const form = document.querySelector("#form-create-module");
+                            const formData = new FormData(form);
+                            try {
+                                const response = await fetch(form.action, {
+                                    method: "POST",
+                                    body: formData,
+                                    headers: {
+                                        "Accept": "application/json"
+                                    }
+                                });
+                                const data = await response.json();
+                                if (data.status) {
+                                    checkExistingModal();
+                                    const moduleTable = document.querySelector("tbody");
+                                    const newModule = document.createElement("tr");
+                                    newModule.className = "module-item hover:bg-gray-50 dark:hover:bg-gray-700";
+                                    newModule.setAttribute("data-module-id", data.module.moduleId);
+                                    newModule.setAttribute("data-module-name", data.module.moduleName);
+                                    newModule.setAttribute("data-module-description", data.module.moduleDescription);
+                                    newModule.innerHTML = `
+                                    <td class="module-id px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                        ${data.module.moduleId}
+                                    </td>
+                                    <td class="module-name px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                        ${data.module.moduleName}
+                                    </td>
+                                    <td class="module-description px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                        ${data.module.moduleDescription}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="edit-module-btn text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                            Edit
+                                        </button>
+                                        <button class="delete-module-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                            Delete
+                                        </button>
+                                    </td>
+                                    `;
+                                    moduleTable.appendChild(newModule);
+                                }
+                            } catch (error) {
+                                console.error("Error:", error);
+                            }
+                        }
                     });
                     const cancelEditModuleBtn = document.querySelector(".cancel-edit-module-btn");
                     if (cancelEditModuleBtn) {
                         cancelEditModuleBtn.addEventListener("click", () => {
-                            const modalElement = document.querySelector('.modal-backdrop');
-                            if (modalElement) {
-                                modalElement.classList.remove("show");
-                                modalElement.addEventListener("transitionend", () => {
-                                    modalElement.remove();
-                                });
-                                // If transition does not work, still ensure Modal be removed after 300ms
-                                setTimeout(() => {
-                                    if (document.body.contains(modalElement)) {
-                                        modalElement.remove();
-                                    }
-                                }, 300);
-                            }
+                            checkExistingModal();
                         });
                     }
-
-
-
                 }
             });
         });
@@ -210,72 +334,43 @@
             subtree: true
         });
 
-        document.addEventListener("submit", async function(event) {
-            const form = event.target;
-            if (form.id === "form-update-module") {
-                event.preventDefault();
-
-                const formData = new FormData(form);
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                    const data = await response.json();
-
-                    if (data.status && data.module) {
-                        checkExistingModal();
-                        document.querySelector(".module-name").textContent = data.module.moduleName;
-                        document.querySelector(".module-description").textContent = data.module.moduleDescription;
-                        document.querySelector(".module-id").textContent = data.module.moduleId;
-                        document.querySelector(".module-item").setAttribute("data-module-name", data.module.moduleName);
-                        document.querySelector(".module-item").setAttribute("data-module-description", data.module.moduleDescription);
-                        document.querySelector(".module-item").setAttribute("data-module-id", data.module.moduleId);
-                    } else {
-                        console.error("Error from server:", data.message);
-                    }
-                } catch (error) {
-                    console.error("Error fetch:", error);
-                }
-            }
-        });
 
 
         function checkExistingModal() {
             const existingModal = document.querySelector(".modal-backdrop");
             if (existingModal) {
-                existingModal.remove();
+                existingModal.classList.remove("show");
+                existingModal.ontransitionend = () => {
+                    existingModal.remove();
+                };
             }
         }
 
-        //         const addModuleBtn = document.querySelector(".add-module-btn");
-        //         addModuleBtn.addEventListener("click", () => {
-        //             const moduleModal = new Modal();
-        //             moduleModal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Add new module</h2>
-        //                             <form action="/admin/modules/create" method="POST" enctype="multipart/form-data" id="form-create-module" class="space-y-4">
-        //                                 <div class="form-group py-4 mb-4">
-        //                                     <label for="moduleName" class="block font-medium text-gray-700 dark:text-white mb-4">Module name (Required):</label>
-        //                                     <input type="text" id="moduleName" name="moduleName" placeholder="Enter module name (Required)"
-        //                                         class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
-        //                                         value="">
-        //                                     <span class="form-message text-red-500 text-sm"></span>
-        //                                 </div>
-        //                                 <!-- Content Field (Required) -->
-        //                                 <div class="form-group">
-        //                                     <label for="moduleDescription" class="block font-medium text-gray-700 dark:text-white mb-4">Description (Required):</label>
-        //                                     <textarea id="moduleDescription" name="moduleDescription" rows="5" placeholder="Enter description (Required)"
-        //                                         class="w-full h-40 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
-        //                                     <span class="form-message text-red-500 font-medium text-sm"></span>
-        //                                 </div>
-        //                                 <!-- Submit Button -->
-        //                                 <div class="flex">
-        //                                     <input class="create-module-btn bg-red-700 hover:bg-red-600 transition text-white font-bold w-[150px] h-[50px] rounded-full" type="submit" value="Add new module">
-        //                                 </div>
-        //                             </form>
-        // `);
-        //         });
+        const addModuleBtn = document.querySelector(".add-module-btn");
+        addModuleBtn.addEventListener("click", () => {
+            const moduleModal = new Modal();
+            moduleModal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Add new module</h2>
+    <form action="/admin/modules/create" method="POST" enctype="multipart/form-data" id="form-create-module" class="space-y-4">
+        <div class="form-group py-4 mb-4">
+            <label for="moduleName" class="block font-medium text-gray-700 dark:text-white mb-4">Module name (Required):</label>
+            <input type="text" id="moduleName" name="moduleName" placeholder="Enter module name (Required)"
+                class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
+                value="">
+            <span class="form-message text-red-500 text-sm"></span>
+        </div>
+        <!-- Content Field (Required) -->
+        <div class="form-group">
+            <label for="moduleDescription" class="block font-medium text-gray-700 dark:text-white mb-4">Description (Required):</label>
+            <textarea id="moduleDescription" name="moduleDescription" rows="5" placeholder="Enter description (Required)"
+                class="w-full h-40 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
+            <span class="form-message text-red-500 font-medium text-sm"></span>
+        </div>
+        <!-- Submit Button -->
+        <div class="flex">
+            <input class="create-module-btn bg-red-700 hover:bg-red-600 transition text-white font-bold w-[150px] h-[50px] rounded-full" type="submit" value="Add new module">
+        </div>
+    </form>`);
+        });
 
         const addQuestion = document.querySelector(".add-question");
         addQuestion.style.display = "none";

@@ -226,8 +226,6 @@ class AdminController extends BaseController
                     "status" => true,
                     "module" => $module->toArray()
                 ]);
-                // header("Location: /admin/module-management");
-                // exit();
             } else {
                 throw new Exception("Failed to create module");
             }
