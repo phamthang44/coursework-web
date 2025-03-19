@@ -8,6 +8,7 @@ use dal\PostDAOImpl;
 use utils\SessionManager;
 use Exception;
 use finfo;
+use Random\Engine\Secure;
 
 class PostController extends BaseController
 {
@@ -32,9 +33,6 @@ class PostController extends BaseController
     public function index()
     {
         $postsPerPage = 10;
-
-        //all posts object as an array
-        //$posts = $this->postDAO->getAllPosts();
         $modules = $this->moduleDAO->getAllModules();
 
         $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -73,7 +71,6 @@ class PostController extends BaseController
     //CRUD first
     public function create()
     {
-
         $modules = $this->moduleDAO->getAllModules();
         require_once __DIR__ . '/../views/posts/createpost.php';
     }
@@ -87,7 +84,7 @@ class PostController extends BaseController
             // Take the information of post
             $post = $postDAO->getPost($postId);
             if (!$post) {
-                $_SESSION['error'] = "Post not found";
+                SessionManager::set('error', "Post not found");
                 header("Location: /posts");
                 exit();
             }
@@ -98,7 +95,7 @@ class PostController extends BaseController
             // Move the data into view
             require_once __DIR__ . '/../views/posts/viewpost.php';
         } catch (Exception $e) {
-            $_SESSION['error'] = $e->getMessage();
+            SessionManager::set('error', $e->getMessage());
             header("Location: /posts");
             exit();
         }
@@ -175,7 +172,6 @@ class PostController extends BaseController
                 }
                 exit();
             } catch (Exception $e) {
-                error_log("Error in store method: " . $e->getMessage());
                 SessionManager::set('error', $e->getMessage());
                 header("Location: /posts");
                 exit();
@@ -196,7 +192,7 @@ class PostController extends BaseController
         try {
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
-                $_SESSION['error'] = "Post not found";
+                SessionManager::set("error", "Post not found");
                 header("Location: /posts");
                 exit();
             }
@@ -204,7 +200,7 @@ class PostController extends BaseController
             $modules = $this->moduleDAO->getAllModules();
             require_once __DIR__ . '/../views/posts/updatepost.php';
         } catch (Exception $e) {
-            error_log("Error in edit method: " . $e->getMessage());
+            SessionManager::set("Error in edit method: ", $e->getMessage());
             header("Location: /404");
             exit();
         }
@@ -315,7 +311,7 @@ class PostController extends BaseController
                 } else {
                     $this->postAssetDAO->update($post->getPostId(), $imagePath);
                 }
-                $_SESSION['success'] = "The post has been created successfully!";
+                SessionManager::set('success', "Post updated successfully");
                 header("Location: /posts");
                 exit();
             } catch (Exception $e) {

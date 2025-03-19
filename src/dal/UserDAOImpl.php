@@ -227,10 +227,10 @@ class UserDAOImpl implements UserDAOI
         $sql = "SELECT * FROM Users WHERE email = :email";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        $row = $stmt->fetch();
-        $user = new User($row['user_id'], $row['username'], $row['last_name'], $row['first_name'], $row['email'], $row['password'], $row['profile_image_path'], $row['bio'], $row['role'], $row['account_create_date'], $row['dob']);
-        return $user;
+
+        // $row = $stmt->fetch();
+        // $user = new User($row['user_id'], $row['username'], $row['last_name'], $row['first_name'], $row['email'], $row['password'], $row['profile_image_path'], $row['bio'], $row['role'], $row['account_create_date'], $row['dob']);
+        return $this->extracted($stmt);
     }
 
     public function checkExistedEmail($email)
@@ -290,5 +290,16 @@ class UserDAOImpl implements UserDAOI
         $stmt = $conn->query($sql);
         $totalUsers = $stmt->fetchColumn();
         return $totalUsers;
+    }
+
+    public function getUserByUrl($firstName, $lastName, $userId)
+    {
+        $sql = "SELECT * FROM Users WHERE first_name = :firstName AND last_name = :lastName AND user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':firstName', $firstName);
+        $stmt->bindParam(':lastName', $lastName);
+        $stmt->bindParam(':userId', $userId);
+
+        return $this->extracted($stmt);
     }
 }

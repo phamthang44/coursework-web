@@ -482,3 +482,7 @@ input[type="date"]:focus {
 #module-page .modal-container:has(#form-create-module) {
   width: min(600px, 90%);
 }
+
+#home-page .modal-container:has(.error-modal) {
+  width: min(450px, 90%);
+}

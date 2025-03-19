@@ -21,4 +21,5 @@ interface UserDAOI
     public function updateRole($userId, $role);
     public function deleteUser($userId);
     public function getTotalUserNums();
+    public function getUserByUrl($firstName, $lastName, $userId);
 }

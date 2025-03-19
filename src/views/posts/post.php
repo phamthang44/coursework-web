@@ -24,7 +24,7 @@
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-darkmode2">
+<body class="bg-gray-100 dark:bg-darkmode2" id="home-page">
     <?php
     // User authentication setup
     use controllers\ModuleController;
@@ -50,6 +50,7 @@
         $user_name = $user->getUsername();
         $user_avatar = $user->getProfileImage() ?? '';
         $user_email = $user->getEmail();
+        $currentUser = SessionManager::get('user');
     } else {
         $user_logged_in = false;
         $user_name = '';
@@ -67,9 +68,6 @@
     ?>
 
     <div class="container mx-auto py-6 w-1/3">
-        <?php echo $error = SessionManager::get('error') ? SessionManager::get('error') : '';
-        SessionManager::remove('error'); ?>
-
         <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 px-4">Posts</h1>
         <?php
         if ($user_logged_in) {
@@ -84,7 +82,7 @@
             }
         }
         if (!empty($postsData)) {
-            echo render_post_cards($postsData, $showControls, $postController, $user);
+            echo render_post_cards($postsData, $showControls, $postController, $currentUser);
         } else {
             echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
         }
@@ -174,7 +172,7 @@
                         e.stopPropagation();
                         console.log(e.target)
                         if (e.target.classList.contains('create-new-post-quick')) {
-                            addQuestionDropdown.classList.add('hidden');
+                            //addQuestionDropdown.classList.add('hidden');
                             // checkExistingDropdown();
                             checkExistingModal();
                             const modal = new Modal();
@@ -183,7 +181,10 @@
         <form action="/posts/store" method="POST" enctype="multipart/form-data" id="form-upload-post" class="space-y-4">
                 <!-- Title Field (Optional) -->
                 <div class="form-group py-4 mb-4">
-                    <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
+                    <div class="flex">
+                        <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional) Max(100 characters):</label>
+                        <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">0</span></p>
+                    </div>
                     <input type="text" id="title" name="title" placeholder="Enter title (optional)"
                         class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">
                     <span class="form-message text-red-500 text-sm"></span>
@@ -192,7 +193,10 @@
 
                 <!-- Content Field (Required) -->
                 <div class="form-group">
-                    <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                    <div class="flex">
+                        <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                        <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">0</span></p>
+                    </div>
                     <textarea id="content" name="content" rows="5" placeholder="Enter content"
                         class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
                     <span class="form-message text-red-500 font-medium text-sm"></span>
@@ -284,10 +288,6 @@
             }
         });
 
-        //delete confirm
-        // const deleteConfirmCard = new ConfirmCard();
-        // deleteConfirmCard.openConfirmCard(`<h2 class="text-red-600 dark:text-white">Are you sure you want to delete this post?</h2>`);
-
 
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -325,6 +325,22 @@
                             Validator.maxLength("#title", 100),
                         ],
                     });
+
+                    if (document.querySelector(".modal-backdrop")) {
+                        if (document.querySelector(".modal-container")) {
+                            document.getElementById("content").addEventListener("input", function() {
+                                const text = this.value.trim();
+                                const wordCount = text ? text.split(/\s+/).length : 0;
+                                document.getElementById("wordCount").textContent = wordCount;
+                            });
+
+                            document.getElementById("title").addEventListener("input", function() {
+                                const text = this.value.trim();
+                                const wordCount = text ? text.length : 0;
+                                document.getElementById("characterCount").textContent = wordCount;
+                            });
+                        }
+                    }
                 }
             });
         });
@@ -355,10 +371,10 @@
             optionsPostCard.forEach((option) => {
                 option.addEventListener("click", function(e) {
                     const dropdown = option.nextElementSibling;
+
                     dropdown.classList.toggle("hidden");
 
                     document.addEventListener("click", function(e) {
-
                         if (e.target.classList.contains("delete-action")) {
                             e.preventDefault();
                             // e.stopPropagation();
@@ -366,9 +382,13 @@
                             checkExistingModal();
                             const deleteConfirmCard = new ConfirmCard();
                             deleteConfirmCard.openConfirmCard(`
-<h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
-    Are you sure you want to delete this post?
-</h2>`);
+        <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+            Are you sure you want to delete this post?
+        </h2>`);
+                            dropdown.classList.add("hidden");
+                        }
+                        if (e.target.classList.contains("edit-action-advanced")) {
+                            dropdown.classList.add("hidden");
                         }
                         if (e.target.classList.contains("edit-action-quick")) {
                             // e.preventDefault();
@@ -386,62 +406,74 @@
                             const postContent = postCard.dataset.content || '';
                             const postModuleId = postCard.dataset.moduleId || '';
                             const postModuleName = postCard.dataset.moduleName || '';
-                            const postImage = postCard.dataset.postImage || 'hidden';
+                            const postImage = postCard.dataset.postImage;
+                            let hiddenClass = 'hidden';
+                            if (postImage) {
+                                hiddenClass = '';
+                            }
 
                             const editModalQuick = new Modal();
                             editModalQuick.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Edit the post</h2>
-                            <form action="/posts/update/${postId}" method="POST" enctype="multipart/form-data" id="form-update-post" class="space-y-4">
-                                <!-- Title Field (Optional) -->
-                                <div class="form-group py-4 mb-4">
-                                    <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
-                                    <input type="text" id="title" name="title" placeholder="Enter title (optional)"
-                                        class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                        value="${postTitle}">
-                                    <span class="form-message text-red-500 text-sm"></span>
-                                    <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
-                                </div>
-                                <!-- Content Field (Required) -->
-                                <div class="form-group">
-                                    <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
-                                    <textarea id="content" name="content" rows="5" placeholder="Enter content"
-                                        class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${postContent}</textarea>
-                                    <span class="form-message text-red-500 font-medium text-sm"></span>
-                                </div>
-                                <!-- Module Select -->
-                                <div class="form-group">
-                                    <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
-                                    <select id="module" name="module"
-                                        class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
-                                        <option value="" class="text-black dark:text-white">Selected : ${postModuleName}</option>
-                                        <?php foreach ($modules as $module): ?>
-                                            <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <span class="form-message text-red-500 font-medium text-sm ml-5"></span>
-                                </div>
-                                <!-- Image Upload -->
-                                <div class="form-group flex gap-7 relative">
-                                    <div>
-                                        <label for="image" class="block font-medium text-gray-700 dark:text-white mb-2">Upload Image:</label>
-                                        <label class="custom-file-upload text-gray-700 dark:text-white">
-                                        <input type="file" id="image" name="image" accept="image/*"
-                                            class="w-2 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none title">
-                                            Choose an image
-                                        </label>
-                                        <span class="form-message text-red-500 font-medium text-sm"></span>
-                                    </div>
-                                    <!-- Preview Image -->
-                                    <div id="preview-container" class="${postImage} absolute -top-[100px] left-[440px]">
-                                        <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
-                                        <img id="preview" src="${postImage}" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
-                                    </div>
-                                </div>
-                                <!-- Submit Button -->
-                                <div class="flex justify-end">
-                                    <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Save">
-                                </div>
-                            </form>
-`);
+                                    <form action="/posts/update/${postId}" method="POST" enctype="multipart/form-data" id="form-update-post" class="space-y-4">
+                                        <!-- Title Field (Optional) -->
+                                        <div class="form-group py-4 mb-4">
+                                            <div class="flex">
+                                                <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional) Max(100 characters):</label>
+                                                <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">0</span></p>
+                                            </div>
+                                            <input type="text" id="title" name="title" placeholder="Enter title (optional)"
+                                                class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
+                                                value="${postTitle}">
+                                            <span class="form-message text-red-500 text-sm"></span>
+                                            <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
+                                        </div>
+                                        <!-- Content Field (Required) -->
+                                        <div class="form-group">
+                                            <div class="flex">
+                                                <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                                                <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">0</span></p>
+                                            </div>
+                                            <textarea id="content" name="content" rows="5" placeholder="Enter content"
+                                                class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${postContent}</textarea>
+                                            <span class="form-message text-red-500 font-medium text-sm"></span>
+                                        </div>
+                                        <!-- Module Select -->
+                                        <div class="form-group">
+                                            <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
+                                            <select id="module" name="module"
+                                                class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
+                                                <option value="" class="text-black dark:text-white">Selected : ${postModuleName}</option>
+                                                <?php foreach ($modules as $module): ?>
+                                                    <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <span class="form-message text-red-500 font-medium text-sm ml-5"></span>
+                                        </div>
+                                        <!-- Image Upload -->
+                                        <div class="form-group flex gap-7 relative">
+                                            <div>
+                                                <label for="image" class="block font-medium text-gray-700 dark:text-white mb-2">Upload Image:</label>
+                                                <label class="custom-file-upload text-gray-700 dark:text-white">
+                                                <input type="file" id="image" name="image" accept="image/*"
+                                                    class="w-2 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none title">
+                                                    Choose an image
+                                                </label>
+                                                <span class="form-message text-red-500 font-medium text-sm"></span>
+                                            </div>
+                                            <!-- Preview Image -->
+                                            <div id="preview-container" class="${hiddenClass} absolute -top-[100px] left-[440px]">
+                                                <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
+                                                <img id="preview" src="${postImage}" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
+                                            </div>
+                                        </div>
+                                        <!-- Submit Button -->
+                                        <div class="flex justify-end">
+                                            <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Save">
+                                        </div>
+                                    </form>
+        `);
+
+
                         }
                     });
 
@@ -454,19 +486,7 @@
             setupEventListeners();
         });
 
-        function checkExistingModal() {
-            const existingModal = document.querySelector(".modal-backdrop");
-            if (existingModal) {
-                existingModal.remove();
-            }
-        }
 
-        function checkExistingDropdown(e) {
-            const dropdown = e.target.closest(".post-card-dropdown ");
-            if (dropdown) {
-                dropdown.classList.add("hidden");
-            }
-        }
         const deleteBtnsAdmin = document.querySelectorAll(".delete-btn");
         deleteBtnsAdmin.forEach((btn) => {
             btn.addEventListener("click", function(e) {
@@ -479,6 +499,18 @@
 </h2>`);
             });
         });
+        <?php
+        $error = SessionManager::get('error');
+        SessionManager::remove('error');
+        ?>
+        const ErrorModal = new Modal();
+        const messageError = <?php echo json_encode($error, JSON_HEX_TAG); ?>;
+        if (messageError) {
+            ErrorModal.openModal(`<div class="error-modal">
+                                    <h1 class="text-2xl text-red-600 dark:text-red-500 font-medium mb-4">Error !</h1>
+                                    <h2 class="text-gray-600 dark:text-white ">${messageError} !</h2>
+                                </div>`);
+        }
     </script>
 
 </body>

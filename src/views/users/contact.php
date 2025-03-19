@@ -85,7 +85,7 @@
         echo '<h1 class="text-2xl text-red-500 font-bold text-center mt-20 justify-center">✔️ Email has been sent!</h1>';
     }
     ?>
-
+    <script src="/js/script.js"></script>
     <script src="/js/validator.js"></script>
     <script>
         Validator({

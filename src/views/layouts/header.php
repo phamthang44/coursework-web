@@ -29,7 +29,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
         <div class="container mx-auto px-4 flex items-center justify-between h-14">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="/posts" class="text-red-600 font-bold text-2xl mr-4">KnowledgeHub</a>
+                <a href="/quorae" class="text-red-600 font-bold text-2xl mr-4">KnowledgeHub</a>
 
                 <!-- Search Bar -->
                 <div class="relative hidden md:block">
@@ -50,7 +50,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
 
             <!-- Navigation -->
             <nav class="hidden md:flex items-center space-x-4">
-                <a href="/posts" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
+                <a href="/quorae" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
                 <a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Answer</a>
                 <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Notifications</a>
@@ -164,7 +164,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                     } else if (str_contains($_SERVER['REQUEST_URI'], '/posts/edit/')) {
                         echo '';
                     } else {
-                        echo '<button class="add-question ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Question</button>';
+                        echo '<button class="add-question ml-4 text-white bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full text-sm font-medium">Add Post</button>';
                     }
                 }
 
@@ -173,11 +173,11 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <div class="add-question-dropdown hidden absolute right-12 top-[45px] mt-2 py-2 w-54 bg-white border border-red-700 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
                     <a href="/posts/create/"
                         class="create-new-post-ad block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                        Create new post (advanced)
+                        Add new post (advanced)
                     </a>
                     <button
                         class="create-new-post-quick block w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                        Create new post (quick)
+                        Add new post (quick)
                     </button>
                 </div>
 

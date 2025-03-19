@@ -85,7 +85,7 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
                 </div>
             </div>
         </div>
-        <script src="/js/script.js"></script>
+
         <script>
             const aboutKnowledgeHub = document.querySelector('.about-knowledgehub');
             if (aboutKnowledgeHub) {

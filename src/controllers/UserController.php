@@ -129,9 +129,15 @@ class UserController extends BaseController
         return $this->userDAO->getUserById($userID);
     }
 
+    public function getProfileUser($firstName, $lastName, $id)
+    {
+        return $this->userDAO->getUserByUrl($firstName, $lastName, $id);
+    }
+
+
     public function userProfile($firstName, $lastName, $id)
     {
-        $user = $this->getUser($id);
+        $user = $this->getProfileUser($firstName, $lastName, $id);
         $currentUser = SessionManager::get('user');
         if (!$user) {
             header("Location: /404");

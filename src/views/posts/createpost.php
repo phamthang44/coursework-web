@@ -56,6 +56,7 @@
             <!-- Content Field (Required) -->
             <div class="form-group">
                 <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                <p class="font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">0</span></p>
                 <textarea id="content" name="content" rows="5" placeholder="Enter content"
                     class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
                 <span class="form-message text-red-500 font-medium text-sm"></span>
@@ -129,6 +130,11 @@
         });
 
         const avatarDropdown = document.getElementById("avatar-dropdown");
+        document.getElementById("content").addEventListener("input", function() {
+            const text = this.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            document.getElementById("wordCount").textContent = wordCount; // Cập nhật ngay
+        });
     </script>
 </body>
 
