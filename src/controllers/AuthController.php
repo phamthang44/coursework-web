@@ -5,12 +5,13 @@ namespace controllers;
 use dal\Auth;
 use utils\SessionManager;
 
-class AuthController
+class AuthController extends BaseController
 {
     private $auth;
 
     public function __construct()
     {
+        parent::__construct(['/login', '/logout', '/quorae', '/signup', '/posts', '/403', '/404']);
         $this->auth = new Auth();
     }
 

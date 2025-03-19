@@ -18,7 +18,7 @@ class PostController extends BaseController
     //private $postAssetController;
     function __construct()
     {
-        parent::__construct(['/posts']);
+        parent::__construct(['/posts', '/quorae', '/login', '/404', '/403', '/signup']);
         $this->postDAO = new PostDAOImpl();
         $this->moduleDAO = new ModuleDAOImpl();
         $this->postAssetDAO = new PostAssetDAOImpl();

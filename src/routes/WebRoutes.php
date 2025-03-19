@@ -26,7 +26,7 @@ class WebRoutes
     public static function register(Router $router)
     {
         // Post routes
-        $router->addRoute('GET', '/', 'PostController', 'index');
+        $router->addRoute('GET', '/quorae', 'PostController', 'index');
 
         // Auth routes
         $router->addRoute('GET', '/login', 'AuthController', 'login');

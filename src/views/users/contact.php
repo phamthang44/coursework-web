@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Contact to admin</title>
+    <title>Contact to admin - QuoraeHub</title>
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode2">

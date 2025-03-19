@@ -19,7 +19,7 @@ class UserController extends BaseController
     private $userMsgDAO;
     public function __construct()
     {
-        parent::__construct(['/posts', '/403', '/404', '/signup', '/login']);
+        parent::__construct(['/posts', '/403', '/404', '/signup', '/login', '/quorae']);
         $this->userDAO = new UserDAOImpl();
         $this->userMsgDAO = new MessageFromUserDAOImpl();
     }

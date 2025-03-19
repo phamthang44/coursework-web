@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum Login</title>
+    <title>Login QuoraeHub</title>
     <style>
         :root {
             --primary-color: #f42935;
@@ -287,7 +287,7 @@
 <body>
     <div class="container">
         <div class="left-panel">
-            <h1>KnowledgeHub</h1>
+            <h1>QuoraeHub</h1>
             <p>Join our community of curious minds. Ask questions, share knowledge, and connect with experts around the world.</p>
             <div class="circles"></div>
         </div>
