@@ -172,6 +172,7 @@
 
     <?php echo render_quora_footer() ?>
     <script src="/js/validator.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         const moduleItems = document.querySelectorAll('.module-item');
         moduleItems.forEach(item => {

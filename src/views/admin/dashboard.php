@@ -16,7 +16,7 @@
 </head>
 
 <body class="bg-background-light dark:bg-darkmode2 text-gray-800 dark:text-gray-200 transition-colors duration-200">
-    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-60 transition-opacity duration-300"></div>
+    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <?php
 
     use controllers\UserController;

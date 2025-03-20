@@ -21,11 +21,19 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode2 relative" id="home-page">
-    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-60 transition-opacity duration-300"></div>
+    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <?php
     // User authentication setup
     use controllers\ModuleController;
@@ -248,47 +256,6 @@
 
             }
         }
-        // Upvote functionality
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.closest('.upvote-btn')) {
-                const card = e.target.closest('.post-card');
-                const postId = card.dataset.postId;
-                const scoreElement = card.querySelector('.vote-score span');
-
-                // Call your vote API here
-                // For demonstration purposes:
-                fetch(`/api/vote?postId=${postId}&direction=up`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update the score display
-                            const newScore = data.newScore;
-                            scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
-
-                            // Update color
-                            scoreElement.className = 'mx-1 font-bold ' +
-                                (newScore > 0 ? 'text-green-600 dark:text-green-400' :
-                                    (newScore < 0 ? 'text-red-600 dark:text-red-400' : ''));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        });
-
-        // Similar implementation for downvote
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.closest('.downvote-btn')) {
-                // Similar implementation as upvote
-            }
-        });
-
 
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {

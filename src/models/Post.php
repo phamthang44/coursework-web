@@ -2,7 +2,9 @@
 
 namespace models;
 
-class Post
+use JsonSerializable;
+
+class Post implements JsonSerializable
 {
     private $postId;
     private $title;
@@ -163,5 +165,15 @@ class Post
     public function setUpdatedTimestamp($updatedTimestamp)
     {
         $this->updatedTimestamp = $updatedTimestamp;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

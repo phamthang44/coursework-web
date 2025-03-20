@@ -159,15 +159,40 @@ class PostDAOImpl implements PostDAOI
         return $stmt->execute();
     }
 
-    public function increaseVoteScore($postId, $voteScore)
+    public function increaseVoteScore($postId)
     {
         // TODO: Implement increaseVoteScore() method.
+        // $sql = "SELECT vote_score FROM Posts WHERE post_id = :postId";
+        // $stmt = $this->pdo->prepare($sql);
+        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        // $stmt->execute();
+        // $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        // $currentVoteScore = $row['vote_score'];
+        // $newVoteScore = $currentVoteScore + 1;
 
+        // $sql = "UPDATE Posts SET vote_score = :voteScore WHERE post_id = :postId";
+        // $stmt = $this->pdo->prepare($sql);
+        // $stmt->bindParam(":voteScore", $newVoteScore, PDO::PARAM_INT);
+        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        // $stmt->execute();
     }
 
-    public function decreaseVoteScore($postId, $voteScore)
+    public function decreaseVoteScore($postId)
     {
         // TODO: Implement decreaseVoteScore() method.
+        // $sql = "SELECT vote_score FROM Posts WHERE post_id = :postId";
+        // $stmt = $this->pdo->prepare($sql);
+        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        // $stmt->execute();
+        // $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        // $currentVoteScore = $row['vote_score'];
+        // $newVoteScore = $currentVoteScore - 1;
+
+        // $sql = "UPDATE Posts SET vote_score = :voteScore WHERE post_id = :postId";
+        // $stmt = $this->pdo->prepare($sql);
+        // $stmt->bindParam(":voteScore", $newVoteScore, PDO::PARAM_INT);
+        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        // $stmt->execute();
     }
 
     /**
@@ -255,10 +280,36 @@ class PostDAOImpl implements PostDAOI
 
     public function searchPosts($search)
     {
-        $searchTerm = "%{$search}%";
-        $sql = "SELECT * FROM Posts WHERE title LIKE :search OR content LIKE :search";
+        // if (empty(trim($search))) {
+        //     return [];
+        // }
+
+        // $searchTerm = "%" . trim($search) . "%";
+        // $sql = "SELECT * FROM Posts WHERE LOWER(title) LIKE LOWER(:search) OR LOWER(content) LIKE LOWER(:search) LIMIT 5";
+        // $stmt = $this->pdo->prepare($sql);
+        // $stmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
+        // $stmt->execute();
+        if (empty(trim($search))) {
+            return []; // Nếu input rỗng thì trả về mảng trống
+        }
+
+        $keywords = explode(" ", trim($search)); // Tách từ khóa thành mảng
+        $sqlConditions = [];
+        $params = [];
+
+        foreach ($keywords as $index => $keyword) {
+            $paramKey = ":search{$index}";
+            $sqlConditions[] = "(LOWER(title) LIKE LOWER($paramKey) OR LOWER(content) LIKE LOWER($paramKey))";
+            $params[$paramKey] = "%$keyword%";
+        }
+
+        $sql = "SELECT * FROM Posts WHERE " . implode(" OR ", $sqlConditions) . " LIMIT 5";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, PDO::PARAM_STR);
+        }
+
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $posts = [];

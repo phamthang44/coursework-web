@@ -10,7 +10,7 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode2">
-    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-60 transition-opacity duration-300"></div>
+    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <?php
     // User authentication setup
     use controllers\ModuleController;

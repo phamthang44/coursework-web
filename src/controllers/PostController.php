@@ -445,4 +445,72 @@ class PostController extends BaseController
     {
         return $this->postDAO->searchPosts($search);
     }
+
+    public function search($query)
+    {
+        header("Content-Type: application/json; charset=UTF-8");
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            echo json_encode(["status" => false, "message" => "Invalid request"]);
+            return;
+        }
+        if (empty($query)) {
+            echo json_encode(["status" => false, "message" => "No search query provided"]);
+            return;
+        }
+        $postsFound = $this->getResultSearch($query);
+
+        if (count($postsFound) === 0) {
+            SessionManager::set('error', "No posts found");
+            echo json_encode(["status" => false, "message" => "No posts found"]);
+            return;
+        }
+        $postsArray = array_map(fn($post) => $post->toArray(), $postsFound);
+
+        echo json_encode([
+            "status" => true,
+            "posts" => count($postsArray) === 1 ? $postsArray[0] : $postsArray
+        ]);
+    }
+
+    public function notfound()
+    {
+        require_once __DIR__ . '/../views/errors/404.php';
+    }
+
+    public function vote($postId)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            SessionManager::set('error', "Invalid request");
+            header("Location: /posts");
+            exit();
+        }
+        try {
+            $voteScore = (int) ($_POST['voteScore'] ?? 0);
+            if ($voteScore !== 1 && $voteScore !== -1) {
+                throw new Exception("Invalid vote score");
+            }
+            $post = $this->postDAO->getPost($postId);
+            if (!$post) {
+                throw new Exception("Post not found");
+            }
+            $this->postDAO->updateScore($postId, $voteScore);
+            SessionManager::set('success', "Vote submitted successfully");
+            header("Location: /posts");
+            exit();
+        } catch (Exception $e) {
+            SessionManager::set('error', $e->getMessage());
+            header("Location: /posts");
+            exit();
+        }
+    }
+
+    private function increaseVoteScore($postId)
+    {
+        $this->postDAO->increaseVoteScore($postId);
+    }
+
+    private function decreaseVoteScore($postId)
+    {
+        $this->postDAO->decreaseVoteScore($postId);
+    }
 }

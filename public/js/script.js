@@ -225,44 +225,164 @@ function checkExistingDropdown(e) {
     addQuestionDropDown.classList.add("hidden");
   }
 }
+class SearchUI {
+  constructor() {
+    this.searchBar = document.querySelector(".search-input");
+    this.overlay = document.querySelector(".overlay");
+    this.searchResults = document.querySelector(".search-results");
+    this.typingTimer = null;
 
-const searchBar = document.querySelector(".search-input");
-const overLay = document.querySelector(".overlay");
-const searchResults = document.querySelector(".search-results");
-searchBar.addEventListener("focus", () => {
-  overLay.classList.remove("hidden");
-  setTimeout(() => {
-    overLay.classList.remove("opacity-0");
-  }, 10);
+    this.initEvents();
+  }
 
-  searchResults.innerHTML = "";
-});
-searchBar.addEventListener("blur", () => {
-  overLay.classList.add("opacity-0");
-  setTimeout(() => {
-    overLay.classList.add("hidden");
-  }, 300);
-  setTimeout(() => {
-    searchResults.classList.add("-translate-y-1/2");
-  }, 10);
-  setTimeout(() => {
-    searchResults.classList.add("hidden");
-  }, 300);
-});
-searchBar.addEventListener("input", () => {
-  if (searchBar.value.length > 0) {
+  initEvents() {
+    this.searchBar.addEventListener("focus", () => this.showOverlay());
+    this.searchBar.addEventListener("blur", () => this.handleBlur());
+    this.searchBar.addEventListener("input", () =>
+      this.debouncedFetchResults()
+    );
+    this.overlay.addEventListener("click", () => {
+      this.hideSearchResults();
+      this.hideOverlay();
+    });
+  }
+
+  showOverlay() {
+    this.overlay.classList.remove("hidden", "opacity-0");
+  }
+
+  hideOverlay() {
+    this.overlay.classList.add("opacity-0");
+    setTimeout(() => this.overlay.classList.add("hidden"), 400);
+  }
+
+  showSearchResults() {
+    this.searchResults.classList.remove("hidden", "opacity-0", "scale-y-0");
+    this.searchResults.classList.add("scale-y-100");
+  }
+
+  hideSearchResults() {
+    this.searchResults.classList.add("scale-y-0", "opacity-0");
     setTimeout(() => {
-      searchResults.classList.add("translate-y-1/2");
-    }, 10);
-    setTimeout(() => {
-      searchResults.classList.remove("hidden");
+      if (this.searchBar.value.trim().length === 0) {
+        this.searchResults.classList.add("hidden");
+      }
+    }, 400);
+  }
+
+  debouncedFetchResults() {
+    clearTimeout(this.typingTimer);
+    this.typingTimer = setTimeout(async () => {
+      const searchTerm = this.searchBar.value.trim();
+      if (searchTerm.length > 0) {
+        await this.fetchSearchResults(searchTerm);
+      } else {
+        this.hideSearchResults();
+      }
     }, 500);
-  } else {
+  }
+
+  async fetchSearchResults(searchTerm) {
+    if (!searchTerm.trim()) return;
+    try {
+      const res = await fetch(`/search/${encodeURIComponent(searchTerm)}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+      const text = await res.text();
+      const data = text
+        ? JSON.parse(text)
+        : { success: false, message: "Empty response" };
+
+      if (data.status) {
+        this.renderResults(data.posts);
+        this.showSearchResults();
+      } else {
+        this.renderNoResults();
+      }
+    } catch (error) {
+      console.error("Error found :", error);
+      this.renderNoResults();
+    }
+  }
+
+  renderResults(posts) {
+    console.log(posts);
+    this.searchResults.innerHTML = posts
+      .map(
+        (post) =>
+          `<div class="p-2 border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+            <a href="/post/${post.id}" class="block">${post.title}</a>
+            <p class="text-gray-500 text-sm line-clamp-3">${post.content}</p>
+          </div>`
+      )
+      .join("");
+  }
+
+  renderNoResults() {
+    this.searchResults.innerHTML = `<h2 class="p-2 text-gray-500">No posts found</h2>`;
+    this.showSearchResults();
+  }
+
+  handleBlur() {
     setTimeout(() => {
-      searchResults.classList.add("-translate-y-1/2");
-    }, 10);
-    setTimeout(() => {
-      searchResults.classList.add("hidden");
-    }, 500);
+      if (
+        !this.searchBar.matches(":focus") &&
+        this.searchBar.value.trim().length === 0
+      ) {
+        this.hideOverlay();
+        this.hideSearchResults();
+        this.searchBar.classList.remove("w-[400px]");
+      }
+    }, 200);
+  }
+}
+
+new SearchUI();
+
+// Upvote functionality
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.closest(".upvote-btn")) {
+    const card = e.target.closest(".post-card");
+    const postId = card.dataset.postId;
+    const scoreElement = card.querySelector(".vote-score span");
+
+    // Call your vote API here
+    // For demonstration purposes:
+    fetch(`/api/vote?postId=${postId}&direction=up`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Update the score display
+          const newScore = data.newScore;
+          scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
+
+          // Update color
+          scoreElement.className =
+            "mx-1 font-bold " +
+            (newScore > 0
+              ? "text-green-600 dark:text-green-400"
+              : newScore < 0
+              ? "text-red-600 dark:text-red-400"
+              : "");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+});
+
+// Similar implementation for downvote
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.closest(".downvote-btn")) {
+    // Similar implementation as upvote
   }
 });

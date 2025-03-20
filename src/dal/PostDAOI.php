@@ -17,8 +17,8 @@ interface PostDAOI
     public function updatePostModule($postId, $moduleId);
     public function updateScore($postId, $voteScore);
     public function deletePost($postId);
-    public function increaseVoteScore($postId, $voteScore);
-    public function decreaseVoteScore($postId, $voteScore);
+    public function increaseVoteScore($postId);
+    public function decreaseVoteScore($postId);
     public function getLastPostId();
     public function getPostsByUserId($userId);
     public function searchPosts($search);

@@ -45,6 +45,7 @@ class WebRoutes
         $router->addRoute('POST', '/posts/update/{id}', 'PostController', 'update');
         $router->addRoute('GET', '/posts/delete/{id}', 'PostController', 'delete');
         $router->addRoute('GET', '/404', 'PostController', 'notfound');
+        $router->addRoute('POST', '/posts/vote/{id}', 'PostController', 'vote');
         // Contact routes
         $router->addRoute('GET', '/contact', 'UserController', 'contact');
         $router->addRoute('POST', '/sendemail', 'UserController', 'sendEmail');
@@ -65,5 +66,8 @@ class WebRoutes
         $router->addRoute('POST', '/admin/modules/update/{moduleId}', 'AdminController', 'updateModule');
         $router->addRoute('POST', '/admin/modules/create', 'AdminController', 'createModule');
         $router->addRoute('GET', '/admin/modules/delete/{moduleId}', 'AdminController', 'deleteModule');
+
+        // Search route
+        $router->addRoute('GET', '/search/{query}', 'PostController', 'search');
     }
 }

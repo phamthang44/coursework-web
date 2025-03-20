@@ -39,13 +39,13 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                         } else if (str_contains($_SERVER['REQUEST_URI'], '/posts/edit/')) {
                             echo '';
                         } else {
-                            echo '<input type="text" placeholder="Search QuoraeHub" class="search-input w-64 bg-gray-100 dark:bg-[#181818] dark:text-white rounded-xs pl-10 pr-4 py-1 border border-[#2b2b2b] focus:outline-none focus:border-red-400 text-sm">
+                            echo '<input type="text" name="searchInput" placeholder="Search QuoraeHub" class="search-input w-64 bg-gray-100 dark:bg-[#181818] dark:text-white rounded-xs pl-10 pr-4 py-1 border border-[#2b2b2b] focus:outline-none focus:border-red-400 focus:w-[400px] transition-all duration-500 text-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-2 text-gray-500 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>';
                         }
                     } ?>
-                    <div class="search-results absolute -top-[120px] left-0 bg-white dark:bg-darkmode border border-[#2b2b2b] w-[256px] h-[300px] z-[60] hidden transition-all duration-500"></div>
+                    <div class="search-results absolute top-[calc(100%)] left-0 bg-white dark:bg-darkmode border border-gray-300 w-[400px] h-[350px] z-[60] opacity-0 scale-y-0 origin-top transition-all duration-500 hidden"></div>
                 </div>
             </div>
 
