@@ -140,32 +140,37 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                 <!-- Vote score -->
 
                 <?php if ($currentUser) { ?>
-                    <div class="vote-score flex items-center" data-score="<?= $voteScore ?>">
-
+                    <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
                         <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActive : "" ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
                         </button>
 
-                        <span class="mx-1 font-bold <?= $isActiveDisplay ?>">
+                        <span class="absolute right-[40px] block font-bold <?= $isActiveDisplay ?>">
                             <?= $voteDisplay ?>
                         </span>
 
-                        <button class="vote-btn downvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore < 0 ? $isActive : "" ?>">
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore < 0 ? $isActive : "" ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-
                     </div>
                 <?php } ?>
-
+                <button class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
+                    <i class="far fa-comment"></i>
+                    <span>3 Comments</span>
+                </button>
+                <!-- Read more link need to fix here-->
+                <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                    Read more &rarr;
+                </a>
             </div>
             <!-- Action buttons -->
-            <div class="mt-4 flex justify-between items-center">
-                <div>
-                    <?php if ($showControls): ?>
+            <?php if ($showControls): ?>
+                <div class="mt-4 flex justify-between items-center">
+                    <div>
                         <a href="/posts/edit/<?= $postId ?>" class="inline-flex items-center px-3 py-1 mr-2 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -178,13 +183,10 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             </svg>
                             Delete
                         </a>
-                    <?php endif; ?>
+                    </div>
+
                 </div>
-                <!-- Read more link need to fix here-->
-                <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                    Read more &rarr;
-                </a>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 <?php

@@ -507,9 +507,9 @@ class PostController extends BaseController
         }
         $userId = SessionManager::get("user_id");
         $postId = $data['postId'];
-        $voteType = isset($data['voteType']) ? $data['voteType'] : null;
+        $voteType = isset($data['voteType']) ? $data['voteType'] : 0;
 
-        $this->postVoteDAO->vote($userId, $postId, $voteType);
+        //$this->postVoteDAO->vote($userId, $postId, $voteType);
         $newVoteScore = $this->postVoteDAO->getVoteScore($postId);
 
         echo json_encode(["status" => true, "voteScore" => $newVoteScore]);

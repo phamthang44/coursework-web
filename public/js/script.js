@@ -371,7 +371,7 @@ class VoteFeature {
     }
 
     const requestBody = { postId };
-    if (voteType !== 0) {
+    if (voteType !== undefined) {
       requestBody.voteType = voteType;
     }
 
@@ -418,7 +418,7 @@ class VoteFeature {
     // update score
     scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
     scoreElement.className =
-      "mx-1 font-bold " +
+      "absolute right-[40px] block font-bold " +
       (newScore > 0
         ? "text-green-600 dark:text-green-400"
         : newScore < 0

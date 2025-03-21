@@ -149,10 +149,11 @@
                                     $postDate = $post->getTimestamp();
                                     $postDateFormatted = date('M d, Y', strtotime($postDate));
                                     ?>
+
                                     <tr class="border-b border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
-                                        <td class="px-5 py-4"><?= $postTitle ?></td>
-                                        <td class="px-5 py-4"><?= $postModuleName ?></td>
-                                        <td class="px-5 py-4"><?= $firstName . " " . $lastName ?></td>
+                                        <td class="px-5 py-4"><a href="#!"><?= $postTitle ?></a></td>
+                                        <td class="px-5 py-4"><a href="/admin/module-management"><?= $postModuleName ?></a></td>
+                                        <td class="px-5 py-4"><a href="/profile/<?= $firstName . "-" . $lastName . "-" . $post->getUserId() ?>"><?= $firstName . " " . $lastName ?></a></td>
                                         <td class="px-5 py-4">
                                             <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400"><?= $isPublished ?></span>
                                         </td>
@@ -165,7 +166,9 @@
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
+
                                     </tr>
+
                                 <?php } ?>
                             </tbody>
                         </table>

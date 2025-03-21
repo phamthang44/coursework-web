@@ -10,6 +10,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        .line-clamp-6 {
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode2 transition-colors duration-200" id="profile-page">
@@ -251,7 +260,7 @@
                                     </div>
                                     <div class="mt-3">
                                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">' . $title . '</h3>
-                                        <p class="mt-2 text-gray-700 dark:text-gray-300">
+                                        <p class="mt-2 text-gray-700 dark:text-gray-300 line-clamp-6">
                                             ' . $content . '</p>
                                         <div class="mt-3">
                                             ' . (isset($postImageObj) && $postImageObj->getMediaKey() ? '<img src="/' . $postImageObj->getMediaKey() . '" alt="Post image" class="rounded-lg w-full object-cover" >' : '') . '

@@ -79,7 +79,6 @@
                                 data-module-id="<?= htmlspecialchars($module->getModuleId(), ENT_QUOTES, 'UTF-8'); ?>"
                                 data-module-name="<?= htmlspecialchars($module->getModuleName(), ENT_QUOTES, 'UTF-8'); ?>"
                                 data-module-description="<?= htmlspecialchars($module->getModuleDescription(), ENT_QUOTES, 'UTF-8'); ?>">
-
                                 <td class="module-id px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                                     <?= htmlspecialchars($module->getModuleId(), ENT_QUOTES, 'UTF-8'); ?>
                                 </td>
