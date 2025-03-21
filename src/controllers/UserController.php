@@ -7,8 +7,10 @@ error_reporting(E_ALL);
 
 
 use dal\UserDAOImpl;
+use dal\PostVoteDAO;
 use utils\SessionManager;
 use dal\MessageFromUserDAOImpl;
+use dal\PostDAOImpl;
 use Exception;
 use finfo;
 
@@ -17,11 +19,15 @@ class UserController extends BaseController
 {
     private $userDAO;
     private $userMsgDAO;
+    private $postVoteDAO;
+    private $postDAO;
     public function __construct()
     {
         parent::__construct(['/posts', '/403', '/404', '/signup', '/login', '/quorae']);
         $this->userDAO = new UserDAOImpl();
         $this->userMsgDAO = new MessageFromUserDAOImpl();
+        $this->postVoteDAO = new PostVoteDAO();
+        $this->postDAO = new PostDAOImpl();
     }
 
     public function contact()
@@ -143,7 +149,17 @@ class UserController extends BaseController
             header("Location: /404");
             exit();
         }
-
+        $posts = $this->postDAO->getPostsByUserId($user->getUserId());
+        $voteScores = [];
+        foreach ($posts as $post) {
+            $voteScores[$post->getPostId()] = $this->postVoteDAO->getVoteScore($post->getPostId());
+        }
+        $votesUserStatus = [];
+        if ($currentUser) {
+            foreach ($posts as $post) {
+                $voteUserStatus[$post->getPostId()] = $this->postVoteDAO->getUserVoteStatus($currentUser->getUserId(), $post->getPostId());
+            }
+        }
         $isOwner = $currentUser && method_exists($currentUser, 'getUserId') && $currentUser->getUserId() === $user->getUserId();
         require_once __DIR__ . '/../views/users/profile.php';
     }

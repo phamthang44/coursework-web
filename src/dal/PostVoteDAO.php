@@ -27,60 +27,57 @@ class PostVoteDAO
         $stmt->execute();
         return (int) $stmt->fetchColumn(); // return vote_score value
     }
-    //solution mới dùng Redis + MySQL cần tính toán lại 
-    // public function vote($userId, $postId, $voteType = null): bool
-    // {
-    //     $sql = "SELECT vote_type FROM PostVotes WHERE user_id = :user_id AND post_id = :post_id";
-    //     $stmt = $this->pdo->prepare($sql);
-    //     $stmt->bindParam(':user_id', $userId);
-    //     $stmt->bindParam(':post_id', $postId);
-    //     $stmt->execute();
-    //     $existingVote = $stmt->fetchColumn();
 
-    //     if (is_null($voteType)) {
-    //         if ($existingVote !== false) {
-    //             $sql = "UPDATE PostVotes SET vote_type = NULL WHERE user_id = :user_id AND post_id = :post_id";
-    //         } else {
-    //             return true;
-    //         }
-    //     } else {
-    //         if (!in_array($voteType, [-1, 1])) {
-    //             throw new InvalidArgumentException("Invalid vote type: must be -1 or 1");
-    //         }
-    //         if ($existingVote === false) {
-    //             $sql = "INSERT INTO PostVotes (user_id, post_id, vote_type) VALUES (:user_id, :post_id, :vote_type)";
-    //         } elseif ($existingVote === $voteType) {
-    //             $sql = "UPDATE PostVotes SET vote_type = NULL WHERE user_id = :user_id AND post_id = :post_id";
-    //         } elseif ($existingVote === 1 && $voteType === -1) {
-    //             $sql = "UPDATE PostVotes SET vote_type = -1 WHERE user_id = :user_id AND post_id = :post_id";
-    //         } elseif ($existingVote === -1 && $voteType === 1) {
-    //             $sql = "UPDATE PostVotes SET vote_type = 1 WHERE user_id = :user_id AND post_id = :post_id";
-    //         } else {
-    //             $sql = "UPDATE PostVotes SET vote_type = :vote_type WHERE user_id = :user_id AND post_id = :post_id";
-    //         }
-    //     }
-    //     $stmt = $this->pdo->prepare($sql);
-    //     $stmt->bindParam(':user_id', $userId);
-    //     $stmt->bindParam(':post_id', $postId);
-    //     if (!is_null($voteType) && ($existingVote === false || ($existingVote === -1 && $voteType === 1))) {
-    //         $stmt->bindParam(':vote_type', $voteType);
-    //     }
+    public function getVoteData($postId, $userId)
+    {
+        // Take total vote of post
+        $sql = "SELECT COALESCE(SUM(vote_type), 0) AS vote_score FROM PostVotes WHERE post_id = :post_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':post_id' => $postId]);
+        $voteScore = $stmt->fetchColumn();
 
-    //     return $stmt->execute();
-    // }
+        // Take status of vote of current user
+        $sql = "SELECT vote_type FROM PostVotes WHERE user_id = :user_id AND post_id = :post_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':user_id' => $userId, ':post_id' => $postId]);
+        $userVote = $stmt->fetchColumn() ?? 0; // If null then return 0 (not vote yet)
 
-    // public function unvote($user_id, $post_id): bool
-    // {
-    //     $sql = "DELETE FROM PostVotes WHERE user_id = :user_id AND post_id = :post_id";
-    //     $stmt = $this->pdo->prepare($sql);
-    //     return $stmt->execute([':user_id' => $user_id, ':post_id' => $post_id]);
-    // }
+        return ['voteScore' => $voteScore, 'userVote' => $userVote];
+    }
+
+    public function vote($userId, $postId, $voteType)
+    {
+        // Take the current status vote of user
+        $oldVote = $this->getUserVoteStatus($userId, $postId);
+        if ($voteType === 0 || $oldVote === $voteType) {
+            // If voteType = 0 or vote like previous one then remove vote
+            $sql = "DELETE FROM PostVotes WHERE user_id = :user_id AND post_id = :post_id";
+            $params = [':user_id' => $userId, ':post_id' => $postId];
+        } elseif ($oldVote === false && $voteType !== 0) {
+            // If have not voted before, add a new vote.
+            $sql = "INSERT INTO PostVotes (user_id, post_id, vote_type) VALUES (:user_id, :post_id, :vote_type)";
+            $params = [':user_id' => $userId, ':post_id' => $postId, ':vote_type' => $voteType];
+        } elseif ($oldVote !== false && $oldVote !== $voteType && $voteType !== 0) {
+            // If voted before but with a different vote type, update
+            $sql = "UPDATE PostVotes SET vote_type = :vote_type WHERE user_id = :user_id AND post_id = :post_id";
+            $params = [':user_id' => $userId, ':post_id' => $postId, ':vote_type' => $voteType];
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        $newVoteScore = $this->getVoteScore($postId);
+        return ['status' => true, 'voteScore' => $newVoteScore];
+    }
+
 
     public function getUserVoteStatus($user_id, $post_id)
     {
         $sql = "SELECT vote_type FROM PostVotes WHERE user_id = :user_id AND post_id = :post_id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $user_id, ':post_id' => $post_id]);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':post_id', $post_id);
+        $stmt->execute();
         return $stmt->fetchColumn(); //Return -1, 1 or false
     }
 }

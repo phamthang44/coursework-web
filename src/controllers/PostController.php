@@ -456,6 +456,7 @@ class PostController extends BaseController
         return $this->postDAO->searchPosts($search);
     }
 
+
     public function search($query)
     {
         header("Content-Type: application/json; charset=UTF-8");
@@ -509,10 +510,13 @@ class PostController extends BaseController
         $postId = $data['postId'];
         $voteType = isset($data['voteType']) ? $data['voteType'] : 0;
 
-        //$this->postVoteDAO->vote($userId, $postId, $voteType);
-        $newVoteScore = $this->postVoteDAO->getVoteScore($postId);
+        $data = $this->postVoteDAO->vote($userId, $postId, $voteType);
+        if (!$data['status']) {
+            echo json_encode(["status" => false, "message" => "Failed to vote"]);
+            return;
+        }
 
-        echo json_encode(["status" => true, "voteScore" => $newVoteScore]);
+        echo json_encode(["status" => $data['status'], "voteScore" => $data['voteScore']]);
     }
 
     // private function increaseVoteScore($postId)

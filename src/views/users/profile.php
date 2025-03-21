@@ -39,6 +39,7 @@
 
 
     Template::header();
+    Template::postCard();
 
     if (isset($user) && !is_null($user)) {
         $postController = new PostController();
@@ -173,9 +174,8 @@
                         </div>
 
                         <!-- Posts -->
-                        <?php
 
-                        if (empty($posts) || $posts === null) {
+                        <?php if (empty($posts) || $posts === null) {
                             echo '<div class="flex flex-col items-center justify-center py-16">
                                 <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 mb-4">
                                 <i class="fas fa-inbox text-4xl"></i>
@@ -187,7 +187,6 @@
                                 $postId = $post->getPostId();
                                 $title = $post->getTitle();
                                 $content = $post->getContent();
-                                $voteScore = $post->getVoteScore();
                                 $timestamp = $post->getTimestamp();
                                 $datetime = new DateTime($timestamp);
                                 $formattedTimestamp = $datetime->format('F j, Y');
@@ -197,6 +196,22 @@
                                 $postImageObj = $postController->getPostImage($postId);
                                 $avatarUserStr = $user->getProfileImage();
                                 $postUserId = $postController->getPostUserId($postId);
+                                $voteScore = $voteScores[$postId];
+
+                                $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
+
+                                //check if this vote by currentuser ? if not only show isactivedisplay 
+                                $voteUserStatus = isset($votesUserStatus[$postId]) ? $votesUserStatus[$postId] : 0;
+                                $isActiveUpvote = ($voteUserStatus === 1) ? 'active' : '';
+                                $isActiveDownvote = ($voteUserStatus === -1) ? 'active' : '';
+
+                                if ($voteScore > 0) {
+                                    $isActiveDisplay = 'text-green-600 dark:text-green-400';
+                                } else if ($voteScore < 0) {
+                                    $isActiveDisplay = 'text-red-600 dark:text-red-400';
+                                } else {
+                                    $isActiveDisplay = 'text-gray-600 dark:text-gray-400';
+                                }
                                 if (!is_null($user)) {
                                     if ($user->getUserId() === $postUserId) {
                                         if ($isOwner) {
@@ -236,50 +251,67 @@
                                     $avatarUser = '<div class="w-10 h-10 rounded-full bg-purple-600 text-white text-center flex items-center justify-center">
                                                         <span class="text-lg font-bold">' . strtoupper(substr($username, 0, 1)) . '</span>
                                                    </div>';
-                                }
-                                echo '
-                            <div class="card-container post-card" data-post-id="' . $postId . '" 
-                                data-title="' . $title . '"
-                                data-content="' . $content . '"
-                                data-module-id="' . $moduleId . '"
-                                data-module-name="' . $moduleName . '"
-                                data-post-image="' . (isset($postImageObj) && $postImageObj->getMediaKey() ? $postImageObj->getMediaKey()   : '') . '">
-                                <div class="border dark:border-gray-700 rounded-lg p-4 mb-4">
-                                    <div class="flex">
-                                        <div class="w-full flex items-center">
-                                            <div class="w-10 h-fit rounded-full">
-                                                ' . $avatarUser . '</div>
-                                            <div class="ml-4">
-                                                <h4 class="font-medium text-gray-900 dark:text-white">' . $firstName . " " . $lastName . '</h4>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">Posted on ' . $formattedTimestamp . '</p>
+                                } ?>
+
+                                <div class="card-container post-card" data-post-id="<?php echo $postId; ?>"
+                                    data-title="<?php echo $title; ?>"
+                                    data-content="<?php echo $content; ?>"
+                                    data-module-id="<?php echo $moduleId; ?>"
+                                    data-module-name="<?php echo $moduleName; ?>"
+                                    data-post-image="<?php echo (isset($postImageObj) && $postImageObj->getMediaKey()) ? $postImageObj->getMediaKey() : '' ?>">
+                                    <div class="border dark:border-gray-700 rounded-lg p-4 mb-4">
+                                        <div class="flex">
+                                            <div class="w-full flex items-center">
+                                                <div class="w-10 h-fit rounded-full">
+                                                    <?= $avatarUser ?></div>
+                                                <div class="ml-4">
+                                                    <h4 class="font-medium text-gray-900 dark:text-white"><?= $firstName . " " . $lastName ?></h4>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Posted on <?= $formattedTimestamp ?></p>
+                                                </div>
+                                                <div class="relative ml-auto">
+                                                    <?= $buttonMoreOptions . $postMoreOptionsDropdown ?>
+                                                </div>
                                             </div>
-                                            <div class="relative ml-auto">
-                                                ' . $buttonMoreOptions . $postMoreOptionsDropdown . '
-                                            </div>
-                                        </div> 
-                                    </div>
-                                    <div class="mt-3">
-                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">' . $title . '</h3>
-                                        <p class="mt-2 text-gray-700 dark:text-gray-300 line-clamp-6">
-                                            ' . $content . '</p>
+                                        </div>
                                         <div class="mt-3">
-                                            ' . (isset($postImageObj) && $postImageObj->getMediaKey() ? '<img src="/' . $postImageObj->getMediaKey() . '" alt="Post image" class="rounded-lg w-full object-cover" >' : '') . '
+                                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white"><?= $title ?></h3>
+                                            <p class="mt-2 text-gray-700 dark:text-gray-300 line-clamp-6">
+                                                <?= $content ?></p>
+                                            <div class="mt-3">
+                                                <?php (isset($postImageObj) && $postImageObj->getMediaKey() ? '<img src="/' . $postImageObj->getMediaKey() . '" alt="Post image" class="rounded-lg w-full object-cover" >' : '') ?>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between text-xl text-gray-500 dark:text-gray-400">
+                                            <!-- Vote score -->
+                                            <div class="vote-score flex items-center relative w-[100px]">
+                                                <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                                    </svg>
+                                                </button>
+
+                                                <span class="absolute right-[40px] block font-bold <?= $isActiveDisplay ?>">
+                                                    <?= $voteDisplay ?>
+                                                </span>
+
+                                                <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <button class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
+                                                <i class="far fa-comment"></i>
+                                                <span>3 Comments</span>
+                                            </button>
+                                            <!-- Read more link need to fix here-->
+                                            <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                                                Read more &rarr;
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="mt-4 flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
-                                    <div class="flex space-x-4">
-                                        <button class="flex items-center space-x-1">
-                                            <i class="far fa-thumbs-up"></i>
-                                            <span>' . $voteScore . ' votes</span>
-                                        </button>
-                                        <button class="flex items-center space-x-1">
-                                            <i class="far fa-comment"></i>
-                                            <span>3 Comments</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>';
+                        <?php
                             }
                         }
                         ?>

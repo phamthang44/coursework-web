@@ -39,12 +39,9 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
 
     //check if this vote by currentuser ? if not only show isactivedisplay 
-    $isActive = '';
-    if ($voteUserStatus === false) {
-        $isActive = '';
-    } else {
-        $isActive = 'active';
-    }
+
+    $isActiveUpvote = ($voteUserStatus === 1) ? 'active' : '';
+    $isActiveDownvote = ($voteUserStatus === -1) ? 'active' : '';
 
     if ($voteScore > 0) {
         $isActiveDisplay = 'text-green-600 dark:text-green-400';
@@ -141,7 +138,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
 
                 <?php if ($currentUser) { ?>
                     <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
-                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActive : "" ?>">
+                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
@@ -151,7 +148,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             <?= $voteDisplay ?>
                         </span>
 
-                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore < 0 ? $isActive : "" ?>">
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
