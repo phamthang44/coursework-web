@@ -712,6 +712,10 @@ video {
   top: calc(100%);
 }
 
+.right-1 {
+  right: 0.25rem;
+}
+
 .z-0 {
   z-index: 0;
 }
@@ -730,6 +734,10 @@ video {
 
 .z-\[60\] {
   z-index: 60;
+}
+
+.m-4 {
+  margin: 1rem;
 }
 
 .mx-1 {

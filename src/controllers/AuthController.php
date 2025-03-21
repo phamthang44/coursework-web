@@ -31,7 +31,9 @@ class AuthController extends BaseController
                 header("Location: /quorae"); //temporary need to check role
                 exit();
             } else {
-                SessionManager::set('invalid-credentials', "Invalid credentials");
+                SessionManager::set('invalid-credentials', "Wrong password or email!");
+                header("Location: /login");
+                exit();
             }
         } else {
             $file = dirname(__DIR__) . "/views/users/login.php";

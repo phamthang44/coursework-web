@@ -346,25 +346,6 @@ new SearchUI();
 
 // Upvote functionality
 
-// async function vote(postId, voteType) {
-//   try {
-//     const res = await fetch(`/api/vote/post`, {
-//       method: "POST",
-//       body: JSON.stringify({ postId, voteType }),
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-//     const data = await res.json();
-//     return data;
-//   } catch (error) {
-//     console.error("Error found :", error);
-//     return { success: false, message: "Error found" };
-//   }
-// }
-
 class VoteFeature {
   constructor() {
     this.init();
@@ -434,7 +415,7 @@ class VoteFeature {
       button.classList.add("active");
     }
 
-    // Cập nhật điểm số
+    // update score
     scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
     scoreElement.className =
       "mx-1 font-bold " +
@@ -447,48 +428,3 @@ class VoteFeature {
 }
 
 new VoteFeature();
-
-// document.addEventListener("click", function (e) {
-//   if (e.target && e.target.closest(".upvote-btn")) {
-//     const card = e.target.closest(".post-card");
-//     const postId = card.dataset.postId;
-//     const scoreElement = card.querySelector(".vote-score span");
-
-//     // Call your vote API here
-//     // For demonstration purposes:
-//     fetch(`/api/vote/post`, {
-//       method: "POST",
-//       body: JSON.stringify({ postId, voteType: 1 }),
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     })
-//       .then((response) => response.json())
-//       .then((data) => {
-//         if (data.success) {
-//           // Update the score display
-//           const newScore = data.newScore;
-//           scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
-
-//           // Update color
-//           scoreElement.className =
-//             "mx-1 font-bold " +
-//             (newScore > 0
-//               ? "text-green-600 dark:text-green-400"
-//               : newScore < 0
-//               ? "text-red-600 dark:text-red-400"
-//               : "");
-//         }
-//       })
-//       .catch((error) => {
-//         console.error("Error:", error);
-//       });
-//   }
-// });
-
-// // Similar implementation for downvote
-// document.addEventListener("click", function (e) {
-//   if (e.target && e.target.closest(".downvote-btn")) {
-//     // Similar implementation as upvote
-//   }
-// });
