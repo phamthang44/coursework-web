@@ -90,7 +90,7 @@
                 }
             }
             if (!empty($postsData)) {
-                echo render_post_cards($postsData, $showControls, $postController, $user);
+                echo render_post_cards($postsData, $showControls, $postController, $user, $voteScores, $currentUser, $votesUserStatus);
             } else {
                 echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
             }
@@ -264,8 +264,6 @@
                     if (image) {
                         image.addEventListener("change", handleImagePreview);
                     }
-
-
 
                     // Call again Validator when modal appear
                     Validator({

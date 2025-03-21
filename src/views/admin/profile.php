@@ -168,7 +168,6 @@
 
                         <!-- Posts -->
                         <?php
-
                         if (empty($posts)) {
                             echo '<div class="flex flex-col items-center justify-center py-16 hidden">
                                 <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500 mb-4">

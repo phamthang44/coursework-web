@@ -47,6 +47,7 @@
             <!-- Title Field (Optional) -->
             <div class="form-group py-4 mb-4">
                 <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional):</label>
+                <p class="font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">0</span></p>
                 <input type="text" id="title" name="title" placeholder="Enter title (optional)"
                     class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">
                 <span class="form-message text-red-500 text-sm"></span>
@@ -134,6 +135,11 @@
             const text = this.value.trim();
             const wordCount = text ? text.split(/\s+/).length : 0;
             document.getElementById("wordCount").textContent = wordCount; // Cập nhật ngay
+        });
+        document.getElementById("title").addEventListener("input", function() {
+            const text = this.value.trim();
+            const characterCount = text ? text.length : 0;
+            document.getElementById("characterCount").textContent = characterCount; // Cập nhật ngay
         });
     </script>
 </body>

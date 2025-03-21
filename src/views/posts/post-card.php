@@ -7,6 +7,8 @@
  * Supports dark mode and can be easily integrated with JavaScript DOM
  */
 
+use utils\SessionManager;
+
 /**
  * Renders a single post card
  * 
@@ -15,7 +17,8 @@
  * @param bool $showControls Whether to show edit/delete controls
  * @return string HTML for the post card
  */
-function render_post_card($post, $assets = [], $showControls = false, $postController = null, $user = null)
+
+function render_post_card($post, $assets = [], $showControls = false, $postController = null, $user = null, $voteScore = 0, $currentUser = null, $voteUserStatus = false)
 {
     // Extract post data
     $postId = $post->getPostId();
@@ -26,16 +29,31 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     $updatedAt = $post->getUpdatedTimestamp() ?? 'Unknown';
 
     // Format dates
-    $createdAtFormatted = (is_string($createdAt)) ? $createdAt : date('M d, Y', strtotime($createdAt));
-    $updatedAtFormatted = (is_string($updatedAt)) ? $updatedAt : date('M d, Y', strtotime($updatedAt));
+    $createdAtFormatted = date('M d, Y', strtotime($createdAt));
+    $updatedAtFormatted = date('M d, Y', strtotime($updatedAt));
 
     // Get author if available (assuming post has author method)
     $author = method_exists($post, 'getUserId') ? $postController->getUserName($post->getUserId()) : 'Unknown Author';
     $authorObj = $postController->getUser($post->getUserId());
 
-    // Get vote score if available (assuming post has vote method)
-    $voteScore = method_exists($post, 'getVoteScore') ? $post->getVoteScore() : 0;
     $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
+
+    //check if this vote by currentuser ? if not only show isactivedisplay 
+    $isActive = '';
+    if ($voteUserStatus === false) {
+        $isActive = '';
+    } else {
+        $isActive = 'active';
+    }
+
+    if ($voteScore > 0) {
+        $isActiveDisplay = 'text-green-600 dark:text-green-400';
+    } else if ($voteScore < 0) {
+        $isActiveDisplay = 'text-red-600 dark:text-red-400';
+    } else {
+        $isActiveDisplay = 'text-gray-600 dark:text-gray-400';
+    }
+
     $profileLink = 'profile/' . $authorObj->getFirstName() . '-' . $authorObj->getLastName() . '-' . $authorObj->getUserId();
     // Start building HTML
     ob_start();
@@ -88,7 +106,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span></p>
                         <div class="flex flex-row gap-3">
                             <p><?= $createdAtFormatted ?></p>
-                            <?php if ($createdAtFormatted != $updatedAtFormatted): ?>
+                            <?php if ($createdAtFormatted !== $updatedAtFormatted): ?>
                                 <p>Updated: <?= $updatedAtFormatted ?></p>
                             <?php endif; ?>
                         </div>
@@ -120,21 +138,29 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             <!-- Post metadata and controls -->
             <div class="flex items-center justify-between text-xl text-gray-500 dark:text-gray-400">
                 <!-- Vote score -->
-                <div class="vote-score flex items-center" data-score="<?= $voteScore ?>">
-                    <button class="upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                        </svg>
-                    </button>
-                    <span class="mx-1 font-bold <?= $voteScore > 0 ? 'text-green-600 dark:text-green-400' : ($voteScore < 0 ? 'text-red-600 dark:text-red-400' : '') ?>">
-                        <?= $voteDisplay ?>
-                    </span>
-                    <button class="downvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                </div>
+
+                <?php if ($currentUser) { ?>
+                    <div class="vote-score flex items-center" data-score="<?= $voteScore ?>">
+
+                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActive : "" ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        </button>
+
+                        <span class="mx-1 font-bold <?= $isActiveDisplay ?>">
+                            <?= $voteDisplay ?>
+                        </span>
+
+                        <button class="vote-btn downvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore < 0 ? $isActive : "" ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                    </div>
+                <?php } ?>
+
             </div>
             <!-- Action buttons -->
             <div class="mt-4 flex justify-between items-center">
@@ -171,7 +197,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
  * @param bool $showControls Whether to show edit/delete controls
  * @return string HTML for the post cards grid
  */
-function render_post_cards($postsData, $showControls = false, $postController = null, $user = null)
+function render_post_cards($postsData, $showControls = false, $postController = null, $user = null, $voteScores = [], $currentUser = null, $votesUserStatus = [])
 {
     ob_start();
 ?>
@@ -180,7 +206,9 @@ function render_post_cards($postsData, $showControls = false, $postController = 
             <?php
             $post = $postData['post'];
             $assets = $postData['assets'] ?? [];
-            echo render_post_card($post, $assets, $showControls, $postController, $user);
+            $voteScore = $voteScores[$post->getPostId()];
+            $voteUserStatus = $votesUserStatus[$post->getPostId()];
+            echo render_post_card($post, $assets, $showControls, $postController, $user, $voteScore, $currentUser, $voteUserStatus);
             ?>
         <?php endforeach; ?>
     </div>

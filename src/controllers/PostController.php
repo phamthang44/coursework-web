@@ -5,6 +5,7 @@ namespace controllers;
 use dal\ModuleDAOImpl;
 use dal\PostAssetDAOImpl;
 use dal\PostDAOImpl;
+use dal\PostVoteDAO;
 use utils\SessionManager;
 use Exception;
 use finfo;
@@ -17,13 +18,15 @@ class PostController extends BaseController
     private $postAssetDAO;
     private $userController;
     //private $postAssetController;
+    private $postVoteDAO;
     function __construct()
     {
-        parent::__construct(['/posts', '/quorae', '/login', '/404', '/403', '/signup']);
+        parent::__construct(['/posts', '/quorae', '/login', '/404', '/403', '/signup', '/api/vote/post']);
         $this->postDAO = new PostDAOImpl();
         $this->moduleDAO = new ModuleDAOImpl();
         $this->postAssetDAO = new PostAssetDAOImpl();
         $this->userController = new UserController();
+        $this->postVoteDAO = new PostVoteDAO();
         //$this->postAssetController = new PostAssetController();
     }
 
@@ -64,6 +67,13 @@ class PostController extends BaseController
                 'assets' => $assetsByPostId[$postId] ?? []
             ];
         }
+        $voteScores = [];
+        $votesUserStatus = [];
+        foreach ($posts as $post) {
+            $postId = $post->getPostId();
+            $voteScores[$postId] = $this->postVoteDAO->getVoteScore($postId); // voteScores[1] = 5
+            $votesUserStatus[$postId] = $this->postVoteDAO->getUserVoteStatus($this->currentUser->getUserId(), $postId);
+        }
 
         require_once __DIR__ . '/../views/posts/post.php';
     }
@@ -85,7 +95,7 @@ class PostController extends BaseController
             $post = $postDAO->getPost($postId);
             if (!$post) {
                 SessionManager::set('error', "Post not found");
-                header("Location: /posts");
+                header("Location: /quorae");
                 exit();
             }
 
@@ -96,7 +106,7 @@ class PostController extends BaseController
             require_once __DIR__ . '/../views/posts/viewpost.php';
         } catch (Exception $e) {
             SessionManager::set('error', $e->getMessage());
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         }
     }
@@ -168,12 +178,12 @@ class PostController extends BaseController
                 if (strpos($referer, "profile") !== false) {
                     header("Location: " . $referer);
                 } else {
-                    header("Location: /posts");
+                    header("Location: /quorae");
                 }
                 exit();
             } catch (Exception $e) {
                 SessionManager::set('error', $e->getMessage());
-                header("Location: /posts");
+                header("Location: /quorae");
                 exit();
             }
         }
@@ -186,14 +196,14 @@ class PostController extends BaseController
         $currentRoute = $_SERVER['REQUEST_URI'];
         if (!$isOwner && !$isAdmin && $currentRoute === '/posts/edit/' . $postId) {
             SessionManager::set("error", "You are not authorized to edit this post");
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         }
         try {
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
                 SessionManager::set("error", "Post not found");
-                header("Location: /posts");
+                header("Location: /quorae");
                 exit();
             }
 
@@ -214,7 +224,7 @@ class PostController extends BaseController
         $currentRoute = $_SERVER['REQUEST_URI'];
         if (!$isOwner && !$isAdmin && $currentRoute !== '/posts') {
             SessionManager::set("error", "You are not authorized to update this post");
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         }
 
@@ -312,7 +322,7 @@ class PostController extends BaseController
                     $this->postAssetDAO->update($post->getPostId(), $imagePath);
                 }
                 SessionManager::set('success', "Post updated successfully");
-                header("Location: /posts");
+                header("Location: /quorae");
                 exit();
             } catch (Exception $e) {
                 error_log("Error in update method: " . $e->getMessage());
@@ -331,25 +341,25 @@ class PostController extends BaseController
         $currentRoute = $_SERVER['REQUEST_URI'];
         if (!$isOwner && !$isAdmin && $currentRoute !== '/posts') {
             SessionManager::set("error", "You are not authorized to delete this post");
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         }
         try {
             $post = $this->postDAO->getPost($postId);
             if (!$post) {
                 SessionManager::set("error", "Post not found");
-                header("Location: /posts");
+                header("Location: /quorae");
                 exit();
             }
 
             $this->postDAO->deletePost($postId);
             SessionManager::set("success", "Post deleted successfully");
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         } catch (Exception $e) {
             error_log("Error in delete method: " . $e->getMessage());
             SessionManager::set("error", $e->getMessage());
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         }
     }
@@ -477,40 +487,41 @@ class PostController extends BaseController
         require_once __DIR__ . '/../views/errors/404.php';
     }
 
-    public function vote($postId)
+    public function vote()
     {
+        header("Content-Type: application/json; charset=UTF-8");
+        if (!SessionManager::get('user_id')) {
+            echo json_encode(["status" => false, "message" => "You must be logged in to vote"]);
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             SessionManager::set('error', "Invalid request");
-            header("Location: /posts");
+            header("Location: /quorae");
             exit();
         }
-        try {
-            $voteScore = (int) ($_POST['voteScore'] ?? 0);
-            if ($voteScore !== 1 && $voteScore !== -1) {
-                throw new Exception("Invalid vote score");
-            }
-            $post = $this->postDAO->getPost($postId);
-            if (!$post) {
-                throw new Exception("Post not found");
-            }
-            $this->postDAO->updateScore($postId, $voteScore);
-            SessionManager::set('success', "Vote submitted successfully");
-            header("Location: /posts");
-            exit();
-        } catch (Exception $e) {
-            SessionManager::set('error', $e->getMessage());
-            header("Location: /posts");
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data['postId'])) {
+            echo json_encode(["status" => false, "message" => "Invalid request data"]);
             exit();
         }
+        $userId = SessionManager::get("user_id");
+        $postId = $data['postId'];
+        $voteType = isset($data['voteType']) ? $data['voteType'] : null;
+
+        $this->postVoteDAO->vote($userId, $postId, $voteType);
+        $newVoteScore = $this->postVoteDAO->getVoteScore($postId);
+
+        echo json_encode(["status" => true, "voteScore" => $newVoteScore]);
     }
 
-    private function increaseVoteScore($postId)
-    {
-        $this->postDAO->increaseVoteScore($postId);
-    }
+    // private function increaseVoteScore($postId)
+    // {
+    //     $this->postDAO->increaseVoteScore($postId);
+    // }
 
-    private function decreaseVoteScore($postId)
-    {
-        $this->postDAO->decreaseVoteScore($postId);
-    }
+    // private function decreaseVoteScore($postId)
+    // {
+    //     $this->postDAO->decreaseVoteScore($postId);
+    // }
 }

@@ -502,3 +502,14 @@ input[type="date"]:focus {
 .modal-backdrop:has(#search__bar) .modal-close {
   visibility: hidden;
 }
+
+/* Vote css */
+.vote-btn.upvote-btn.active {
+  background-color: rgb(103, 248, 103);
+  color: white;
+}
+
+.vote-btn.downvote-btn.active {
+  background-color: rgb(255, 71, 71);
+  color: white;
+}

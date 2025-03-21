@@ -236,15 +236,17 @@ class SearchUI {
   }
 
   initEvents() {
-    this.searchBar.addEventListener("focus", () => this.showOverlay());
-    this.searchBar.addEventListener("blur", () => this.handleBlur());
-    this.searchBar.addEventListener("input", () =>
-      this.debouncedFetchResults()
-    );
-    this.overlay.addEventListener("click", () => {
-      this.hideSearchResults();
-      this.hideOverlay();
-    });
+    if (this.searchBar) {
+      this.searchBar.addEventListener("focus", () => this.showOverlay());
+      this.searchBar.addEventListener("blur", () => this.handleBlur());
+      this.searchBar.addEventListener("input", () =>
+        this.debouncedFetchResults()
+      );
+      this.overlay.addEventListener("click", () => {
+        this.hideSearchResults();
+        this.hideOverlay();
+      });
+    }
   }
 
   showOverlay() {
@@ -343,46 +345,150 @@ class SearchUI {
 new SearchUI();
 
 // Upvote functionality
-document.addEventListener("click", function (e) {
-  if (e.target && e.target.closest(".upvote-btn")) {
-    const card = e.target.closest(".post-card");
+
+// async function vote(postId, voteType) {
+//   try {
+//     const res = await fetch(`/api/vote/post`, {
+//       method: "POST",
+//       body: JSON.stringify({ postId, voteType }),
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+//     const data = await res.json();
+//     return data;
+//   } catch (error) {
+//     console.error("Error found :", error);
+//     return { success: false, message: "Error found" };
+//   }
+// }
+
+class VoteFeature {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    document.addEventListener("click", (e) => this.handleVote(e));
+  }
+
+  handleVote(e) {
+    const button = e.target.closest(".vote-btn");
+    if (!button) return;
+
+    const card = button.closest(".post-card");
     const postId = card.dataset.postId;
     const scoreElement = card.querySelector(".vote-score span");
+    const isUpvote = button.classList.contains("upvote-btn");
 
-    // Call your vote API here
-    // For demonstration purposes:
-    fetch(`/api/vote?postId=${postId}&direction=up`, {
+    // voteType: 1 (upvote), -1 (downvote), 0 (remove vote)
+    let voteType = isUpvote ? 1 : -1;
+    if (button.classList.contains("active")) {
+      voteType = 0; // If already vote then click again will remove vote
+    }
+
+    const requestBody = { postId };
+    if (voteType !== 0) {
+      requestBody.voteType = voteType;
+    }
+
+    // send request AJAX
+    this.sendVote(requestBody)
+      .then((data) => {
+        if (data.status && data.voteScore !== undefined) {
+          // update UI
+          this.updateUI(button, scoreElement, voteType, data.voteScore);
+        } else {
+          console.warn("Invalid response from server:", data);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  async sendVote(requestBody) {
+    const response = await fetch(`/api/vote/post`, {
       method: "POST",
+      body: JSON.stringify(requestBody),
       headers: {
         "Content-Type": "application/json",
       },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // Update the score display
-          const newScore = data.newScore;
-          scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
-
-          // Update color
-          scoreElement.className =
-            "mx-1 font-bold " +
-            (newScore > 0
-              ? "text-green-600 dark:text-green-400"
-              : newScore < 0
-              ? "text-red-600 dark:text-red-400"
-              : "");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    });
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+    return response.json();
   }
-});
 
-// Similar implementation for downvote
-document.addEventListener("click", function (e) {
-  if (e.target && e.target.closest(".downvote-btn")) {
-    // Similar implementation as upvote
+  updateUI(button, scoreElement, voteType, newScore) {
+    const card = button.closest(".post-card");
+
+    // remove old state
+    card
+      .querySelectorAll(".vote-btn")
+      .forEach((btn) => btn.classList.remove("active"));
+
+    // If voteType != 0 (means it just vote) then add class active
+    if (voteType !== 0) {
+      button.classList.add("active");
+    }
+
+    // Cập nhật điểm số
+    scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
+    scoreElement.className =
+      "mx-1 font-bold " +
+      (newScore > 0
+        ? "text-green-600 dark:text-green-400"
+        : newScore < 0
+        ? "text-red-600 dark:text-red-400"
+        : "");
   }
-});
+}
+
+new VoteFeature();
+
+// document.addEventListener("click", function (e) {
+//   if (e.target && e.target.closest(".upvote-btn")) {
+//     const card = e.target.closest(".post-card");
+//     const postId = card.dataset.postId;
+//     const scoreElement = card.querySelector(".vote-score span");
+
+//     // Call your vote API here
+//     // For demonstration purposes:
+//     fetch(`/api/vote/post`, {
+//       method: "POST",
+//       body: JSON.stringify({ postId, voteType: 1 }),
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         if (data.success) {
+//           // Update the score display
+//           const newScore = data.newScore;
+//           scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
+
+//           // Update color
+//           scoreElement.className =
+//             "mx-1 font-bold " +
+//             (newScore > 0
+//               ? "text-green-600 dark:text-green-400"
+//               : newScore < 0
+//               ? "text-red-600 dark:text-red-400"
+//               : "");
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error:", error);
+//       });
+//   }
+// });
+
+// // Similar implementation for downvote
+// document.addEventListener("click", function (e) {
+//   if (e.target && e.target.closest(".downvote-btn")) {
+//     // Similar implementation as upvote
+//   }
+// });

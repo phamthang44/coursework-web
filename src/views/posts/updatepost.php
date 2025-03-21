@@ -56,6 +56,7 @@
             <!-- Title Field (Optional) -->
             <div class="form-group py-4 mb-4">
                 <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title:</label>
+                <p class="font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">0</span></p>
                 <input type="text" id="title" name="title" placeholder="Enter new title"
                     class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
                     value="<?php echo $post->getTitle() ?>">
@@ -66,6 +67,7 @@
             <!-- Content Field (Required) -->
             <div class="form-group">
                 <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
+                <p class="font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">0</span></p>
                 <textarea id="content" name="content" rows="5" placeholder="Enter new content"
                     class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"><?php echo $post->getContent(); ?></textarea>
                 <span class="form-message text-red-500 font-medium text-sm"></span>
@@ -97,14 +99,13 @@
                 </div>
                 <!-- Preview Image -->
                 <div id="preview-container" class="absolute -top-[110px] right-[400px] mt-4 pt-4">
-                    <?php if ($postImage) {
-                        echo '<h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>';
-                        echo '<img id="preview" src="/' . $postImage . '" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />';
-                    } else {
-                        echo '';
-                    }
-
-                    ?>
+                    <?php if ($postImage) { ?>
+                        <h3 class="preview-label font-medium text-gray-700 dark:text-white">Preview Image:</h3>
+                        <img id="preview" src="/' . $postImage . '" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />
+                    <?php } else { ?>
+                        <h3 class="preview-label font-medium text-gray-700 dark:text-white hidden">Preview Image:</h3>
+                        <img id="preview" src="" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300 hidden" />
+                    <?php } ?>
                 </div>
                 <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create new post">
             </div>
@@ -134,14 +135,34 @@
             //read file, show image
             reader.onload = function(e) {
                 let preview = document.getElementById("preview");
+                console.log(preview);
                 preview.src = e.target.result;
                 document.getElementById("preview-container").style.display = "block"; // Show preview container
+                const previewLabel = document.getElementById("preview-container").querySelector(".preview-label");
+                const imgShow = document.getElementById("preview-container").querySelector("#preview");
+                if (previewLabel.classList.contains("hidden") && imgShow.classList.contains("hidden")) {
+                    imgShow.classList.remove("hidden");
+                    previewLabel.classList.remove("hidden");
+                }
+
             };
 
             //if file , start read
             if (file) {
                 reader.readAsDataURL(file);
             }
+        });
+
+        document.getElementById("content").addEventListener("input", function() {
+            const text = this.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            document.getElementById("wordCount").textContent = wordCount; // Cập nhật ngay
+        });
+
+        document.getElementById("title").addEventListener("input", function() {
+            const text = this.value.trim();
+            const characterCount = text ? text.length : 0;
+            document.getElementById("characterCount").textContent = characterCount; // Cập nhật ngay
         });
     </script>
 </body>
