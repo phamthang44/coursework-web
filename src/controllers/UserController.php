@@ -154,12 +154,7 @@ class UserController extends BaseController
         foreach ($posts as $post) {
             $voteScores[$post->getPostId()] = $this->postVoteDAO->getVoteScore($post->getPostId());
         }
-        $votesUserStatus = [];
-        if ($currentUser) {
-            foreach ($posts as $post) {
-                $voteUserStatus[$post->getPostId()] = $this->postVoteDAO->getUserVoteStatus($currentUser->getUserId(), $post->getPostId());
-            }
-        }
+        $postVoteDAO = $this->postVoteDAO;
         $isOwner = $currentUser && method_exists($currentUser, 'getUserId') && $currentUser->getUserId() === $user->getUserId();
         require_once __DIR__ . '/../views/users/profile.php';
     }

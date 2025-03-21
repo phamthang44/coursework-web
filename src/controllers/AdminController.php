@@ -6,11 +6,15 @@ use dal\UserDAOImpl;
 use Exception;
 use finfo;
 use utils\SessionManager;
+use dal\PostDAOImpl;
+use dal\PostVoteDAO;
 
 class AdminController extends BaseController
 {
     private $userDAO;
     private $moduleController;
+    private $postVoteDAO;
+    private $postDAO;
     public function __construct()
     {
         parent::__construct(['/posts']);
@@ -20,6 +24,8 @@ class AdminController extends BaseController
             header("Location: /403");
             exit();
         }
+        $this->postVoteDAO = new PostVoteDAO();
+        $this->postDAO = new PostDAOImpl();
     }
     public function dashboard()
     {
@@ -39,6 +45,12 @@ class AdminController extends BaseController
             header("Location: /404");
             exit();
         }
+        $posts = $this->postDAO->getPostsByUserId($user->getUserId());
+        $voteScores = [];
+        foreach ($posts as $post) {
+            $voteScores[$post->getPostId()] = $this->postVoteDAO->getVoteScore($post->getPostId());
+        }
+        $postVoteDAO = $this->postVoteDAO;
         $isOwner = $currentUser && method_exists($currentUser, 'getUserId') && $currentUser->getUserId() === $user->getUserId();
         require_once __DIR__ . '/../views/admin/profile.php';
     }

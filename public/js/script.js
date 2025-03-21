@@ -345,104 +345,7 @@ class SearchUI {
 new SearchUI();
 
 // Upvote functionality
-// class VoteFeature {
-//   constructor() {
-//     this.init();
-//   }
 
-//   init() {
-//     document.addEventListener("click", (e) => this.handleVote(e));
-//   }
-
-//   handleVote(e) {
-//     const button = e.target.closest(".vote-btn");
-//     if (!button) return;
-
-//     const card = button.closest(".post-card");
-//     const postId = card.dataset.postId;
-//     const scoreElement = card.querySelector(".vote-score span");
-//     const isUpvote = button.classList.contains("upvote-btn");
-
-//     let voteType = isUpvote ? 1 : -1;
-//     const currentVote = card.querySelector(".vote-btn.active");
-//     let oldVoteType = currentVote
-//       ? currentVote.classList.contains("upvote-btn")
-//         ? 1
-//         : -1
-//       : 0;
-
-//     if (voteType === oldVoteType) {
-//       voteType = 0; // Unvote if clicking the same vote button
-//     }
-
-//     const requestBody = { postId, voteType };
-
-//     this.sendVote(requestBody)
-//       .then((data) => {
-//         if (data.status && data.voteScore !== undefined) {
-//           this.updateUI(
-//             button,
-//             scoreElement,
-//             voteType,
-//             oldVoteType,
-//             data.voteScore
-//           );
-//         } else {
-//           console.warn("Invalid response from server:", data);
-//         }
-//       })
-//       .catch((error) => console.error("Error:", error));
-//   }
-
-//   async sendVote(requestBody) {
-//     const response = await fetch(`/api/vote/post`, {
-//       method: "POST",
-//       body: JSON.stringify(requestBody),
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//     if (!response.ok) {
-//       throw new Error(`Server error: ${response.status}`);
-//     }
-//     return response.json();
-//   }
-
-//   updateUI(button, scoreElement, voteType, oldVoteType, newScore) {
-//     const card = button.closest(".post-card");
-//     card
-//       .querySelectorAll(".vote-btn")
-//       .forEach((btn) => btn.classList.remove("active"));
-
-//     if (voteType !== 0) {
-//       button.classList.add("active");
-//     }
-
-//     let displayScore = parseInt(scoreElement.textContent);
-
-//     if (oldVoteType === 1 && voteType === -1) {
-//       displayScore -= 2;
-//     } else if (oldVoteType === -1 && voteType === 1) {
-//       displayScore += 2;
-//     } else if (oldVoteType === 0 && voteType !== 0) {
-//       displayScore += voteType;
-//     } else if (oldVoteType !== 0 && voteType === 0) {
-//       displayScore -= oldVoteType;
-//     }
-
-//     scoreElement.textContent =
-//       displayScore > 0 ? `+${displayScore}` : displayScore;
-//     scoreElement.className =
-//       "absolute right-[40px] block font-bold " +
-//       (displayScore > 0
-//         ? "text-green-600 dark:text-green-400"
-//         : displayScore < 0
-//         ? "text-red-600 dark:text-red-400"
-//         : "");
-//   }
-// }
-
-// new VoteFeature();
 class VoteFeature {
   constructor() {
     this.init();
@@ -525,3 +428,5 @@ class VoteFeature {
 }
 
 new VoteFeature();
+
+function checkExistingDropdown(e) {}

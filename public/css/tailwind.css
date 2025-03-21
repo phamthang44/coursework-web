@@ -672,6 +672,10 @@ video {
   right: 0px;
 }
 
+.right-1 {
+  right: 0.25rem;
+}
+
 .right-12 {
   right: 3rem;
 }
@@ -712,16 +716,16 @@ video {
   top: calc(100%);
 }
 
-.right-1 {
-  right: 0.25rem;
+.left-2 {
+  left: 0.5rem;
 }
 
-.right-\[20px\] {
-  right: 20px;
+.top-4 {
+  top: 1rem;
 }
 
-.right-\[50px\] {
-  right: 50px;
+.top-3 {
+  top: 0.75rem;
 }
 
 .z-0 {
@@ -744,10 +748,6 @@ video {
   z-index: 60;
 }
 
-.m-4 {
-  margin: 1rem;
-}
-
 .mx-1 {
   margin-left: 0.25rem;
   margin-right: 0.25rem;
@@ -766,16 +766,6 @@ video {
 .my-1 {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
-}
-
-.mx-2 {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-.mx-3 {
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
 }
 
 .mb-1 {
@@ -832,6 +822,10 @@ video {
 
 .ml-64 {
   margin-left: 16rem;
+}
+
+.ml-\[50px\] {
+  margin-left: 50px;
 }
 
 .ml-auto {
@@ -900,18 +894,6 @@ video {
 
 .mt-\[49px\] {
   margin-top: 49px;
-}
-
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
-.ml-\[10px\] {
-  margin-left: 10px;
-}
-
-.ml-\[50px\] {
-  margin-left: 50px;
 }
 
 .line-clamp-3 {
@@ -1127,6 +1109,10 @@ video {
 
 .w-\[200px\] {
   width: 200px;
+}
+
+.w-\[300px\] {
+  width: 300px;
 }
 
 .w-\[400px\] {
@@ -1701,6 +1687,31 @@ video {
   padding-bottom: 2rem;
 }
 
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.px-9 {
+  padding-left: 2.25rem;
+  padding-right: 2.25rem;
+}
+
+.px-\[20px\] {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.px-\[60px\] {
+  padding-left: 60px;
+  padding-right: 60px;
+}
+
+.px-\[50px\] {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -1764,6 +1775,10 @@ video {
   line-height: 1;
 }
 
+.text-\[14px\] {
+  font-size: 14px;
+}
+
 .text-\[15px\] {
   font-size: 15px;
 }
@@ -1791,10 +1806,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-\[14px\] {
-  font-size: 14px;
 }
 
 .font-bold {
@@ -2219,8 +2230,16 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.focus\:w-\[300px\]:focus {
+  width: 300px;
+}
+
 .focus\:w-\[400px\]:focus {
   width: 400px;
+}
+
+.focus\:w-\[350px\]:focus {
+  width: 350px;
 }
 
 .focus\:border-\[\#f42935\]:focus {

@@ -354,7 +354,11 @@ class PostController extends BaseController
 
             $this->postDAO->deletePost($postId);
             SessionManager::set("success", "Post deleted successfully");
-            header("Location: /quorae");
+            if (strpos($_SERVER['HTTP_REFERER'], "profile") !== false) {
+                header("Location: " . $_SERVER['HTTP_REFERER']);
+            } else {
+                header("Location: /quorae");
+            }
             exit();
         } catch (Exception $e) {
             error_log("Error in delete method: " . $e->getMessage());

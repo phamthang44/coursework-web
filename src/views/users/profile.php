@@ -22,6 +22,7 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode2 transition-colors duration-200" id="profile-page">
+    <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <?php
 
     use controllers\PostController;
@@ -164,10 +165,10 @@
                         </div>
 
                         <!-- Search for posts -->
-                        <div class="mb-6">
+                        <div class="mb-6 ml-auto">
                             <div class="relative">
-                                <input type="text" placeholder="Search content" class="w-full border dark:border-gray-600 rounded-md px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark">
-                                <button class="absolute right-3 top-2 text-gray-400 dark:text-gray-500">
+                                <input type="text" placeholder="Search content" class="search-input w-300px border dark:border-gray-600 rounded-md px-[50px] py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:w-[350px] transition-all duration-500">
+                                <button class="absolute left-3 top-3 text-gray-400 dark:text-gray-500">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
@@ -198,10 +199,11 @@
                                 $postUserId = $postController->getPostUserId($postId);
                                 $voteScore = $voteScores[$postId];
 
+                                $voteUserStatus = $postVoteDAO->getUserVoteStatus($currentUser->getUserId(), $post->getPostId());
                                 $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
 
                                 //check if this vote by currentuser ? if not only show isactivedisplay 
-                                $voteUserStatus = isset($votesUserStatus[$postId]) ? $votesUserStatus[$postId] : 0;
+                                $voteUserStatus = isset($voteUserStatus) ? $voteUserStatus : 0;
                                 $isActiveUpvote = ($voteUserStatus === 1) ? 'active' : '';
                                 $isActiveDownvote = ($voteUserStatus === -1) ? 'active' : '';
 
@@ -434,8 +436,6 @@
             </form>
         </div>`);
         });
-
-
 
         function handleImagePreview(e) {
             let file = e.target.files[0];
@@ -750,6 +750,28 @@
         if (avatar) {
             avatar.addEventListener("change", handleUpdateAvatar);
         }
+
+        const optionsPostCard = document.querySelectorAll(".post-options");
+        optionsPostCard.forEach((option) => {
+            option.addEventListener("click", function(e) {
+                const dropdown = option.nextElementSibling;
+                dropdown.classList.toggle("hidden");
+            });
+        });
+        document.addEventListener("click", function(e) {
+            if (e.target.classList.contains("delete-action")) {
+                e.preventDefault();
+                // e.stopPropagation();
+                checkExistingDropdown(e);
+                checkExistingModal();
+                const deleteConfirmCard = new ConfirmCard();
+                deleteConfirmCard.openConfirmCard(`
+        <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+            Are you sure you want to delete this post?
+        </h2>`);
+                dropdown.classList.add("hidden");
+            }
+        });
     </script>
 </body>
 
