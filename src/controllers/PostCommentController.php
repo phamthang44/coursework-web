@@ -81,8 +81,8 @@ class PostCommentController
 
         $userId = SessionManager::get("user_id");
         $commentId = $data['commentId'];
-
-        $data = $this->commentVoteDAO->vote($userId, $commentId);
+        $voteType = $data['voteType']; // 1: Like, 0: Remove Vote
+        $data = $this->commentVoteDAO->vote($userId, $commentId, $voteType);
 
         echo json_encode([
             "status" => true,

@@ -517,3 +517,11 @@ input[type="date"]:focus {
   background-color: rgb(255, 71, 71);
   color: white;
 }
+
+.like-button .icon-active {
+  font-weight: 600;
+}
+
+.like-button.active {
+  font-weight: 600;
+}

@@ -46,28 +46,34 @@ class PostCommentVoteDAO
     }
 
 
-    public function vote($userId, $commentId)
+    public function vote($userId, $commentId, $voteType)
     {
-        // check if user liked before
+        // Check if user has voted yet
         $sql = "SELECT vote_type FROM commentvotes WHERE user_id = :user_id AND comment_id = :comment_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':user_id' => $userId, ':comment_id' => $commentId]);
         $existingVote = $stmt->fetchColumn();
 
-        if ($existingVote) {
-            // if liked then remove
-            $sql = "DELETE FROM commentvotes WHERE user_id = :user_id AND comment_id = :comment_id";
+        if ($existingVote !== false) {
+            if ($voteType == 0) {
+                // If user has voted and wants to unvote => Delete from DB
+                $sql = "DELETE FROM commentvotes WHERE user_id = :user_id AND comment_id = :comment_id";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([':user_id' => $userId, ':comment_id' => $commentId]);
+            }
         } else {
-            // If haven't like it, add it.
-            $sql = "INSERT INTO commentvotes (user_id, comment_id) VALUES (:user_id, :comment_id)";
+            if ($voteType == 1) {
+                // If user has not voted and wants to like => Add new
+                $sql = "INSERT INTO commentvotes (user_id, comment_id, vote_type) VALUES (:user_id, :comment_id, :vote_type)";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([':user_id' => $userId, ':comment_id' => $commentId, ':vote_type' => $voteType]);
+            }
         }
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId, ':comment_id' => $commentId]);
-
-        // Get new data back after changes
+        // Get the latest vote count
         return $this->getVoteData($commentId, $userId);
     }
+
 
 
 

@@ -499,7 +499,8 @@ class CommentVoteFeature {
     const commentId = button.dataset.commentId;
     const scoreElement = commentCard.querySelector(".like-count");
 
-    let voteType = button.classList.contains("active") ? 0 : 1; // Nếu đã like thì nhấn nữa sẽ hủy like
+    let isLiked = button.classList.contains("active");
+    let voteType = isLiked ? 0 : 1;
 
     const requestBody = { commentId, voteType };
 
@@ -532,7 +533,19 @@ class CommentVoteFeature {
   }
 
   updateUI(button, scoreElement, voteType, newScore) {
-    button.classList.toggle("active", voteType !== 0);
+    if (voteType === 1) {
+      button.classList.add("active");
+    } else {
+      button.classList.remove("active");
+    }
+    const icon = button.querySelector("i");
+    if (icon) {
+      if (voteType === 1) {
+        icon.classList.add("icon-active", "text-white");
+      } else {
+        icon.classList.remove("icon-active", "text-white");
+      }
+    }
     scoreElement.textContent = newScore;
   }
 }
