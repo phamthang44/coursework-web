@@ -70,5 +70,10 @@ class WebRoutes
 
         // Search route
         $router->addRoute('GET', '/search/{query}', 'PostController', 'search');
+
+        // Comment routes
+        $router->addRoute('POST', '/comment', 'PostCommentController', 'comment');
+        $router->addRoute('POST', '/reply', 'PostCommentController', 'replyComment');
+        $router->addRoute('POST', '/api/vote/comment', 'PostCommentController', 'vote');
     }
 }

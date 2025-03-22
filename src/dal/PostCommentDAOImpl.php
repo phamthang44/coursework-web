@@ -6,6 +6,7 @@ use database\Database;
 use Exception;
 use PDO;
 use PDOException;
+use models\PostComment;
 
 class PostCommentDAOImpl implements PostCommentI
 {
@@ -16,13 +17,22 @@ class PostCommentDAOImpl implements PostCommentI
         $this->pdo = $db->getConnection();
     }
 
+    public function getNumberComments($postId)
+    {
+        $sql = "SELECT COUNT(*) FROM PostComments WHERE post_id = :postId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function getComments()
     {
         // TODO: Implement getComments() method.
         $conn = $this->pdo;
         $stmt = $conn->prepare("SELECT * FROM PostComments");
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $this->convertPostCommentToObj($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function getComment($postCommentId)
@@ -35,15 +45,39 @@ class PostCommentDAOImpl implements PostCommentI
         return $stmt->fetch(); //if not return false else true
     }
 
-    public function addCommentWithoutTitle($postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $postCommentTimeStamp, $postCommentUpdatedTimeStamp, $postId)
+    public function addCommentWithoutTitle($postCommentContent, $postCommentVoteScore, $postCommentUserId, $postCommentTimeStamp, $postId)
     {
         $conn = $this->pdo;
-        $stmt = $conn->prepare("INSERT INTO PostComments(content, vote_score, user_id, parent_comment_id, current_timestamp, update_timestamp, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :postCommentTimeStamp, :postCommentUpdatedTimeStamp, :postId)");
+        $stmt = $conn->prepare("INSERT INTO PostComments(content, vote_score, user_id, timestamp, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :postCommentTimeStamp, :postId)");
 
         $stmt->bindParam(":postCommentContent", $postCommentContent);
         $stmt->bindParam(":postCommentVoteScore", $postCommentVoteScore, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentUserId", $postCommentUserId, PDO::PARAM_INT);
-        $stmt->bindParam(":parentCommentId", $parentCommentId, PDO::PARAM_INT);
+        $stmt->bindParam(":postCommentTimeStamp", $postCommentTimeStamp);
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+
+        try {
+            $result = $stmt->execute();
+            if ($result) {
+                return $conn->lastInsertId(); // return id just insert to
+            } else {
+                throw new Exception("Failed to insert comment: " . print_r($stmt->errorInfo(), true));
+            }
+        } catch (PDOException $e) {
+            error_log("PDO Error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function addComment($postCommentTitle, $postCommentContent, $postCommentVoteScore, $postCommentUserId, $postCommentTimeStamp, $postCommentUpdatedTimeStamp, $postId)
+    {
+        // TODO: Implement addComment() method.
+        $conn = $this->pdo;
+        $stmt = $conn->prepare("INSERT INTO PostComments(title, content, vote_score, user_id, parent_comment_id, current_timestamp, update_timestamp, post_id) VALUES (:postCommentTitle, :postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :postCommentTimeStamp, :postCommentUpdatedTimeStamp, :postId)");
+        $stmt->bindParam(":postCommentTitle", $postCommentTitle);
+        $stmt->bindParam(":postCommentContent", $postCommentContent);
+        $stmt->bindParam(":postCommentVoteScore", $postCommentVoteScore, PDO::PARAM_INT);
+        $stmt->bindParam(":postCommentUserId", $postCommentUserId, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentTimeStamp", $postCommentTimeStamp);
         $stmt->bindParam(":postCommentUpdatedTimeStamp", $postCommentUpdatedTimeStamp);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
@@ -61,24 +95,20 @@ class PostCommentDAOImpl implements PostCommentI
         }
     }
 
-    public function addComment($postCommentTitle, $postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $postCommentTimeStamp, $postCommentUpdatedTimeStamp, $postId)
+    public function insertReplyAComment($postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $postCommentTimeStamp, $postId)
     {
-        // TODO: Implement addComment() method.
-        $conn = $this->pdo;
-        $stmt = $conn->prepare("INSERT INTO PostComments(title, content, vote_score, user_id, parent_comment_id, current_timestamp, update_timestamp, post_id) VALUES (:postCommentTitle, :postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :postCommentTimeStamp, :postCommentUpdatedTimeStamp, :postId)");
-        $stmt->bindParam(":postCommentTitle", $postCommentTitle);
+        $sql = "INSERT INTO PostComments(content, vote_score, user_id, parent_comment_id, timestamp, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :postCommentTimeStamp, :postId)";
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":postCommentContent", $postCommentContent);
         $stmt->bindParam(":postCommentVoteScore", $postCommentVoteScore, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentUserId", $postCommentUserId, PDO::PARAM_INT);
         $stmt->bindParam(":parentCommentId", $parentCommentId, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentTimeStamp", $postCommentTimeStamp);
-        $stmt->bindParam(":postCommentUpdatedTimeStamp", $postCommentUpdatedTimeStamp);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
-
         try {
             $result = $stmt->execute();
             if ($result) {
-                return $conn->lastInsertId(); // return id just insert to
+                return $this->pdo->lastInsertId();
             } else {
                 throw new Exception("Failed to insert comment: " . print_r($stmt->errorInfo(), true));
             }
@@ -150,11 +180,22 @@ class PostCommentDAOImpl implements PostCommentI
         return null;
     }
 
-
+    public function getCommentsByPostIdOrder($postId)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM PostComments WHERE post_id = :postId ORDER BY parent_comment_id ASC, post_comment_id ASC");
+        $stmt->execute(['postId' => $postId]);
+        $comments = $this->convertPostCommentToObj($stmt->fetchAll(PDO::FETCH_ASSOC));
+        return $comments;
+    }
 
     public function getCommentsByPostId($postId)
     {
         // TODO: Implement getCommentsByPostId() method.
+        $conn = $this->pdo;
+        $stmt = $conn->prepare("SELECT * FROM PostComments WHERE post_id = :postId");
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->convertPostCommentToObj($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function updateComment($comment)
@@ -169,5 +210,16 @@ class PostCommentDAOImpl implements PostCommentI
         $stmt->bindParam(":commentScore", $commentScore, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentId", $postId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    private function convertPostCommentToObj($rows)
+    {
+        $results = [];
+        foreach ($rows as $row) {
+            $postComment = new PostComment($row['post_comment_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['parent_comment_id'], $row['timestamp'], $row['update_timestamp'], $row['post_id'], $row['user_id']);
+
+            $results[] = $postComment;
+        }
+        return $results;
     }
 }

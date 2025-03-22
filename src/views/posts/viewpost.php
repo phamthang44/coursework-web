@@ -15,10 +15,13 @@
     <?php
 
     use utils\Template;
+    use controllers\PostCommentController;
+    use controllers\UserController;
+    use controllers\PostController;
 
     Template::header();
     Template::footer();
-
+    Template::postCommentLayout();
     ?>
     <?php echo render_quora_header(true, $currentUser->getUsername(), $currentUser->getProfileImage(), $currentUser->getEmail(), $currentUser) ?>
     <?php
@@ -57,6 +60,11 @@
     } else {
         $isActiveDisplay = 'text-gray-600 dark:text-gray-400';
     }
+
+    $postCommentController = new PostCommentController();
+    $userController = new UserController();
+    $numberComments = $postCommentController->getNumberComments($postId);
+    $comments = $postCommentController->getComments($postId);
     ?>
     <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <div class="max-w-4xl mx-auto p-4 md:p-6 lg:p-8 post-card" data-post-id="<?= $postId ?>">
@@ -151,37 +159,52 @@
                         <?php } ?>
 
                         <!-- Comment button -->
-                        <button class="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                        <label for="comment" class="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer">
                             <i class="far fa-comment mr-2"></i>
-                            <span>78 Comments</span>
-                        </button>
+                            <span><?= $numberComments ? $numberComments : 0 ?> Comments</span>
+                        </label>
                     </div>
                 </div>
-
             </div>
         </div>
 
         <!-- Comments Section -->
         <div class="bg-white dark:bg-darkmode rounded-lg shadow-md overflow-hidden">
             <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-lg font-bold mb-4">Comments (78)</h2>
-
+                <h2 class="text-lg font-bold mb-4">Comments (<?= $numberComments ? $numberComments : 0 ?>)</h2>
                 <!-- Comment Form -->
-                <div class="flex space-x-4 mb-6">
-                    <a href="<?= $profileLink ?>"><img class="h-10 w-10 rounded-full" src="/<?= $currentUser->getProfileImage(); ?>" alt="Your avatar"></a>
+                <form class="flex space-x-4 mb-6" action="/comment" method="POST">
+                    <input type="hidden" name="postId" value="<?= $postId ?>">
+                    <a href="<?= $profileLink ?>" class="h-fit w-fit flex-shrink-0">
+                        <?php if ($currentUser->getProfileImage()) { ?>
+                            <img class="h-10 w-10 rounded-full" src="/<?= $currentUser->getProfileImage(); ?>" alt="Your avatar">
+                        <?php } else { ?>
+                            <div class="block w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
+                                <p class="text-lg"><?= strtoupper(substr($currentUser->getUsername(), 0, 1)); ?></p>
+                            </div>
+                        <?php } ?>
+                    </a>
                     <div class="flex-1">
-                        <textarea class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-darkmode2 resize-none" rows="2" placeholder="Add a comment..."></textarea>
+                        <textarea id="comment" name="postCommentContent" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 dark:bg-darkmode2 resize-none" rows="2" placeholder="Add a comment..." required></textarea>
                         <div class="flex justify-end mt-2">
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
                                 Comment
                             </button>
                         </div>
                     </div>
-                </div>
-
+                </form>
                 <!-- Comments List -->
                 <div class="space-y-6">
-
+                    <!-- Display comment -->
+                    <?php
+                    if (!isset($user)) {
+                        die("Error: \$user is not defined or is not an instance of User.");
+                    }
+                    if (!isset($currentUser)) {
+                        die("Error: \$currentUser is not defined or is not an instance of User.");
+                    }
+                    ?>
+                    <?php echo renderCommentTree($comments, $postId, null, 0, $user, $currentUser); ?>
                 </div>
 
                 <!-- Show More Comments Button -->
@@ -237,48 +260,48 @@
             </div>
             <textarea id="content" name="content" rows="5" placeholder="Enter content"
                 class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
-            <span class="form-message text-red-500 font-medium text-sm"></span>
-        </div>
+                        <span class="form-message text-red-500 font-medium text-sm"></span>
+                    </div>
 
-        <!-- Module Select -->
-        <div class="form-group">
-            <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
-            <select id="module" name="module"
-                class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
-                <option value="" class="text-black dark:text-white">-- Select Module --</option>
-                <?php foreach ($modules as $module): ?>
-                    <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
-                <?php endforeach; ?>
-            </select>
-            <span class="form-message text-red-500 font-medium text-sm ml-5"></span>
-        </div>
+                    <!-- Module Select -->
+                    <div class="form-group">
+                        <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
+                        <select id="module" name="module"
+                            class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
+                            <option value="" class="text-black dark:text-white">-- Select Module --</option>
+                            <?php foreach ($modules as $module): ?>
+                                <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <span class="form-message text-red-500 font-medium text-sm ml-5"></span>
+                    </div>
 
-        <!-- Image Upload -->
-        <div class="form-group flex gap-8 relative">
-            <div>
-                <label for="image" class="block font-medium text-gray-700 dark:text-white mb-2">Upload Image:</label>
-                <label class="custom-file-upload text-gray-700 dark:text-white">
-                <input type="file" id="image" name="image" accept="image/*"
-                    class="w-2 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none title">
-                    Choose an image
-                </label>
-                <span class="form-message text-red-500 font-medium text-sm"></span>
-            </div>
-            <!-- Preview Image -->
-            <div id="preview-container" class="hidden absolute -top-[100px] left-[440px]">
-                <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
-                <img id="preview" src="" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
-            </div>
-        </div>
+                    <!-- Image Upload -->
+                    <div class="form-group flex gap-8 relative">
+                        <div>
+                            <label for="image" class="block font-medium text-gray-700 dark:text-white mb-2">Upload Image:</label>
+                            <label class="custom-file-upload text-gray-700 dark:text-white">
+                                <input type="file" id="image" name="image" accept="image/*"
+                                    class="w-2 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none title">
+                                Choose an image
+                            </label>
+                            <span class="form-message text-red-500 font-medium text-sm"></span>
+                        </div>
+                        <!-- Preview Image -->
+                        <div id="preview-container" class="hidden absolute -top-[100px] left-[440px]">
+                            <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
+                            <img id="preview" src="" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
+                        </div>
+                    </div>
 
-        
 
-        <!-- Submit Button -->
-        <div class="flex justify-end">
-            <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create post">
-        </div>
-    </form>
-`);
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end">
+                        <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create post">
+                    </div>
+                    </form>
+                    `);
                         }
                     });
                 }
@@ -364,9 +387,9 @@
                 checkExistingModal();
                 const deleteConfirmCard = new ConfirmCard();
                 deleteConfirmCard.openConfirmCard(`
-        <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
-            Are you sure you want to delete this post?
-        </h2>`);
+                    <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+                        Are you sure you want to delete this post?
+                    </h2>`);
                 dropdown.classList.add("hidden");
             }
         });

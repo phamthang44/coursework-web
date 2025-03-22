@@ -20,4 +20,8 @@ class Template
     {
         require_once __DIR__ . '/../views/layouts/sidebar.php';
     }
+    public static function postCommentLayout()
+    {
+        require_once __DIR__ . '/../views/layouts/postcomment_layout.php';
+    }
 }

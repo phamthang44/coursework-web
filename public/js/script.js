@@ -448,3 +448,93 @@ class VoteFeature {
 }
 
 new VoteFeature();
+
+// ------------- comment reply --------------------
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".reply-button").forEach((button) => {
+    button.addEventListener("click", function () {
+      const commentId = this.getAttribute("data-comment-id");
+
+      // Ẩn tất cả form trước khi mở đúng form
+      document.querySelectorAll(".reply-form").forEach((form) => {
+        form.classList.add("hidden");
+      });
+
+      // Chỉ hiển thị form tương ứng với comment đang được bấm
+      const replyForm = document.querySelector(
+        `.reply-form[data-comment-id="${commentId}"]`
+      );
+      if (replyForm) {
+        replyForm.classList.toggle("hidden");
+      }
+      const cancelReplyCommentButton = document.querySelectorAll(
+        ".cancel-reply-comment"
+      );
+
+      cancelReplyCommentButton.forEach((button) => {
+        button.addEventListener("click", function () {
+          const form = this.closest(".reply-form");
+          form.classList.add("hidden");
+        });
+      });
+    });
+  });
+});
+
+// ------------- comment reply --------------------
+class CommentVoteFeature {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    document.addEventListener("click", (e) => this.handleVote(e));
+  }
+
+  handleVote(e) {
+    const button = e.target.closest(".like-button");
+    if (!button) return;
+
+    const commentCard = button.closest(".flex");
+    const commentId = button.dataset.commentId;
+    const scoreElement = commentCard.querySelector(".like-count");
+
+    let voteType = button.classList.contains("active") ? 0 : 1; // Nếu đã like thì nhấn nữa sẽ hủy like
+
+    const requestBody = { commentId, voteType };
+
+    this.sendVote(requestBody)
+      .then((data) => {
+        if (data.status && data.voteScore !== undefined) {
+          this.updateUI(button, scoreElement, voteType, data.voteScore);
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error found: ", error);
+      });
+  }
+
+  async sendVote(requestBody) {
+    const response = await fetch(`/api/vote/comment`, {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "FetchRequest",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  updateUI(button, scoreElement, voteType, newScore) {
+    button.classList.toggle("active", voteType !== 0);
+    scoreElement.textContent = newScore;
+  }
+}
+
+new CommentVoteFeature();
