@@ -21,6 +21,10 @@ class BaseController
         }
         // If user is not logged in
         if (!$this->currentUser) {
+            if ($this->isFetchRequest()) {
+                echo json_encode(['message' => 'You must be logged in to use this feature!']);
+                exit();
+            }
             // If page is not public -> require login
             if (in_array($currentRoute, $forbiddenRoutes)) {
                 header("Location: /403"); // Redirect to page "No access"
@@ -31,5 +35,9 @@ class BaseController
                 exit();
             }
         }
+    }
+    private function isFetchRequest()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'FetchRequest';
     }
 }

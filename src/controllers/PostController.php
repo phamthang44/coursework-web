@@ -69,11 +69,20 @@ class PostController extends BaseController
         }
         $voteScores = [];
         $votesUserStatus = [];
-        foreach ($posts as $post) {
-            $postId = $post->getPostId();
-            $voteScores[$postId] = $this->postVoteDAO->getVoteScore($postId); // voteScores[1] = 5
-            $votesUserStatus[$postId] = $this->postVoteDAO->getUserVoteStatus($this->currentUser->getUserId(), $postId);
+        if ($this->currentUser) {
+            foreach ($posts as $post) {
+                $postId = $post->getPostId();
+                $voteScores[$postId] = $this->postVoteDAO->getVoteScore($postId); // voteScores[1] = 5
+                $votesUserStatus[$postId] = $this->postVoteDAO->getUserVoteStatus($this->currentUser->getUserId(), $postId);
+            }
+        } else {
+            foreach ($posts as $post) {
+                $postId = $post->getPostId();
+                $voteScores[$postId] = $this->postVoteDAO->getVoteScore($postId);
+                $votesUserStatus[$postId] = null; // 🔹Set default value to avoid Undefined key error
+            }
         }
+
 
         require_once __DIR__ . '/../views/posts/post.php';
     }
@@ -495,9 +504,9 @@ class PostController extends BaseController
     public function vote()
     {
         header("Content-Type: application/json; charset=UTF-8");
-        if (!SessionManager::get('user_id')) {
-            echo json_encode(["status" => false, "message" => "You must be logged in to vote"]);
-            return;
+        if (!SessionManager::get('user')) {
+            echo json_encode(["status" => false, "message" => "You must be logged in to vote!"]);
+            exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -522,14 +531,4 @@ class PostController extends BaseController
 
         echo json_encode(["status" => $data['status'], "voteScore" => $data['voteScore']]);
     }
-
-    // private function increaseVoteScore($postId)
-    // {
-    //     $this->postDAO->increaseVoteScore($postId);
-    // }
-
-    // private function decreaseVoteScore($postId)
-    // {
-    //     $this->postDAO->decreaseVoteScore($postId);
-    // }
 }

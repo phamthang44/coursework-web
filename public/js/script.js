@@ -382,10 +382,18 @@ class VoteFeature {
           // update UI
           this.updateUI(button, scoreElement, voteType, data.voteScore);
         } else {
-          console.warn("Invalid response from server:", data);
+          const errorMsgModal = new Modal();
+          errorMsgModal.openModal(`<div class="space-y-4 error-login-modal">
+          <h2 class="text-red-500 text-2xl font-medium">Error !</h2>
+          <p class="text-black dark:text-white font-medium">${data.message}</p>
+          <a href="/login" class="flex items-center justify-center text-white block w-[100px] h-[40px] rounded-lg font-medium bg-red-600">Login</a>
+          </div>
+          `);
         }
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => {
+        console.error("Error found: ", error);
+      });
   }
 
   async sendVote(requestBody) {
@@ -394,6 +402,7 @@ class VoteFeature {
       body: JSON.stringify(requestBody),
       headers: {
         "Content-Type": "application/json",
+        "X-Requested-With": "FetchRequest",
       },
     });
     if (!response.ok) {

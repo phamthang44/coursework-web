@@ -21,6 +21,7 @@ use utils\SessionManager;
 function render_post_card($post, $assets = [], $showControls = false, $postController = null, $user = null, $voteScore = 0, $currentUser = null, $voteUserStatus = false)
 {
     // Extract post data
+
     $postId = $post->getPostId();
     $title = $post->getTitle();
     $content = $post->getContent();
@@ -154,6 +155,24 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             </svg>
                         </button>
                     </div>
+                <?php } else { ?>
+                    <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
+                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        </button>
+
+                        <span class="absolute right-[40px] block font-bold <?= $isActiveDisplay ?>">
+                            <?= $voteDisplay ?>
+                        </span>
+
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                    </div>
                 <?php } ?>
                 <button class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
                     <i class="far fa-comment"></i>
@@ -205,8 +224,12 @@ function render_post_cards($postsData, $showControls = false, $postController = 
             <?php
             $post = $postData['post'];
             $assets = $postData['assets'] ?? [];
-            $voteScore = $voteScores[$post->getPostId()];
-            $voteUserStatus = $votesUserStatus[$post->getPostId()];
+            $postId = $post->getPostId();
+            $voteScores = $voteScores ?? []; // ensure not null
+            $voteScore = isset($voteScores[$postId]) ? $voteScores[$postId] : 0;
+            $voteUserStatus = isset($votesUserStatus[$postId]) ? $votesUserStatus[$postId] : null;
+            // $voteUserStatus = isset($votesUserStatus) && isset($votesUserStatus[$post->getPostId()]) ? $votesUserStatus[$post->getPostId()] : null;
+
             echo render_post_card($post, $assets, $showControls, $postController, $user, $voteScore, $currentUser, $voteUserStatus);
             ?>
         <?php endforeach; ?>

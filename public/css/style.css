@@ -499,6 +499,10 @@ input[type="date"]:focus {
   height: 600px;
 }
 
+.modal-backdrop:has(.error-login-modal) .modal-container {
+  width: min(400px, 90%);
+}
+
 .modal-backdrop:has(#search__bar) .modal-close {
   visibility: hidden;
 }

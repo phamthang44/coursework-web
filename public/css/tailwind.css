@@ -680,10 +680,6 @@ video {
   right: 3rem;
 }
 
-.right-3 {
-  right: 0.75rem;
-}
-
 .right-\[400px\] {
   right: 400px;
 }
@@ -708,24 +704,16 @@ video {
   top: 0.5rem;
 }
 
+.top-3 {
+  top: 0.75rem;
+}
+
 .top-\[45px\] {
   top: 45px;
 }
 
 .top-\[calc\(100\%\)\] {
   top: calc(100%);
-}
-
-.left-2 {
-  left: 0.5rem;
-}
-
-.top-4 {
-  top: 1rem;
-}
-
-.top-3 {
-  top: 0.75rem;
 }
 
 .z-0 {
@@ -1109,10 +1097,6 @@ video {
 
 .w-\[200px\] {
   width: 200px;
-}
-
-.w-\[300px\] {
-  width: 300px;
 }
 
 .w-\[400px\] {
@@ -1647,6 +1631,11 @@ video {
   padding-right: 1.5rem;
 }
 
+.px-\[50px\] {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -1685,31 +1674,6 @@ video {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-.px-9 {
-  padding-left: 2.25rem;
-  padding-right: 2.25rem;
-}
-
-.px-\[20px\] {
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.px-\[60px\] {
-  padding-left: 60px;
-  padding-right: 60px;
-}
-
-.px-\[50px\] {
-  padding-left: 50px;
-  padding-right: 50px;
 }
 
 .pb-4 {
@@ -2230,16 +2194,12 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.focus\:w-\[300px\]:focus {
-  width: 300px;
+.focus\:w-\[350px\]:focus {
+  width: 350px;
 }
 
 .focus\:w-\[400px\]:focus {
   width: 400px;
-}
-
-.focus\:w-\[350px\]:focus {
-  width: 350px;
 }
 
 .focus\:border-\[\#f42935\]:focus {

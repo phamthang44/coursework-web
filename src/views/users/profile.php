@@ -159,7 +159,6 @@
                             <h3 class="font-semibold text-gray-900 dark:text-white">Posts & Comments</h3>
                             <select class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-md px-2 py-1 text-sm text-gray-700 dark:text-gray-300">
                                 <option>Most recent</option>
-                                <option>Most viewed</option>
                                 <option>Most liked</option>
                             </select>
                         </div>
@@ -167,7 +166,7 @@
                         <!-- Search for posts -->
                         <div class="mb-6 ml-auto">
                             <div class="relative">
-                                <input type="text" placeholder="Search content" class="search-input w-300px border dark:border-gray-600 rounded-md px-[50px] py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:w-[350px] transition-all duration-500">
+                                <input type="text" placeholder="Search content" class="search-input w-300px border dark:border-gray-600 rounded-md px-[50px] py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:w-[350px] transition-all duration-500">
                                 <button class="absolute left-3 top-3 text-gray-400 dark:text-gray-500">
                                     <i class="fas fa-search"></i>
                                 </button>

@@ -90,7 +90,7 @@
                 }
             }
             if (!empty($postsData)) {
-                echo render_post_cards($postsData, $showControls, $postController, $user, $voteScores, $currentUser, $votesUserStatus);
+                echo render_post_cards($postsData, $showControls, $postController, $userObj, $voteScores, $currentUser ?? null, $votesUserStatus);
             } else {
                 echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
             }
