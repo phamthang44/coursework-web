@@ -110,7 +110,13 @@ class PostController extends BaseController
 
             // Get the list asset
             $assets = $postAssetService->getByPostId($postId);
-
+            $currentUser = $this->currentUser;
+            $userId = $post->getUserId();
+            $user = $this->userController->getUser($userId);
+            $voteScore = $this->postVoteDAO->getVoteScore($postId);
+            $voteUserStatus = $this->postVoteDAO->getUserVoteStatus($currentUser->getUserId(), $postId);
+            $postController = $this;
+            $modules = $this->moduleDAO->getAllModules();
             // Move the data into view
             require_once __DIR__ . '/../views/posts/viewpost.php';
         } catch (Exception $e) {

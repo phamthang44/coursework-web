@@ -426,16 +426,25 @@ class VoteFeature {
 
     // update score
     scoreElement.textContent = newScore > 0 ? `+${newScore}` : newScore;
-    scoreElement.className =
-      "absolute right-[40px] block font-bold " +
-      (newScore > 0
-        ? "text-green-600 dark:text-green-400"
-        : newScore < 0
-        ? "text-red-600 dark:text-red-400"
-        : "");
+
+    if (!scoreElement.classList.contains("right-[40px]")) {
+      scoreElement.className =
+        "absolute block font-bold " +
+        (newScore > 0
+          ? "text-green-600 dark:text-green-400"
+          : newScore < 0
+          ? "text-red-600 dark:text-red-400"
+          : "");
+    } else {
+      scoreElement.className =
+        "absolute right-[40px] block font-bold " +
+        (newScore > 0
+          ? "text-green-600 dark:text-green-400"
+          : newScore < 0
+          ? "text-red-600 dark:text-red-400"
+          : "");
+    }
   }
 }
 
 new VoteFeature();
-
-function checkExistingDropdown(e) {}

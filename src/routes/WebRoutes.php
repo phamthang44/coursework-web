@@ -46,6 +46,7 @@ class WebRoutes
         $router->addRoute('GET', '/posts/delete/{id}', 'PostController', 'delete');
         $router->addRoute('GET', '/404', 'PostController', 'notfound');
         $router->addRoute('POST', '/api/vote/post', 'PostController', 'vote');
+        $router->addRoute('GET', '/post/view/{id}', 'PostController', 'viewPost');
         // Contact routes
         $router->addRoute('GET', '/contact', 'UserController', 'contact');
         $router->addRoute('POST', '/sendemail', 'UserController', 'sendEmail');

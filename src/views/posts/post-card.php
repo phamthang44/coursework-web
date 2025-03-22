@@ -68,7 +68,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             if (!is_null($user)) {
                 if ($user->getUserId() === $postUserId) {
                     echo '<button class="post-options">
-                            <span class="post-card-dot w-8 h-8 rounded-full text-gray-800 dark:text-white">•••</span>
+                            <span class="post-card-dot w-8 h-8 flex justify-center items-center rounded-full text-gray-800 dark:text-white dark:hover:bg-gray-600 hover:bg-gray-300">•••</span>
                           </button>';
                     echo '<div class="post-card-dropdown hidden absolute right-12 top-1 mt-2 py-2 w-30 bg-white border border-gray-200 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
                             <a href="/posts/edit/' . $postId . '" 
@@ -179,7 +179,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                     <span>3 Comments</span>
                 </button>
                 <!-- Read more link need to fix here-->
-                <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                <a href="/post/view/<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
                     Read more &rarr;
                 </a>
             </div>
