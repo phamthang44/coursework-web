@@ -3,19 +3,22 @@
 use controllers\UserController;
 use controllers\PostCommentController;
 
-function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $postAuthor = null, $currentUser = null)
+function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $postAuthor = null, $currentUser = null, $rootParentId = null)
 {
     $commentTag = '';
     $userController = new UserController();
     $postCommentController = new PostCommentController();
+
     foreach ($comments as $comment) {
         if ($comment->getParentCommentId() === $parentId) {
-            $commentUser = $userController->getUser($comment->getPostCommentUserId()); // Lấy user của comment
+            $commentUser = $userController->getUser($comment->getPostCommentUserId());
             $fullName = $commentUser ? htmlspecialchars($commentUser->getFirstName() . " " . $commentUser->getLastName()) : 'Unknown User';
             $profileLink = $commentUser ? '/profile/' . $commentUser->getFirstName() . "-" . $commentUser->getLastName() . "-" . $commentUser->getUserId() : '#';
             $isPostAuthor = $commentUser && $postAuthor && $commentUser->getUserId() === $postAuthor->getUserId();
             $isCurrentUser = $commentUser && $currentUser && $commentUser->getUserId() === $currentUser->getUserId();
 
+            // Define level 1 (if it is root comment)
+            $newRootParentId = $rootParentId ?? $comment->getPostCommentId();
 
             ob_start(); ?>
             <div class="flex mt-[20px] space-x-4 <?= $level > 0 ? 'pl-' . min(6 * $level, 24) . ' border-l border-gray-300 dark:border-gray-700' : '' ?>">
@@ -49,30 +52,39 @@ function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $po
                                 <i class="far fa-thumbs-up"></i>
                             <?php } ?>
                         </button>
-                        <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 reply-button" data-comment-id="<?= $comment->getPostCommentId() ?>">
-                            Reply
-                        </button>
+
+                        <!-- Chỉ reply vào cấp 1 -->
+                        <?php if ($level === 0 || ($level === 1 && $parentId === $newRootParentId)): ?>
+                            <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 reply-button" data-comment-id="<?= $newRootParentId ?>">
+                                Reply
+                            </button>
+                        <?php endif; ?>
+
                         <?php if ($isCurrentUser): ?>
                             <button class="text-blue-500 hover:text-blue-700 edit-comment" data-comment-id="<?= $comment->getPostCommentId() ?> ">Edit</button>
                             <a href="/comment/delete/<?= $comment->getPostCommentId() ?>" class="text-red-500 hover:text-red-700 delete-comment" data-comment-id="<?= $comment->getPostCommentId() ?>">Delete</a>
                         <?php endif; ?>
                     </div>
 
-                    <!-- Reply form (hide as default) -->
-                    <form class="hidden reply-form mt-2" action="/reply" method="POST" data-comment-id="<?= $comment->getPostCommentId() ?>">
-                        <input type="hidden" name="postId" value="<?= $postId ?>">
-                        <input type="hidden" name="parentCommentId" value="<?= $comment->getPostCommentId() ?>">
-                        <input type="text" name="postCommentContent" class="w-full border border-gray-300 rounded-lg p-3 dark:bg-darkmode2" placeholder="Reply to this comment..." autocomplete="off">
-                        <div class="flex space-x-2 mt-2">
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
-                                Comment
-                            </button>
-                            <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium cancel-reply-comment">Cancel</button>
-                        </div>
-                    </form>
+                    <!-- Form reply always aim for level 1-->
+                    <?php if ($level === 0 || ($level === 1 && $parentId === $newRootParentId)): ?>
+                        <form class="hidden reply-form mt-2" action="/reply" method="POST" data-comment-id="<?= $newRootParentId ?>">
+                            <input type="hidden" name="postId" value="<?= $postId ?>">
+                            <input type="hidden" name="parentCommentId" value="<?= $newRootParentId ?>">
+                            <input type="text" name="postCommentContent" class="w-full border border-gray-300 rounded-lg p-3 dark:bg-darkmode2" placeholder="Reply to this comment..." autocomplete="off">
+                            <div class="flex space-x-2 mt-2">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                                    Comment
+                                </button>
+                                <button type="button" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium cancel-reply-comment">Cancel</button>
+                            </div>
+                        </form>
+                    <?php endif; ?>
 
                     <!-- Show all comments child -->
-                    <?= renderCommentTree($comments, $postId, $comment->getPostCommentId(), $level + 1, $postAuthor, $currentUser); ?>
+                    <div class="replies mt-4">
+                        <?= renderCommentTree($comments, $postId, $comment->getPostCommentId(), $level + 1, $postAuthor, $currentUser, $newRootParentId); ?>
+                    </div>
                 </div>
             </div>
 <?php
