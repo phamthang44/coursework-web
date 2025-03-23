@@ -507,6 +507,10 @@ input[type="date"]:focus {
   width: min(600px, 90%);
 }
 
+.modal-backdrop:has(.other-modal) .modal-container {
+  width: min(400px, 90%);
+}
+
 .modal-backdrop:has(#search__bar) .modal-close {
   visibility: hidden;
 }

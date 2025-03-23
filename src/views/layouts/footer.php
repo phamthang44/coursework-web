@@ -42,8 +42,8 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
                     <h4 class="text-gray-800 font-semibold mb-4 dark:text-gray-300">About</h4>
                     <ul class="space-y-2">
                         <li><button class="about-knowledgehub text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">About KnowledgeHub</button></li>
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Privacy</a></li>
-                        <li><a href="#" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Terms</a></li>
+                        <li><button class="privacy text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Privacy</button></li>
+                        <li><button class="terms text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Terms</button></li>
                         <li><a href="/contact" class="text-gray-600 dark:text-gray-300  hover:text-red-600 dark:hover:text-red-400 text-sm">Contact</a></li>
                     </ul>
                 </div>
