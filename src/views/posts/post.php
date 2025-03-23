@@ -41,6 +41,7 @@
     use controllers\PostController;
     use utils\SessionManager;
     use utils\Template;
+    use controllers\PostCommentController;
 
     Template::header();
     Template::footer();
@@ -49,7 +50,7 @@
     $userController = new UserController();
     $postController = new PostController();
     $moduleController = new ModuleController();
-
+    $postCommentController = new PostCommentController();
     $user = null;
 
     if (isset($_SESSION['user_id'])) {
@@ -90,7 +91,7 @@
                 }
             }
             if (!empty($postsData)) {
-                echo render_post_cards($postsData, $showControls, $postController, $userObj, $voteScores, $currentUser ?? null, $votesUserStatus);
+                echo render_post_cards($postsData, $showControls, $postController, $userObj, $voteScores, $currentUser ?? null, $votesUserStatus, $postCommentController);
             } else {
                 echo '<div class="p-4 text-gray-600 dark:text-gray-300">No posts available.</div>';
             }

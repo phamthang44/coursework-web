@@ -18,7 +18,7 @@ use utils\SessionManager;
  * @return string HTML for the post card
  */
 
-function render_post_card($post, $assets = [], $showControls = false, $postController = null, $user = null, $voteScore = 0, $currentUser = null, $voteUserStatus = false)
+function render_post_card($post, $assets = [], $showControls = false, $postController = null, $user = null, $voteScore = 0, $currentUser = null, $voteUserStatus = false, $numberComments = 0)
 {
     // Extract post data
 
@@ -174,10 +174,10 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         </button>
                     </div>
                 <?php } ?>
-                <button class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
+                <a href="/post/view/<?= $postId ?>" class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
                     <i class="far fa-comment"></i>
-                    <span>3 Comments</span>
-                </button>
+                    <span><?= $numberComments > 0 ? $numberComments . " comments" : $numberComments . " comment" ?> </span>
+                </a>
                 <!-- Read more link need to fix here-->
                 <a href="/post/view/<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
                     Read more &rarr;
@@ -215,7 +215,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
  * @param bool $showControls Whether to show edit/delete controls
  * @return string HTML for the post cards grid
  */
-function render_post_cards($postsData, $showControls = false, $postController = null, $user = null, $voteScores = [], $currentUser = null, $votesUserStatus = [])
+function render_post_cards($postsData, $showControls = false, $postController = null, $user = null, $voteScores = [], $currentUser = null, $votesUserStatus = [], $postCommentController = null)
 {
     ob_start();
 ?>
@@ -229,8 +229,9 @@ function render_post_cards($postsData, $showControls = false, $postController = 
             $voteScore = isset($voteScores[$postId]) ? $voteScores[$postId] : 0;
             $voteUserStatus = isset($votesUserStatus[$postId]) ? $votesUserStatus[$postId] : null;
             // $voteUserStatus = isset($votesUserStatus) && isset($votesUserStatus[$post->getPostId()]) ? $votesUserStatus[$post->getPostId()] : null;
+            $numberComments = $postCommentController->getNumberComments($postId);
 
-            echo render_post_card($post, $assets, $showControls, $postController, $user, $voteScore, $currentUser, $voteUserStatus);
+            echo render_post_card($post, $assets, $showControls, $postController, $user, $voteScore, $currentUser, $voteUserStatus, $numberComments);
             ?>
         <?php endforeach; ?>
     </div>

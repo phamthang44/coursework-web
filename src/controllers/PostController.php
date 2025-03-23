@@ -7,6 +7,7 @@ use dal\PostAssetDAOImpl;
 use dal\PostDAOImpl;
 use dal\PostVoteDAO;
 use utils\SessionManager;
+use controllers\PostCommentController;
 use Exception;
 use finfo;
 use Random\Engine\Secure;
@@ -19,6 +20,7 @@ class PostController extends BaseController
     private $userController;
     //private $postAssetController;
     private $postVoteDAO;
+    private $postCommentController;
     function __construct()
     {
         parent::__construct(['/posts', '/quorae', '/login', '/404', '/403', '/signup', '/api/vote/post']);
@@ -27,6 +29,7 @@ class PostController extends BaseController
         $this->postAssetDAO = new PostAssetDAOImpl();
         $this->userController = new UserController();
         $this->postVoteDAO = new PostVoteDAO();
+        $this->postCommentController = new PostCommentController();
         //$this->postAssetController = new PostAssetController();
     }
 
@@ -83,7 +86,6 @@ class PostController extends BaseController
             }
         }
 
-
         require_once __DIR__ . '/../views/posts/post.php';
     }
 
@@ -96,6 +98,11 @@ class PostController extends BaseController
 
     public function viewPost($postId)
     {
+        if (!SessionManager::get('user')) {
+            SessionManager::set('error', "You must be logged in to view post");
+            header("Location: /quorae");
+            exit();
+        }
         try {
             $postDAO = new PostDAOImpl();
             $postAssetService = new PostAssetDAOImpl();
