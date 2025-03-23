@@ -65,6 +65,16 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
         return $this->convertResultRowToMessageObj($result, $messages);
     }
 
+    public function getMessagesFromAdmin()
+    {
+        $sql = "SELECT * FROM messagefromuser WHERE user_id = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $messages = [];
+        return $this->convertResultRowToMessageObj($result, $messages);
+    }
+
     public function getTotalMessageNums()
     {
         // TODO: Implement getTotalMessageNums() method.

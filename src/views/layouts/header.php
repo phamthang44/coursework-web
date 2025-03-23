@@ -53,12 +53,14 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
             <nav class="hidden md:flex items-center space-x-4">
                 <a href="/quorae" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
                 <a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>
-                <a href="#" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Notifications</a>
+                <a href="/posts/create" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Create post</a>
+                <a href="/help" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Help</a>
                 <?php
                 if ($user_logged_in) {
                     if ($user !== null) {
                         if ($user->getRole() === 'admin') {
                             echo '<a href="/admin/dashboard" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Admin Dashboard</a>';
+                            echo '<a href="/messages" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Messages Box</a>';
                         } else {
                             echo '';
                         }

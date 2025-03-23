@@ -35,6 +35,17 @@ class PostCommentDAOImpl implements PostCommentI
         return $this->convertPostCommentToObj($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    public function getCommentsPer10($postId, $offset)
+    {
+        // TODO: Implement getComments() method.
+        $conn = $this->pdo;
+        $stmt = $conn->prepare("SELECT * FROM PostComments WHERE post_id = :postId ORDER BY parent_comment_id ASC, post_comment_id ASC LIMIT 10 OFFSET :offset");
+        $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->convertPostCommentToObj($stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
     public function getComment($postCommentId)
     {
         // TODO: Implement getComment() method.

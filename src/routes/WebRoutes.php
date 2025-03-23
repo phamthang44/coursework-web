@@ -78,5 +78,8 @@ class WebRoutes
         $router->addRoute('POST', '/api/vote/comment', 'PostCommentController', 'vote');
         $router->addRoute('GET', '/comment/delete/{id}', 'PostCommentController', 'deleteComment');
         $router->addRoute('POST', '/comment/update/{id}', 'PostCommentController', 'updateComment');
+
+        //message routes
+        $router->addRoute('GET', '/messages', 'MessagesController', 'showMessage');
     }
 }

@@ -60,6 +60,11 @@ class PostCommentController
         return $this->postCommentDAO->getCommentsByPostIdOrder($postId);
     }
 
+    public function getCommentsPer10($postId, $offset)
+    {
+        return $this->postCommentDAO->getCommentsPer10($postId, $offset);
+    }
+
     public function vote()
     {
         header("Content-Type: application/json; charset=UTF-8");

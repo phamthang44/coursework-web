@@ -52,8 +52,10 @@
     $createdAtFormatted = date('M d, Y', strtotime($createdAt));
     $updatedAtFormatted = date('M d, Y', strtotime($updatedAt));
 
-    $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
+    //isAuthor
+    $isAuthor = $currentUser->getUserId() === $user->getUserId();
 
+    $voteDisplay = $voteScore > 0 ? "+{$voteScore}" : $voteScore;
     //check if this vote by currentuser ? if not only show isactivedisplay 
 
     $isActiveUpvote = ($voteUserStatus === 1) ? 'active' : '';
@@ -71,6 +73,7 @@
     $userController = new UserController();
     $numberComments = $postCommentController->getNumberComments($postId);
     $comments = $postCommentController->getComments($postId);
+
     ?>
     <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <div class="max-w-4xl mx-auto p-4 md:p-6 lg:p-8 post-card" data-post-id="<?= $postId ?>">
@@ -85,7 +88,7 @@
 
                 ?>
                 <div class="flex items-start">
-                    <?php if ($currentUser) { ?>
+                    <?php if ($isAuthor) { ?>
                         <button class="post-options">
                             <span class="post-card-dot w-8 h-8 flex justify-center items-center rounded-full text-gray-800 dark:text-white dark:hover:bg-gray-600 hover:bg-gray-300">•••</span>
                         </button>
@@ -211,13 +214,6 @@
                     }
                     ?>
                     <?php echo renderCommentTree($comments, $postId, null, 0, $user, $currentUser); ?>
-                </div>
-
-                <!-- Show More Comments Button -->
-                <div class="mt-6 text-center">
-                    <button class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
-                        Show more comments
-                    </button>
                 </div>
             </div>
         </div>
