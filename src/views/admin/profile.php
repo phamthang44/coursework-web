@@ -267,7 +267,7 @@
                                             </div>
                                             <a href="/post/view/<?= $postId ?>" class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
                                                 <i class="far fa-comment"></i>
-                                                <span>3 Comments</span>
+                                                <span><?= (count($comments[$postId]) > 0) ? count($comments[$postId]) . " Comments" : count($comments[$postId]) . " Comment" ?></span>
                                             </a>
                                             <!-- Read more link need to fix here-->
                                             <a href="/post/view/<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">

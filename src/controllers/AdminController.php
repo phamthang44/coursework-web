@@ -8,6 +8,7 @@ use finfo;
 use utils\SessionManager;
 use dal\PostDAOImpl;
 use dal\PostVoteDAO;
+use dal\PostCommentDAOImpl;
 
 class AdminController extends BaseController
 {
@@ -15,6 +16,7 @@ class AdminController extends BaseController
     private $moduleController;
     private $postVoteDAO;
     private $postDAO;
+    private $postCommentDAO;
     public function __construct()
     {
         parent::__construct(['/posts']);
@@ -26,6 +28,7 @@ class AdminController extends BaseController
         }
         $this->postVoteDAO = new PostVoteDAO();
         $this->postDAO = new PostDAOImpl();
+        $this->postCommentDAO = new PostCommentDAOImpl();
     }
     public function dashboard()
     {
@@ -51,6 +54,10 @@ class AdminController extends BaseController
             $voteScores[$post->getPostId()] = $this->postVoteDAO->getVoteScore($post->getPostId());
         }
         $postVoteDAO = $this->postVoteDAO;
+        $comments = [];
+        foreach ($posts as $post) {
+            $comments[$post->getPostId()] = $this->postCommentDAO->getCommentsByPostId($post->getPostId());
+        }
         $isOwner = $currentUser && method_exists($currentUser, 'getUserId') && $currentUser->getUserId() === $user->getUserId();
         require_once __DIR__ . '/../views/admin/profile.php';
     }
