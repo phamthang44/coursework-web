@@ -141,31 +141,13 @@
             <div class="md:w-2/3">
                 <div class="bg-white dark:bg-darkmode rounded-lg shadow-md mb-6">
                     <div class="flex border-b dark:border-gray-700 overflow-x-auto">
-                        <button class="px-6 py-3 font-medium border-b-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark">Profile</button>
-                        <button class="px-6 py-3 font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Posts</button>
-                        <button class="px-6 py-3 font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Comments</button>
-                        <button class="px-6 py-3 font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Edits</button>
+                        <a href="/admin/profile/<?= $profileLink ?>" class="px-6 py-3 font-medium border-b-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark">Profile</a>
                     </div>
 
                     <div class="p-4">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-semibold text-gray-900 dark:text-white">Posts & Comments</h3>
-                            <select class="bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-md px-2 py-1 text-sm text-gray-700 dark:text-gray-300">
-                                <option>Most recent</option>
-                                <option>Most liked</option>
-                            </select>
                         </div>
-
-                        <!-- Search for posts -->
-                        <div class="mb-6 ml-auto">
-                            <div class="relative">
-                                <input type="text" placeholder="Search content" class="search-input w-300px border dark:border-gray-600 rounded-md px-[50px] py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark focus:w-[350px] transition-all duration-500">
-                                <button class="absolute left-3 top-2 text-gray-400 dark:text-gray-500">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-
                         <!-- Posts -->
                         <?php
                         if (empty($posts)) {
@@ -283,12 +265,12 @@
                                                     </svg>
                                                 </button>
                                             </div>
-                                            <button class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
+                                            <a href="/post/view/<?= $postId ?>" class="flex items-center space-x-2 text-[14px] text-gray-500 dark:text-gray-400 flex-1 ml-[50px]">
                                                 <i class="far fa-comment"></i>
                                                 <span>3 Comments</span>
-                                            </button>
+                                            </a>
                                             <!-- Read more link need to fix here-->
-                                            <a href="/index.php?action=view&postId=<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                                            <a href="/post/view/<?= $postId ?>" class="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm">
                                                 Read more &rarr;
                                             </a>
                                         </div>

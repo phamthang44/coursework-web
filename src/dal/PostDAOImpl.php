@@ -315,4 +315,13 @@ class PostDAOImpl implements PostDAOI
         $posts = [];
         return $this->convertResultRowToPostObj($rows, $posts);
     }
+
+    public function getAmountOfPostByUser($userId)
+    {
+        $sql = "SELECT COUNT(*) FROM Posts WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 }

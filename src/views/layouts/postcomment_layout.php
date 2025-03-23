@@ -53,8 +53,8 @@ function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $po
                             Reply
                         </button>
                         <?php if ($isCurrentUser): ?>
-                            <button class="text-blue-500 hover:text-blue-700 edit-comment" data-comment-id="<?= $comment->getPostCommentId() ?>">Edit</button>
-                            <button class="text-red-500 hover:text-red-700 delete-comment" data-comment-id="<?= $comment->getPostCommentId() ?>">Delete</button>
+                            <button class="text-blue-500 hover:text-blue-700 edit-comment" data-comment-id="<?= $comment->getPostCommentId() ?> ">Edit</button>
+                            <a href="/comment/delete/<?= $comment->getPostCommentId() ?>" class="text-red-500 hover:text-red-700 delete-comment" data-comment-id="<?= $comment->getPostCommentId() ?>">Delete</a>
                         <?php endif; ?>
                     </div>
 

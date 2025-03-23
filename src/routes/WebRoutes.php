@@ -67,7 +67,8 @@ class WebRoutes
         $router->addRoute('POST', '/admin/modules/update/{moduleId}', 'AdminController', 'updateModule');
         $router->addRoute('POST', '/admin/modules/create', 'AdminController', 'createModule');
         $router->addRoute('GET', '/admin/modules/delete/{moduleId}', 'AdminController', 'deleteModule');
-
+        $router->addRoute('GET', '/admin/banuser/{id}', 'AdminController', 'banuser');
+        $router->addRoute('GET', '/admin/unbanuser/{id}', 'AdminController', 'unbanuser');
         // Search route
         $router->addRoute('GET', '/search/{query}', 'PostController', 'search');
 
@@ -75,5 +76,7 @@ class WebRoutes
         $router->addRoute('POST', '/comment', 'PostCommentController', 'comment');
         $router->addRoute('POST', '/reply', 'PostCommentController', 'replyComment');
         $router->addRoute('POST', '/api/vote/comment', 'PostCommentController', 'vote');
+        $router->addRoute('GET', '/comment/delete/{id}', 'PostCommentController', 'deleteComment');
+        $router->addRoute('POST', '/comment/update/{id}', 'PostCommentController', 'updateComment');
     }
 }

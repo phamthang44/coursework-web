@@ -503,6 +503,10 @@ input[type="date"]:focus {
   width: min(400px, 90%);
 }
 
+.modal-backdrop:has(#form-update-comment) .modal-container {
+  width: min(600px, 90%);
+}
+
 .modal-backdrop:has(#search__bar) .modal-close {
   visibility: hidden;
 }

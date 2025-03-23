@@ -18,10 +18,16 @@
     use controllers\PostCommentController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\SessionManager;
 
     Template::header();
     Template::footer();
     Template::postCommentLayout();
+    $currentUser = SessionManager::get('user');
+    if ($currentUser->getStatus() === 'banned') {
+        SessionManager::set('error', 'You are banned from the site');
+        header('Location: /403');
+    }
     ?>
     <?php echo render_quora_header(true, $currentUser->getUsername(), $currentUser->getProfileImage(), $currentUser->getEmail(), $currentUser) ?>
     <?php
@@ -99,7 +105,7 @@
                     <!-- Author Avatar -->
                     <div class="flex-shrink-0 mr-4">
                         <?php if ($authorImage) { ?>
-                            <a href="<?php echo $profileLinkAuthor; ?>"><img src="<?php echo $authorImage; ?>" alt="<?php echo $authorUserName; ?>" class="w-12 h-12 rounded-full object-cover"></a>
+                            <a href="<?php echo $profileLinkAuthor; ?>"><img src="/<?php echo $authorImage; ?>" alt="<?php echo $authorUserName; ?>" class="w-12 h-12 rounded-full object-cover"></a>
                         <?php } else { ?>
                             <a href="<?php echo $profileLinkAuthor; ?>" class="block w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
                                 <p class="text-lg"><?php echo strtoupper(substr($authorUserName, 0, 1)); ?></p>
@@ -393,6 +399,39 @@
                 dropdown.classList.add("hidden");
             }
         });
+
+        const deleteComments = document.querySelectorAll(".delete-comment");
+        deleteComments.forEach(deleteComment => {
+            deleteComment.addEventListener("click", function(e) {
+                e.preventDefault();
+                checkExistingDropdown(e);
+                checkExistingModal();
+                const deleteConfirmCard = new ConfirmCard();
+                deleteConfirmCard.openConfirmCard(`
+                    <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
+                        Are you sure you want to delete this comment?
+                    </h2>`);
+            });
+        });
+
+        const editComments = document.querySelectorAll(".edit-comment");
+        editComments.forEach(editComment => {
+            editComment.addEventListener("click", function(e) {
+                e.preventDefault();
+                checkExistingDropdown(e);
+                checkExistingModal();
+                const editCommentModal = new Modal();
+                const commentId = e.target.dataset.commentId;
+                const commentContent = e.target.parentElement.parentElement.querySelector("p").textContent.trim();
+                editCommentModal.openModal(`
+                    <h2 class="text-red-600 dark:text-white text-2xl font-semibold">Edit Comment</h2>
+                    <form action="/comment/update/${commentId}" method="POST" class="space-y-4 flex" id="form-update-comment">
+                        <textarea name="postCommentContent" class="w-full h-20 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${commentContent}</textarea>
+                        <button class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit">Update</button>
+                    </form>
+                `);
+            });
+        })
     </script>
 </body>
 

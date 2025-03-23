@@ -95,4 +95,23 @@ class PostCommentController
     {
         return $this->commentVoteDAO->getVoteData($commentId, $userId);
     }
+
+    public function deletecomment($commentId)
+    {
+        $this->postCommentDAO->deleteComment($commentId);
+        $currentUrl = $_SERVER['HTTP_REFERER'] ?? '/quorae';
+        header("Location: $currentUrl");
+    }
+
+    public function updateComment($commentId)
+    {
+        $postCommentContent = trim(htmlspecialchars($_POST['postCommentContent'], ENT_QUOTES, 'UTF-8'));
+        if (empty($postCommentContent)) {
+            SessionManager::set('error', 'Comment cannot be empty');
+            return;
+        }
+        $this->postCommentDAO->updateCommentContent($commentId, $postCommentContent);
+        $currentUrl = $_SERVER['HTTP_REFERER'] ?? '/quorae';
+        header("Location: $currentUrl");
+    }
 }

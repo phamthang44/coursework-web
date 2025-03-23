@@ -14,6 +14,7 @@
 
     use controllers\ModuleController;
     use controllers\UserController;
+    use utils\SessionManager;
     use utils\Template;
 
     Template::header();
@@ -21,11 +22,14 @@
 
     $userController = new UserController();
     $moduleController = new ModuleController();
+    $currentUser = SessionManager::get('user');
+    if ($currentUser->getStatus() === 'banned') {
+        SessionManager::set('error', 'You are banned from the site');
+        header('Location: /403');
+    }
 
-
-
-    if (isset($_SESSION['user_id'])) {
-        $userId = $_SESSION['user_id'];
+    if (SessionManager::get('user_id')) {
+        $userId = SessionManager::get('user_id');
         $user = $userController->getUser($userId);
         $user_logged_in = true;
         $user_name = $user->getUsername();

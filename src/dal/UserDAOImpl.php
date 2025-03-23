@@ -79,7 +79,7 @@ class UserDAOImpl implements UserDAOI
         $stmt->bindParam(':userId', $userId);
         $stmt->execute();
         $row = $stmt->fetch();
-        $user = new User($row['user_id'], $row['username'], $row['last_name'], $row['first_name'], $row['email'], $row['password'], $row['profile_image_path'], $row['bio'], $row['role'], $row['account_create_date'], $row['dob']);
+        $user = new User($row['user_id'], $row['username'], $row['last_name'], $row['first_name'], $row['email'], $row['password'], $row['profile_image_path'], $row['bio'], $row['role'], $row['account_create_date'], $row['dob'], $row['status']);
         if ($user->getRole() === 'user') return true;
         return false;
     }
@@ -279,7 +279,8 @@ class UserDAOImpl implements UserDAOI
             $row['bio'] ?? null,
             $row['role'] ?? null,
             $row['account_create_date'] ?? null,
-            $row['dob'] ?? null
+            $row['dob'] ?? null,
+            $row['status'] ?? null
         );
     }
 
@@ -301,5 +302,63 @@ class UserDAOImpl implements UserDAOI
         $stmt->bindParam(':userId', $userId);
 
         return $this->extracted($stmt);
+    }
+
+    private function convertRowsToUsers($rows)
+    {
+        $users = [];
+        foreach ($rows as $row) {
+            $user = new User(
+                $row['user_id'],
+                $row['username'],
+                $row['last_name'],
+                $row['first_name'],
+                $row['email'],
+                $row['password'],
+                $row['profile_image_path'],
+                $row['bio'],
+                $row['role'],
+                $row['account_create_date'],
+                $row['dob'],
+                $row['status']
+            );
+            $users[] = $user;
+        }
+        return $users;
+    }
+
+    public function getAllUsers()
+    {
+        $sql = "SELECT * FROM Users";
+        $stmt = $this->pdo->query($sql);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->convertRowsToUsers($rows);
+    }
+
+    public function getUserPerPage($limit, $offset)
+    {
+        $sql = "SELECT * FROM Users LIMIT :limit OFFSET :offset";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->convertRowsToUsers($rows);
+    }
+
+    public function updateUserStatus($userId)
+    {
+        $sql = "UPDATE Users SET status = 'banned' WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':userId', $userId);
+        return $stmt->execute();
+    }
+
+    public function updateUserStatusUnbanned($userId)
+    {
+        $sql = "UPDATE Users SET status = 'active' WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':userId', $userId);
+        return $stmt->execute();
     }
 }

@@ -132,6 +132,9 @@ class AdminController extends BaseController
 
     public function  userManagement()
     {
+        $currentPage = $_POST['page'] ?? 1;
+        $offset = ($currentPage - 1) * 10;
+        $users = $this->userDAO->getUserPerPage(10, $offset);
         require_once __DIR__ . '/../views/admin/user_management.php';
     }
 
@@ -243,6 +246,58 @@ class AdminController extends BaseController
             }
         } catch (\Throwable $th) {
             echo json_encode(["status" => false, "message" => $th->getMessage()]);
+        }
+    }
+
+    public function banuser($userId)
+    {
+        $currentUser = SessionManager::get('user');
+        if (!$currentUser || $currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
+        try {
+
+            $result = $this->userDAO->updateUserStatus($userId);
+
+            if ($result) {
+                header("Location: /admin/user-management");
+                exit();
+            } else {
+                throw new Exception("Failed to update user status");
+            }
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            SessionManager::set('message', $message);
+            header("Location: /admin/user-management");
+            exit();
+        }
+    }
+
+    public function unbanuser($userId)
+    {
+        $currentUser = SessionManager::get('user');
+        if (!$currentUser || $currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
+        try {
+
+            $result = $this->userDAO->updateUserStatusUnbanned($userId);
+
+            if ($result) {
+                header("Location: /admin/user-management");
+                exit();
+            } else {
+                throw new Exception("Failed to update user status");
+            }
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            SessionManager::set('message', $message);
+            header("Location: /admin/user-management");
+            exit();
         }
     }
 }

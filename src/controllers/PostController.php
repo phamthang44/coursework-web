@@ -544,4 +544,9 @@ class PostController extends BaseController
 
         echo json_encode(["status" => $data['status'], "voteScore" => $data['voteScore']]);
     }
+
+    public function getAmountOfPostByUser($userId)
+    {
+        return $this->postDAO->getAmountOfPostByUser($userId);
+    }
 }

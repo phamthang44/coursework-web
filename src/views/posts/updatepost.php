@@ -21,7 +21,11 @@
     Template::header();
     Template::footer();
 
-
+    $currentUser = SessionManager::get('user');
+    if ($currentUser->getStatus() === 'banned') {
+        SessionManager::set('error', 'You are banned from the site');
+        header('Location: /403');
+    }
     $userController = new UserController();
     $postController = new PostController();
     $moduleController = new ModuleController();

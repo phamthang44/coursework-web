@@ -16,6 +16,7 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\SessionManager;
     use utils\Template;
 
     Template::header();
@@ -27,8 +28,8 @@
 
     $user = null;
 
-    if (isset($_SESSION['user_id'])) {
-        $userId = $_SESSION['user_id'];
+    if (SessionManager::get('user_id')) {
+        $userId = SessionManager::get('user_id');
         $user = $userController->getUser($userId);
         $user_logged_in = true;
         $user_name = $user->getUsername();
