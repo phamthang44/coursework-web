@@ -405,4 +405,58 @@ class UserController extends BaseController
     {
         return $this->userDAO->getTotalUserNums();
     }
+
+    public function getUserTopContributor()
+    {
+        header("Content-Type: application/json");
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!isset($data['user_ids']) || !is_array($data['user_ids'])) {
+            echo json_encode(["success" => false, "message" => "Invalid request: user_ids is required and must be an array"]);
+            exit();
+        }
+        $userIds = $data['user_ids'];
+
+        if (empty($userIds)) {
+            echo json_encode(["success" => false, "message" => "Cannot be empty"]);
+            exit();
+        }
+
+        $users = [];
+        foreach ($userIds as $userId) {
+            $user = $this->userDAO->getUserById($userId);
+            if ($user) {
+                $users[] = [
+                    'userId' => $user->getUserId(),
+                    'username' => $user->getUsername(),
+                    'email' => $user->getEmail(),
+                    'firstName' => $user->getFirstName(),
+                    'lastName' => $user->getLastName(),
+                    'avatar' => $user->getProfileImage(),
+                ];
+            }
+        }
+        echo json_encode(["success" => true, "users" => $users]);
+        exit();
+    }
+
+    public function getModerators()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            header("Location: /404");
+            exit();
+        }
+        $moderators = $this->userDAO->getModerators();
+        $users = [];
+        foreach ($moderators as $moderator) {
+            $users[] = [
+                'userId' => $moderator->getUserId(),
+                'username' => $moderator->getUsername(),
+                'email' => $moderator->getEmail(),
+                'firstName' => $moderator->getFirstName(),
+                'lastName' => $moderator->getLastName(),
+                'avatar' => $moderator->getProfileImage(),
+            ];
+        }
+        echo json_encode(["success" => true, "moderators" => $users]);
+    }
 }

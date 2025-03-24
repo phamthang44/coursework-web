@@ -554,4 +554,15 @@ class PostController extends BaseController
     {
         return $this->postDAO->getAmountOfPostByUser($userId);
     }
+
+    public function topContributors()
+    {
+        header("Content-Type: application/json; charset=UTF-8");
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            echo json_encode(["status" => false, "message" => "Invalid request"]);
+            return;
+        }
+        $topContributors = $this->postDAO->getMostNumberOfPostByUser();
+        echo json_encode(["status" => true, "topContributors" => $topContributors]);
+    }
 }

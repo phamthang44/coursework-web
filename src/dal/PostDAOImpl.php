@@ -324,4 +324,13 @@ class PostDAOImpl implements PostDAOI
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+
+    public function getMostNumberOfPostByUser()
+    {
+        $sql = "SELECT user_id, COUNT(post_id) AS number_post FROM Posts GROUP BY user_id ORDER BY number_post DESC LIMIT 5;";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
 }

@@ -361,4 +361,12 @@ class UserDAOImpl implements UserDAOI
         $stmt->bindParam(':userId', $userId);
         return $stmt->execute();
     }
+
+    public function getModerators()
+    {
+        $sql = "SELECT * FROM Users WHERE role = 'admin'";
+        $stmt = $this->pdo->query($sql);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->convertRowsToUsers($rows);
+    }
 }

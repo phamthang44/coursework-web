@@ -47,6 +47,7 @@ class WebRoutes
         $router->addRoute('GET', '/404', 'PostController', 'notfound');
         $router->addRoute('POST', '/api/vote/post', 'PostController', 'vote');
         $router->addRoute('GET', '/post/view/{id}', 'PostController', 'viewPost');
+        $router->addRoute('GET', '/api/post/top-contributors', 'PostController', 'topContributors');
         // Contact routes
         $router->addRoute('GET', '/contact', 'UserController', 'contact');
         $router->addRoute('POST', '/sendemail', 'UserController', 'sendEmail');
@@ -58,6 +59,8 @@ class WebRoutes
         $router->addRoute('POST', '/users/update/{id}', 'UserController', 'update');
         $router->addRoute('POST', '/users/update-avatar/{id}', 'UserController', 'updateAvatar');
         $router->addRoute('POST', '/users/update-bio/{id}', 'UserController', 'updateBio');
+        $router->addroute('POST', '/api/user/top-contributor', 'UserController', 'getUserTopContributor');
+        $router->addRoute('GET', '/api/user/moderators', 'UserController', 'getModerators');
 
         // Admin routes
         $router->addRoute('GET', '/admin/dashboard', 'AdminController', 'dashboard');

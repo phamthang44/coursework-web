@@ -585,19 +585,155 @@ if (termBtn) {
   });
 }
 
-const helpBtn = document.querySelector(".help-btn");
-if (helpBtn) {
-  helpBtn.addEventListener("click", function () {
-    const helpModal = new Modal();
-    checkExistingModal();
-    helpModal.openModal(`<div class="space-y-4 other-modal">
-    <h2 class="text-black dark:text-white text-2xl font-medium">Terms</h2>
-    <ul class="list-decimal pl-4">
-      <li class="text-black dark:text-white mt-2">1. <span class="font-semibold text-yellow-600">How to post:</span> Click “Create Post,” enter your content, and submit. Your post will be reviewed before going live.</li>
-      <li class="text-black dark:text-white mt-2">2. <span class="font-semibold text-yellow-600">How to comment:</span> Pick a post, type your thoughts in the comment box, and hit send.</li>
-      <li class="text-black dark:text-white mt-2">3. <span class="font-semibold text-green-500">Need help?</span> Contact admins at <span class="text-red-600 font-semibold">Contact us</span> button</li>
-      <li class="text-black dark:text-white mt-2">4. <span class="font-semibold text-blue-500">Forgot password?</span> Click <span class="font-semibold text-green-600">“Forgot Password”</span> on the login page to reset it.</li>
-    </ul>
-  `);
+const helpBtns = document.querySelectorAll(".help-btn");
+if (helpBtns) {
+  helpBtns.forEach((helpBtn) => {
+    helpBtn.addEventListener("click", function (e) {
+      const helpModal = new Modal();
+      checkExistingModal();
+      checkExistingDropdown(e);
+      helpModal.openModal(`<div class="space-y-4 other-modal">
+      <h2 class="text-black dark:text-white text-2xl font-medium">Terms</h2>
+      <ul class="list-decimal pl-4">
+        <li class="text-black dark:text-white mt-2">1. <span class="font-semibold text-yellow-600">How to post:</span> Click “Create Post,” enter your content, and submit. Your post will be reviewed before going live.</li>
+        <li class="text-black dark:text-white mt-2">2. <span class="font-semibold text-yellow-600">How to comment:</span> Pick a post, type your thoughts in the comment box, and hit send.</li>
+        <li class="text-black dark:text-white mt-2">3. <span class="font-semibold text-green-500">Need help?</span> Contact admins at <span class="text-red-600 font-semibold">Contact us</span> button</li>
+        <li class="text-black dark:text-white mt-2">4. <span class="font-semibold text-blue-500">Forgot password?</span> Click <span class="font-semibold text-green-600">“Forgot Password”</span> on the login page to reset it.</li>
+      </ul>
+    `);
+    });
+  });
+}
+
+const topContributors = document.querySelector(".top-contributors");
+if (topContributors) {
+  topContributors.addEventListener("click", function () {
+    async function getTopContributors() {
+      const response = await fetch("/api/post/top-contributors");
+      const data = await response.json();
+      return data;
+    }
+
+    async function getUsersInfo(user_ids) {
+      const response = await fetch(`/api/user/top-contributor`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "FetchRequest",
+        },
+        body: JSON.stringify({
+          user_ids,
+        }),
+      });
+      const data = await response.json();
+      return data;
+    }
+
+    getTopContributors().then((data) => {
+      const userIds = data.topContributors.map((element) => {
+        return element.user_id;
+      });
+
+      const numberPosts = data.topContributors.map((element) => {
+        return element.number_post;
+      });
+
+      getUsersInfo(userIds).then((data) => {
+        let users = data.users.map((user) => {
+          return user;
+        });
+        if (users) {
+          const topContributorsModal = new Modal();
+          checkExistingModal();
+          setTimeout(
+            topContributorsModal.openModal(`
+            <div class="space-y-4 other-modal">
+            <h2 class="text-black dark:text-white text-2xl font-medium">Top Contributors</h2>
+            <div class="top-contributors-list">
+            ${users
+              .map(
+                (user, index) =>
+                  `<div class="flex items-center justify-between p-2 border-b">
+                  <div class="flex items-center">
+                    ${
+                      user.avatar
+                        ? `<img src="${user.avatar}" alt="Avatar" class="w-10 h-10 rounded-full object cover"/>`
+                        : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
+                    ${user.username.charAt(0).toUpperCase()}
+                  </div>`
+                    }
+                    <div class="space-y-1 ml-4">
+                      <h3 class="text-black dark:text-white font-semibold">${
+                        user.username
+                      }</h3>
+                      <p class="text-gray-500 text-sm">Number of posts: ${
+                        numberPosts[index]
+                      }</p>
+                    </div>
+                  </div>
+                  <a href="/profile/${user.firstName}-${user.lastName}-${
+                    user.userId
+                  }" class="text-blue-600 font-semibold">View profile</a>
+                </div>`
+              )
+              .join("")} 
+            `),
+            10
+          );
+        }
+      });
+    });
+  });
+}
+
+const moderators = document.querySelector(".moderators");
+if (moderators) {
+  moderators.addEventListener("click", function () {
+    async function getModerators() {
+      const response = await fetch("/api/user/moderators");
+      const data = await response.json();
+      return data;
+    }
+    getModerators().then((data) => {
+      let users = data.moderators.map((user) => {
+        return user;
+      });
+      if (users) {
+        const moderatorsModal = new Modal();
+        checkExistingModal();
+        setTimeout(
+          moderatorsModal.openModal(`
+          <div class="space-y-4 other-modal">
+          <h2 class="text-black dark:text-white text-2xl font-medium">Admin - Moderators</h2>
+          <div class="moderators-list">
+          ${users
+            .map(
+              (user, index) =>
+                `<div class="flex items-center justify-between p-2 border-b">
+                <div class="flex items-center">
+                  ${
+                    user.avatar
+                      ? `<img src="${user.avatar}" alt="Avatar" class="w-10 h-10 rounded-full object cover"/>`
+                      : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
+                  ${user.username.charAt(0).toUpperCase()}
+                </div>`
+                  }
+                  <div class="space-y-1 ml-4">
+                    <h3 class="text-black dark:text-white font-semibold">${
+                      user.username
+                    }</h3>
+                  </div>
+                </div>
+                <a href="/profile/${user.firstName}-${user.lastName}-${
+                  user.userId
+                }" class="text-blue-600 font-semibold">View profile</a>
+              </div>`
+            )
+            .join("")} 
+          `),
+          10
+        );
+      }
+    });
   });
 }

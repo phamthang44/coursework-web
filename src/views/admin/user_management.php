@@ -116,9 +116,9 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
                                 <?php if ($user->getStatus() === "banned") { ?>
-                                    <a href="/admin/unbanuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-user-name="<?= $userFirstName . " " . $userLastName ?>">Unban</a>
+                                    <a href="/admin/unbanuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="unban">Unban</a>
                                 <?php } else { ?>
-                                    <a href="/admin/banuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-user-name="<?= $userFirstName . " " . $userLastName ?>">Ban</a>
+                                    <a href="/admin/banuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="ban">Ban</a>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -198,7 +198,13 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
                 const url = e.target.href;
                 const confirmCard = new ConfirmCard();
                 const userName = e.target.getAttribute('data-user-name');
-                confirmCard.openConfirmCard(`<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ban <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`);
+                let wantTo = e.target.getAttribute('data-ban');
+                if (wantTo === 'ban') {
+                    wantTo = 'ban';
+                } else {
+                    wantTo = 'unban';
+                }
+                confirmCard.openConfirmCard(`<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`);
             });
         });
     </script>
