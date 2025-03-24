@@ -126,7 +126,7 @@ class Router
     private function notFound()
     {
         http_response_code(404);
-        echo "404 - Page Not Found";
+        header('Location: /404');
         exit;
     }
 }

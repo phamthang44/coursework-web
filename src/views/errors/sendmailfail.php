@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Success</title>
+    <title>Fail</title>
     <script>
         // autoback after 5 seconds
         setTimeout(function() {
@@ -33,9 +33,11 @@
     use controllers\ModuleController;
     use controllers\UserController;
     use controllers\PostController;
+    use utils\Template;
 
-    require_once __DIR__ . '/../layouts/header.php';
-    require_once __DIR__ . '/../layouts/footer.php';
+    Template::header();
+    Template::footer();
+
     require_once __DIR__ . '/../../controllers/UserController.php';
 
     $userController = new UserController();

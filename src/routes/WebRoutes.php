@@ -53,7 +53,7 @@ class WebRoutes
         $router->addRoute('POST', '/sendemail', 'UserController', 'sendEmail');
         $router->addRoute('GET', '/emailsuccess', 'UserController', 'emailsuccess');
         $router->addRoute('GET', '/emailfail', 'UserController', 'emailfail');
-        $router->addRoute('GET', '/404', 'UserController', 'notfound');
+
         // User routes
         $router->addRoute('GET', '/profile/{firstname-lastname-id}', 'UserController', 'userProfile');
         $router->addRoute('POST', '/users/update/{id}', 'UserController', 'update');
