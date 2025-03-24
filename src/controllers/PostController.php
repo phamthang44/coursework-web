@@ -98,6 +98,11 @@ class PostController extends BaseController
 
     public function viewPost($postId)
     {
+        if (!is_numeric($postId)) {
+            SessionManager::set('error', "Invalid post id : " . ' ' . $postId);
+            header("Location: /quorae");
+            exit();
+        }
         if (!SessionManager::get('user')) {
             SessionManager::set('error', "You must be logged in to view post");
             header("Location: /quorae");

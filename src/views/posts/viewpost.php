@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post View Page</title>
+    <title><?= $post->getTitle() . " - QuoraeHub" ?></title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -377,10 +377,12 @@
         });
 
         const optionsPostCard = document.querySelector(".post-options");
-        optionsPostCard.addEventListener("click", function(e) {
-            const dropdown = optionsPostCard.nextElementSibling;
-            dropdown.classList.toggle("hidden");
-        });
+        if (optionsPostCard) {
+            optionsPostCard.addEventListener("click", function(e) {
+                const dropdown = optionsPostCard.nextElementSibling;
+                dropdown.classList.toggle("hidden");
+            });
+        }
         document.addEventListener("click", function(e) {
             if (e.target.classList.contains("delete-action")) {
                 e.preventDefault();

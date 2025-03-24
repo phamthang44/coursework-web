@@ -85,27 +85,10 @@
             </form>
 
             <div class="mt-10 text-center">
-                <p class="text-[#777] text-sm mb-4 relative before:content-[''] before:absolute before:w-[30%] before:h-[1px] before:bg-[#e1e4e8] before:top-1/2 before:left-0 after:content-[''] after:absolute after:w-[30%] after:h-[1px] after:bg-[#e1e4e8] after:top-1/2 after:right-0">Or continue with</p>
+                <p class="text-[#777] text-sm mb-4 relative before:content-[''] before:absolute before:w-[30%] before:h-[1px] before:bg-[#e1e4e8] before:top-1/2 before:left-0 after:content-[''] after:absolute after:w-[30%] after:h-[1px] after:bg-[#e1e4e8] after:top-1/2 after:right-0"></p>
 
                 <div class="flex justify-center gap-4">
-                    <button class="w-12 h-12 rounded-full border border-[#e1e4e8] bg-white flex items-center justify-center cursor-pointer transition-all hover:border-[#f42935] hover:bg-[#f5f7fa]">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.907 8.907 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z" fill="#4285F4" />
-                            <path d="M4.17 14.406l3.095 2.292A4.93 4.93 0 0 0 11.956 19.5c2.484 0 4.34-1.258 4.786-3.453h-4.778l-7.794-1.641z" fill="#34A853" />
-                            <path d="M11.956 4.029c-1.586 0-3.042.544-4.256 1.667.003-.003.003-.003 0 0L4.17 3.28A8.939 8.939 0 0 1 11.956 0c2.275 0 4.306.852 5.89 2.234l-2.601 2.599c-.889-.731-2.027-1.18-3.289-1.18v.376z" fill="#EA4335" />
-                            <path d="M11.956 19.5a8.932 8.932 0 0 1-8.202-5.452l.367.275 3.038 2.236.005.003A5.273 5.273 0 0 0 11.956 19.5V19.5z" fill="#FBBC05" />
-                        </svg>
-                    </button>
-                    <button class="w-12 h-12 rounded-full border border-[#e1e4e8] bg-white flex items-center justify-center cursor-pointer transition-all hover:border-[#f42935] hover:bg-[#f5f7fa]">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.79-4.697 4.533-4.697 1.312 0 2.687.235 2.687.235v2.969H15.83c-1.491 0-1.955.93-1.955 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" fill="#1877F2" />
-                        </svg>
-                    </button>
-                    <button class="w-12 h-12 rounded-full border border-[#e1e4e8] bg-white flex items-center justify-center cursor-pointer transition-all hover:border-[#f42935] hover:bg-[#f5f7fa]">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" fill="#000000" />
-                        </svg>
-                    </button>
+
                 </div>
             </div>
 

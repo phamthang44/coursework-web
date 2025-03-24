@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/tailwind.css">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Document</title>
+    <title>Quorae Hub - Message Box</title>
 </head>
 
 <body class="bg-gray-100 dark:bg-darkmode3 min-h-screen">
@@ -41,7 +41,7 @@
                     <div class="px-4 py-5 sm:px-6">
                         <h3 class="text-2xl font-medium leading-6 text-gray-900 dark:text-white">Title: <?php echo $messageTitle; ?></h3>
                         <p class="mt-[10px] mb-[10px] max-w -2xl text-xl text-gray-500 dark:text-white">Message: <?php echo $messageContent; ?></p>
-                        <p class="mt-1 max-w -2xl text-sm text-gray-500 dark:text-white">By : <?php echo $username; ?></p>
+                        <p class="mt-1 max-w -2xl text-sm text-gray-500 dark:text-white">By : <?php echo $username; ?> ID: <?php echo $userId ?></p>
                         <p class="mt-1 max-w -2xl text-sm text-gray-500 dark:text-yellow-500"><?php echo $formattedTimestamp; ?></p>
                     </div>
                 </div>

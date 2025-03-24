@@ -54,9 +54,13 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <a href="/quorae" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Home</a>
                 <a href="/contact" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Contact us</a>
                 <?php
-                if ($user->getRole() === 'user') {
-                    echo '<a href="/posts/create" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Create post</a>';
-                    echo '<button class="help-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Help</button>';
+                if ($user_logged_in) {
+                    if ($user !== null) {
+                        if ($user->getRole() === 'user') {
+                            echo '<a href="/posts/create" class="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Create post</a>';
+                            echo '<button class="help-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded text-sm font-medium">Help</button>';
+                        }
+                    }
                 }
                 ?>
                 <?php

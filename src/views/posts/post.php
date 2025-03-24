@@ -51,15 +51,22 @@
     $postController = new PostController();
     $moduleController = new ModuleController();
     $postCommentController = new PostCommentController();
+    $currentUser = SessionManager::get('user');
+    if ($currentUser) {
+        if ($currentUser->getStatus() === "banned") {
+            SessionManager::set('error', 'You are banned from the platform');
+            header("Location: /403");
+            exit();
+        }
+    }
     $user = null;
-    if (isset($_SESSION['user_id'])) {
-        $userId = $_SESSION['user_id'];
+    if (SessionManager::get('user_id')) {
+        $userId = SessionManager::get('user_id');
         $user = $userController->getUser($userId);
         $user_logged_in = true;
         $user_name = $user->getUsername();
         $user_avatar = $user->getProfileImage() ?? '';
         $user_email = $user->getEmail();
-        $currentUser = SessionManager::get('user');
     } else {
         $user_logged_in = false;
         $user_name = '';
@@ -71,11 +78,7 @@
     } else {
         $userObj = null;
     }
-    if ($currentUser->getStatus() === "banned") {
-        SessionManager::set('error', 'You are banned from the platform');
-        header("Location: /403");
-        exit();
-    }
+
     $showControls = false;
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $userObj);
     ?>

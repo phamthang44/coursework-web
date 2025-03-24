@@ -56,7 +56,7 @@
     ?>
     <div class="container mx-auto py-6 w-4/5 rounded-lg">
         <h2 class="text-2xl text-red-500 font-bold mb-4">Edit post</h2>
-        <form action="/posts/update" method="POST" enctype="multipart/form-data" id="form-upload-post" class="space-y-4">
+        <form action="/posts/update/<?= $post->getPostId() ?>" method="POST" enctype="multipart/form-data" id="form-upload-post" class="space-y-4">
             <!-- Title Field (Optional) -->
             <div class="form-group py-4 mb-4">
                 <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title:</label>
@@ -111,7 +111,7 @@
                         <img id="preview" src="" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300 hidden" />
                     <?php } ?>
                 </div>
-                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create new post">
+                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Update post">
             </div>
         </form>
     </div>
