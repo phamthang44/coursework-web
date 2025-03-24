@@ -94,9 +94,9 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                 <div class="flex gap-3 mt-4 mb-4">
                     <!-- Author and dates -->
                     <?php if ($authorObj->getProfileImage() != null): ?>
-                        <a href="<?php echo $profileLink; ?>"><img src="<?php echo $authorObj->getProfileImage(); ?>" alt="<?php echo $author; ?>" class="w-12 h-12 rounded-full object-cover"></a>
+                        <a href="<?php echo removeVietnameseAccents($profileLink); ?>"><img src="<?php echo $authorObj->getProfileImage(); ?>" alt="<?php echo $author; ?>" class="w-12 h-12 rounded-full object-cover"></a>
                     <?php else: ?>
-                        <a href="<?php echo $profileLink; ?>" class="block w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
+                        <a href="<?php echo removeVietnameseAccents($profileLink); ?>" class="block w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
                             <p class="text-lg"><?php echo strtoupper(substr($author, 0, 1)); ?></p>
                         </a>
                     <?php endif; ?>

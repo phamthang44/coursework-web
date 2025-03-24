@@ -21,9 +21,9 @@ class AuthController extends BaseController
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $user = $this->auth->login($email, $password);
+            $loginSuccess = $this->auth->login($email, $password);
 
-            if ($user) {
+            if ($loginSuccess) {
                 if (SessionManager::get('role') === 'admin') {
                     header("Location: /admin/dashboard");
                     exit();
@@ -36,12 +36,7 @@ class AuthController extends BaseController
                 exit();
             }
         } else {
-            $file = dirname(__DIR__) . "/views/users/login.php";
-            if (file_exists($file)) {
-                include($file);
-            } else {
-                die("File login.php not found!");
-            }
+            require_once __DIR__ . "/../views/users/login.php";
         }
     }
 

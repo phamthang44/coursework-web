@@ -8,7 +8,7 @@ interface UserDAOI
     public function getUserByEmail($email);
     public function getUserByUsername($username);
     public function createUser($username, $lastName, $firstName, $email, $password, $profileImage, $bio, $dob);
-    public function checkUser($username, $password);
+    public function checkUser($username);
     public function checkRoleUser($userId);
     public function updateUsername($userId, $username);
     public function updatePassword($userId, $password);

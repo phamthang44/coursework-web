@@ -141,7 +141,7 @@
             <div class="md:w-2/3">
                 <div class="bg-white dark:bg-darkmode rounded-lg shadow-md mb-6">
                     <div class="flex border-b dark:border-gray-700 overflow-x-auto">
-                        <a href="/admin/profile/<?= $profileLink ?>" class="px-6 py-3 font-medium border-b-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark">Profile</a>
+                        <a href="/admin/profile/<?= removeVietnameseAccents($profileLink) ?>" class="px-6 py-3 font-medium border-b-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark">Profile</a>
                     </div>
 
                     <div class="p-4">

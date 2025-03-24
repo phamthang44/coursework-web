@@ -17,8 +17,8 @@ class Auth
     public function login($email, $password)
     {
 
-        $user = $this->userDAO->checkUser($email, $password);
-        if ($user) {
+        $user = $this->userDAO->checkUser($email);
+        if ($user && password_verify($password, $user->getPassword())) {
             SessionManager::set('user_id', $user->getUserId());
             SessionManager::set('user', $user);
             SessionManager::set('role', $user->getRole());

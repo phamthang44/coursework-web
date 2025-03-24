@@ -61,13 +61,12 @@ class UserDAOImpl implements UserDAOI
         $stmt->execute();
     }
 
-    public function checkUser($email, $password)
+    public function checkUser($email)
     {  //check account validate
         $conn = $this->pdo;
-        $sql = "SELECT * FROM Users WHERE email = :email AND password = :password";
+        $sql = "SELECT * FROM Users WHERE email = :email";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password);
         return $this->extracted($stmt);
     }
 

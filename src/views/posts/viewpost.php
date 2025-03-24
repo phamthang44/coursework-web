@@ -108,9 +108,9 @@
                     <!-- Author Avatar -->
                     <div class="flex-shrink-0 mr-4">
                         <?php if ($authorImage) { ?>
-                            <a href="<?php echo $profileLinkAuthor; ?>"><img src="/<?php echo $authorImage; ?>" alt="<?php echo $authorUserName; ?>" class="w-12 h-12 rounded-full object-cover"></a>
+                            <a href="<?php echo removeVietnameseAccents($profileLinkAuthor); ?>"><img src="/<?php echo $authorImage; ?>" alt="<?php echo $authorUserName; ?>" class="w-12 h-12 rounded-full object-cover"></a>
                         <?php } else { ?>
-                            <a href="<?php echo $profileLinkAuthor; ?>" class="block w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
+                            <a href="<?php echo removeVietnameseAccents($profileLinkAuthor); ?>" class="block w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300">
                                 <p class="text-lg"><?php echo strtoupper(substr($authorUserName, 0, 1)); ?></p>
                             </a>
                         <?php } ?>
@@ -184,7 +184,7 @@
                 <!-- Comment Form -->
                 <form class="flex space-x-4 mb-6" action="/comment" method="POST">
                     <input type="hidden" name="postId" value="<?= $postId ?>">
-                    <a href="<?= $profileLink ?>" class="h-fit w-fit flex-shrink-0">
+                    <a href="<?= removeVietnameseAccents($profileLink) ?>" class="h-fit w-fit flex-shrink-0">
                         <?php if ($currentUser->getProfileImage()) { ?>
                             <img class="h-10 w-10 rounded-full" src="/<?= $currentUser->getProfileImage(); ?>" alt="Your avatar">
                         <?php } else { ?>

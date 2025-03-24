@@ -93,7 +93,8 @@ class UserController extends BaseController
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $firstName = trim(htmlspecialchars($_POST['firstName'], ENT_QUOTES, 'UTF-8'));
                 $lastName = trim(htmlspecialchars($_POST['lastName'], ENT_QUOTES, 'UTF-8'));
-                $password = trim(htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8'));
+                $password = trim($_POST['password']);
+                $hashedPassword = password_hash($password, PASSWORD_ARGON2ID);
                 $username = strtolower(str_replace(' ', '', trim($lastName))) . '.' . strtolower(str_replace(' ', '', trim($firstName)));
 
                 $existingUserName = $this->userDAO->getUserByUsername($username);
@@ -107,7 +108,7 @@ class UserController extends BaseController
                     throw new Exception("Email already exists");
                 }
 
-                $this->userDAO->createUser($username, $lastName, $firstName, $email, $password, NULL, NULL, NULL);
+                $this->userDAO->createUser($username, $lastName, $firstName, $email, $hashedPassword, NULL, NULL, NULL);
                 header("Location: /login");
             } else {
                 $file = dirname(__DIR__) . "/views/users/signup.php";

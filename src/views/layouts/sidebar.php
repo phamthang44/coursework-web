@@ -38,7 +38,7 @@
                     <i class="fas fa-cog mr-3 text-lg"></i>
                     <span>System Settings</span>
                 </div>
-                <a href="<?= $adminProfileLink ?>" class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                <a href="<?= removeVietnameseAccents($adminProfileLink) ?>" class="px-5 py-3 flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                     <i class="fas fa-user-shield mr-3 text-lg"></i>
                     <span>Admin Account</span>
                 </a>
