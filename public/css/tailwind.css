@@ -912,6 +912,10 @@ video {
   margin-right: 100px;
 }
 
+.ml-\[10px\] {
+  margin-left: 10px;
+}
+
 .line-clamp-3 {
   overflow: hidden;
   display: -webkit-box;
@@ -1047,6 +1051,14 @@ video {
   height: 100vh;
 }
 
+.h-\[10px\] {
+  height: 10px;
+}
+
+.h-\[20px\] {
+  height: 20px;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -1142,6 +1154,18 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.w-\[40px\] {
+  width: 40px;
+}
+
+.w-\[50px\] {
+  width: 50px;
 }
 
 .min-w-full {

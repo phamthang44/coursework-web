@@ -105,7 +105,7 @@
                 <div id="preview-container" class="absolute -top-[110px] right-[400px] mt-4 pt-4">
                     <?php if ($postImage) { ?>
                         <h3 class="preview-label font-medium text-gray-700 dark:text-white">Preview Image:</h3>
-                        <img id="preview" src="/' . $postImage . '" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />
+                        <img id="preview" src="/<?php echo $postImage; ?>" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300" />
                     <?php } else { ?>
                         <h3 class="preview-label font-medium text-gray-700 dark:text-white hidden">Preview Image:</h3>
                         <img id="preview" src="" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300 hidden" />

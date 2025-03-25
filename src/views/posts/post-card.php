@@ -34,6 +34,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     $updatedAtFormatted = date('M d, Y', strtotime($updatedAt));
 
     // Get author if available (assuming post has author method)
+
     $author = method_exists($post, 'getUserId') ? $postController->getUserName($post->getUserId()) : 'Unknown Author';
     $authorObj = $postController->getUser($post->getUserId());
 
@@ -101,7 +102,12 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         </a>
                     <?php endif; ?>
                     <div class="flex gap-1 text-xs flex-col">
-                        <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span></p>
+                        <?php if ($authorObj->getRole() === 'admin') { ?>
+                            <p class="flex items-center justify-center"><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span><span class="ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2">Admin</span></p>
+                        <?php } else { ?>
+                            <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span></p>
+                        <?php } ?>
+
                         <div class="flex flex-row gap-3">
                             <p><?= $createdAtFormatted ?></p>
                             <?php if ($createdAtFormatted !== $updatedAtFormatted): ?>
