@@ -18,6 +18,7 @@
     use controllers\UserController;
 
     Template::header();
+    Template::sidebar();
     echo render_quora_header(true, $currentUser->getUsername(), $currentUser->getProfileImage(), $currentUser->getEmail(), $currentUser);
     $currentUser = SessionManager::get('user');
     if ($currentUser->getRole() !== 'admin') {
@@ -27,6 +28,7 @@
     $userController = new UserController();
     ?>
     <div class="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
+        <?php echo render_sidebar($dashboardLink, $adminProfileLink); ?>
         <?php if (!empty($messagesFromUsers)) { ?>
             <?php foreach ($messagesFromUsers as $message) {
                 $messageTitle = $message->getTitle();

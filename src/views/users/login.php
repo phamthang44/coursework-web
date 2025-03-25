@@ -134,7 +134,7 @@
             box-shadow: 0 0 0 3px rgba(45, 111, 247, 0.2);
         }
 
-        .remember-forgot {
+        .remember {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -320,13 +320,11 @@
                     <span class="form-message"></span>
                 </div>
 
-                <div class="remember-forgot">
+                <div class="remember">
                     <div class="remember-me">
-                        <input type="checkbox" id="remember">
+                        <input type="checkbox" id="remember" name="rememberme">
                         <label for="remember">Remember me</label>
                     </div>
-
-                    <a href="#!" class="forgot-password">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="login-button">Log In</button>

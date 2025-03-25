@@ -20,7 +20,6 @@
 
     Template::header();
     Template::footer();
-    Template::sidebar();
 
     $userController = new UserController();
     $moduleController = new ModuleController();
@@ -50,8 +49,8 @@
     echo render_quora_header($user_logged_in, $userName, $userAvatar, $userEmail, $currentUser);
     ?>
     <!-- Main Content -->
-
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
+
         <!-- Modules Tab Panel -->
         <h1 class="text-xl font-bold text-gray-800 dark:text-white">Module Management</h1>
         <div class="bg-white dark:bg-darkmode rounded-lg shadow p-6">

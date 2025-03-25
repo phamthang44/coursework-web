@@ -17,6 +17,7 @@ use controllers\UserController;
 use controllers\ModuleController;
 
 Template::header();
+Template::sidebar();
 
 $currentUser = SessionManager::get('user');
 if ($currentUser && $currentUser->getRole() !== 'admin') {
@@ -38,6 +39,7 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
     <?php echo render_quora_header($user_logged_in, $userName, $currentUserProfileImage, $email, $currentUser) ?>
     <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <div class="container mx-auto px-4 py-8">
+
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">User Management</h1>
         </div>

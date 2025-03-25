@@ -896,6 +896,22 @@ video {
   margin-top: 49px;
 }
 
+.ml-8 {
+  margin-left: 2rem;
+}
+
+.mr-8 {
+  margin-right: 2rem;
+}
+
+.ml-\[100px\] {
+  margin-left: 100px;
+}
+
+.mr-\[100px\] {
+  margin-right: 100px;
+}
+
 .line-clamp-3 {
   overflow: hidden;
   display: -webkit-box;
@@ -1166,6 +1182,10 @@ video {
 
 .max-w-md {
   max-width: 28rem;
+}
+
+.max-w-5xl {
+  max-width: 64rem;
 }
 
 .flex-1 {

@@ -506,7 +506,6 @@ class PostController extends BaseController
         $postsFound = $this->getResultSearch($search);
 
         if (count($postsFound) === 0) {
-            SessionManager::set('error', "No posts found");
             echo json_encode(["status" => false, "message" => "No posts found"]);
             return;
         }

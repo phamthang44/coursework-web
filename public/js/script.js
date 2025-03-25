@@ -315,8 +315,9 @@ class SearchUI {
       .map(
         (post) =>
           `<div class="p-2 border-b cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-            <a href="/post/view/${post.postId}" class="block">${post.title}</a>
+            <a href="/post/view/${post.postId}" class="block">${post.title}
             <p class="text-gray-500 text-sm line-clamp-3">${post.content}</p>
+            </a>
           </div>`
       )
       .join("");
