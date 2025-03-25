@@ -7,6 +7,7 @@ use utils\Router;
 use routes\WebRoutes;
 use utils\SessionManager;
 
+
 SessionManager::start(); // Start session
 
 $router = new Router();

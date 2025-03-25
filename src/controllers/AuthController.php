@@ -17,13 +17,28 @@ class AuthController extends BaseController
 
     public function login()
     {
+        if (isset($_COOKIE['rememberme'])) {
+            $token = $_COOKIE['rememberme'];
+            $user = $this->auth->checkToken($token);
+
+            if ($user) {
+                SessionManager::set('user_id', $user->getUserId());
+                SessionManager::set('user', $user);
+                SessionManager::set('role', $user->getRole());
+                header("Location: /quorae");
+                exit();
+            }
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $password = $_POST['password'];
-
+            $rememberMe = $_POST['rememberme'] ?? null;
             $loginSuccess = $this->auth->login($email, $password);
 
             if ($loginSuccess) {
+                if (isset($rememberMe) && $rememberMe === 'yes') {
+                    $this->auth->rememberMe();
+                }
                 if (SessionManager::get('role') === 'admin') {
                     header("Location: /admin/dashboard");
                     exit();
@@ -70,18 +85,5 @@ class AuthController extends BaseController
     public function forbidden()
     {
         require_once __DIR__ . '/../views/errors/403.php';
-    }
-
-    public function forgotPassword()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $this->auth->login($email, $password);
-            header("Location: /login");
-            exit();
-        } else {
-            require_once __DIR__ . "/../views/users/forgotpassword.php";
-        }
     }
 }

@@ -42,6 +42,7 @@
     use utils\SessionManager;
     use utils\Template;
     use controllers\PostCommentController;
+    use dal\Auth;
 
     Template::header();
     Template::footer();

@@ -368,4 +368,29 @@ class UserDAOImpl implements UserDAOI
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $this->convertRowsToUsers($rows);
     }
+
+    public function setRememberMeToken($userId, $token)
+    {
+        $sql = "UPDATE Users SET rememberme = :token WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':userId', $userId);
+        return $stmt->execute();
+    }
+
+    public function checkRememberMeToken($token)
+    {
+        $sql = "SELECT * FROM Users WHERE rememberme = :token";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':token', $token);
+        return $this->extracted($stmt);
+    }
+
+    public function deleteRememberMeToken($userId)
+    {
+        $sql = "UPDATE Users SET rememberme = NULL WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':userId', $userId);
+        return $stmt->execute();
+    }
 }

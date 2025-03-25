@@ -594,7 +594,7 @@ if (helpBtns) {
       checkExistingModal();
       checkExistingDropdown(e);
       helpModal.openModal(`<div class="space-y-4 other-modal">
-      <h2 class="text-black dark:text-white text-2xl font-medium">Terms</h2>
+      <h2 class="text-black dark:text-white text-2xl font-medium">Help</h2>
       <ul class="list-decimal pl-4">
         <li class="text-black dark:text-white mt-2">1. <span class="font-semibold text-yellow-600">How to post:</span> Click “Create Post,” enter your content, and submit. Your post will be reviewed before going live.</li>
         <li class="text-black dark:text-white mt-2">2. <span class="font-semibold text-yellow-600">How to comment:</span> Pick a post, type your thoughts in the comment box, and hit send.</li>

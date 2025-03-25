@@ -23,12 +23,9 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
             <div class="border-b border-gray-200">
                 <div class="container mx-auto px-4 py-6">
                     <div class="max-w-2xl mx-auto text-center">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2 dark:text-gray-300">Stay up to date with the Quora community</h3>
-                        <p class="text-gray-600 mb-4 text-sm dark:text-gray-300">Get weekly insights and answers to your most curious questions</p>
-                        <div class="flex flex-col sm:flex-row gap-2 justify-center">
-                            <input type="email" placeholder="Your email address" class="px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-red-400 text-sm dark:bg-darkmode dark:text-gray-300">
-                            <button class="bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 text-sm font-medium">Subscribe</button>
-                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2 dark:text-gray-300">Thank you for being part of Quora!</h3>
+                        <p class="text-gray-600 mb-4 text-sm dark:text-gray-300">Wishing you meaningful and inspiring answers.</p>
+
                     </div>
                 </div>
             </div>

@@ -322,7 +322,7 @@
 
                 <div class="remember">
                     <div class="remember-me">
-                        <input type="checkbox" id="remember" name="rememberme">
+                        <input type="checkbox" id="remember" name="rememberme" value="yes">
                         <label for="remember">Remember me</label>
                     </div>
                 </div>
