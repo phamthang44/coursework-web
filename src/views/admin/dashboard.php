@@ -176,15 +176,6 @@
 
                     <div class="flex justify-center p-4">
                         <div class="flex items-center justify-center space-x-2">
-                            <!-- <button class="w-9 h-9 flex items-center justify-center rounded mx-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="w-9 h-9 flex items-center justify-center rounded mx-1 bg-primary-light dark:bg-primary-dark text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800">1</button>
-                            <button class="w-9 h-9 flex items-center justify-center rounded mx-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">2</button>
-                            <button class="w-9 h-9 flex items-center justify-center rounded mx-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">3</button>
-                            <button class="w-9 h-9 flex items-center justify-center rounded mx-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                <i class="fas fa-chevron-right"></i>
-                            </button> -->
                             <!-- First Button -->
                             <?php if ($currentPage > 1): ?>
                                 <a href="?page=1"
@@ -251,22 +242,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Additional views (hidden by default) -->
-            <!-- Post Management View -->
-            <div id="post-management" class="hidden">
-                <!-- Content similar to dashboard but for post management -->
-            </div>
-
-            <!-- User Management View -->
-            <div id="user-management" class="hidden">
-                <!-- Content similar to dashboard but for user management -->
-            </div>
-
-            <!-- Module Management View -->
-            <div id="module-management" class="hidden">
-                <!-- Content similar to dashboard but for module management -->
             </div>
         </div>
     </div>

@@ -86,10 +86,6 @@
 
             <div class="mt-10 text-center">
                 <p class="text-[#777] text-sm mb-4 relative before:content-[''] before:absolute before:w-[30%] before:h-[1px] before:bg-[#e1e4e8] before:top-1/2 before:left-0 after:content-[''] after:absolute after:w-[30%] after:h-[1px] after:bg-[#e1e4e8] after:top-1/2 after:right-0"></p>
-
-                <div class="flex justify-center gap-4">
-
-                </div>
             </div>
 
             <div class="text-center mt-6">

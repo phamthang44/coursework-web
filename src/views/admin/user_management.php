@@ -151,10 +151,10 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
                     </div>
                     <div>
                         <?php
-                        $currentPage = max(1, intval($currentPage)); // Đảm bảo page >= 1
-                        $limit = 10; // Số dòng trên mỗi trang
-                        $totalUsers = count($users); // Tổng số bản ghi
-                        $totalPages = ceil($totalUsers / $limit); // Tổng số trang
+                        $currentPage = max(1, intval($currentPage)); // ensure page >= 1
+                        $limit = 10; // number of rows per page
+                        $totalUsers = count($users); // total records
+                        $totalPages = ceil($totalUsers / $limit); // Total pages
 
                         $prevPage = max(1, $currentPage - 1);
                         $nextPage = min($totalPages, $currentPage + 1);

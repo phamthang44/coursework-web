@@ -53,7 +53,7 @@ function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $po
                             <?php } ?>
                         </button>
 
-                        <!-- Chỉ reply vào cấp 1 -->
+                        <!-- only reply to level 1 -->
                         <?php if ($level === 0 || ($level === 1 && $parentId === $newRootParentId)): ?>
                             <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 reply-button" data-comment-id="<?= $newRootParentId ?>">
                                 Reply

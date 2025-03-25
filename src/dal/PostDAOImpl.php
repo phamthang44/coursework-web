@@ -162,37 +162,11 @@ class PostDAOImpl implements PostDAOI
     public function increaseVoteScore($postId)
     {
         // TODO: Implement increaseVoteScore() method.
-        // $sql = "SELECT vote_score FROM Posts WHERE post_id = :postId";
-        // $stmt = $this->pdo->prepare($sql);
-        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
-        // $stmt->execute();
-        // $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        // $currentVoteScore = $row['vote_score'];
-        // $newVoteScore = $currentVoteScore + 1;
-
-        // $sql = "UPDATE Posts SET vote_score = :voteScore WHERE post_id = :postId";
-        // $stmt = $this->pdo->prepare($sql);
-        // $stmt->bindParam(":voteScore", $newVoteScore, PDO::PARAM_INT);
-        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
-        // $stmt->execute();
     }
 
     public function decreaseVoteScore($postId)
     {
         // TODO: Implement decreaseVoteScore() method.
-        // $sql = "SELECT vote_score FROM Posts WHERE post_id = :postId";
-        // $stmt = $this->pdo->prepare($sql);
-        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
-        // $stmt->execute();
-        // $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        // $currentVoteScore = $row['vote_score'];
-        // $newVoteScore = $currentVoteScore - 1;
-
-        // $sql = "UPDATE Posts SET vote_score = :voteScore WHERE post_id = :postId";
-        // $stmt = $this->pdo->prepare($sql);
-        // $stmt->bindParam(":voteScore", $newVoteScore, PDO::PARAM_INT);
-        // $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
-        // $stmt->execute();
     }
 
     /**
@@ -277,40 +251,31 @@ class PostDAOImpl implements PostDAOI
         $posts = [];
         return $this->convertResultRowToPostObj($rows, $posts);
     }
+    private function createSQLMultiLikeQuery($query)
+    {
+        $keywords = explode(' ', trim($query));
+        $conditions = array_map(fn($word) => "(title LIKE ? OR content LIKE ?)", $keywords);
 
+        $sql = "SELECT * FROM posts WHERE " . implode(" AND ", $conditions) . "LIMIT 5;";
+
+        $params = [];
+        foreach ($keywords as $word) {
+            $params[] = "%$word%";
+            $params[] = "%$word%";
+        }
+
+        return [$sql, $params];
+    }
     public function searchPosts($search)
     {
-        // if (empty(trim($search))) {
-        //     return [];
-        // }
-
-        // $searchTerm = "%" . trim($search) . "%";
-        // $sql = "SELECT * FROM Posts WHERE LOWER(title) LIKE LOWER(:search) OR LOWER(content) LIKE LOWER(:search) LIMIT 5";
-        // $stmt = $this->pdo->prepare($sql);
-        // $stmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
-        // $stmt->execute();
         if (empty(trim($search))) {
-            return []; // Nếu input rỗng thì trả về mảng trống
+            return []; // 
         }
 
-        $keywords = explode(" ", trim($search)); // Tách từ khóa thành mảng
-        $sqlConditions = [];
-        $params = [];
-
-        foreach ($keywords as $index => $keyword) {
-            $paramKey = ":search{$index}";
-            $sqlConditions[] = "(LOWER(title) LIKE LOWER($paramKey) OR LOWER(content) LIKE LOWER($paramKey))";
-            $params[$paramKey] = "%$keyword%";
-        }
-
-        $sql = "SELECT * FROM Posts WHERE " . implode(" OR ", $sqlConditions) . " LIMIT 5";
+        list($sql, $params) = $this->createSQLMultiLikeQuery($search);
+        // $sql = "SELECT * FROM Posts WHERE content LIKE ? AND title LIKE ? LIMIT 5";
         $stmt = $this->pdo->prepare($sql);
-
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value, PDO::PARAM_STR);
-        }
-
-        $stmt->execute();
+        $stmt->execute($params);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $posts = [];
         return $this->convertResultRowToPostObj($rows, $posts);

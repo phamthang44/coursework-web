@@ -61,6 +61,7 @@ class WebRoutes
         $router->addRoute('POST', '/users/update-bio/{id}', 'UserController', 'updateBio');
         $router->addroute('POST', '/api/user/top-contributor', 'UserController', 'getUserTopContributor');
         $router->addRoute('GET', '/api/user/moderators', 'UserController', 'getModerators');
+        $router->addRoute('GET', '/forgotpassword', 'AuthController', 'forgotPassword');
 
         // Admin routes
         $router->addRoute('GET', '/admin/dashboard', 'AdminController', 'dashboard');

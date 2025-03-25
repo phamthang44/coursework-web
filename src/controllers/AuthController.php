@@ -71,4 +71,17 @@ class AuthController extends BaseController
     {
         require_once __DIR__ . '/../views/errors/403.php';
     }
+
+    public function forgotPassword()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $this->auth->login($email, $password);
+            header("Location: /login");
+            exit();
+        } else {
+            require_once __DIR__ . "/../views/users/forgotpassword.php";
+        }
+    }
 }

@@ -32,9 +32,20 @@ class Router
      */
     private function createPattern($path)
     {
-        // Replace {id} with a regex pattern to capture any alphanumeric value
-        $pattern = preg_replace('/\{([a-zA-Z0-9_-]+)\}/', '([a-zA-Z0-9_-]+)', $path);
-        return '#^' . $pattern . '$#';
+        // $pattern = preg_replace('/\{([a-zA-Z0-9_-]+)\}/', '(.+)', $path);
+        // return '#^' . $pattern . '$#';
+        // Process `{firstname-lastname-id}` with format "firstname-lastname-id"
+        if (strpos($path, '{firstname-lastname-id}') !== false) {
+            $path = str_replace('{firstname-lastname-id}', '([a-zA-Z]+-[a-zA-Z]+-[0-9]+)', $path);
+        }
+
+        // Handle `{id}` (allows both numbers and letters)
+        $path = preg_replace('/\{id\}/', '([a-zA-Z0-9_-]+)', $path);
+        $path = preg_replace('/\{moduleId\}/', '([a-zA-Z0-9_-]+)', $path);
+        // Handle `{query}` (allow all characters except "/")
+        $path = preg_replace('/\{query\}/', '([^/]+)', $path);
+
+        return '#^' . $path . '$#u'; // 'u' to support UTF-8
     }
 
     /**

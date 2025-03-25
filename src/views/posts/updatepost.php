@@ -160,13 +160,13 @@
         document.getElementById("content").addEventListener("input", function() {
             const text = this.value.trim();
             const wordCount = text ? text.split(/\s+/).length : 0;
-            document.getElementById("wordCount").textContent = wordCount; // Cập nhật ngay
+            document.getElementById("wordCount").textContent = wordCount; // update immediately
         });
 
         document.getElementById("title").addEventListener("input", function() {
             const text = this.value.trim();
             const characterCount = text ? text.length : 0;
-            document.getElementById("characterCount").textContent = characterCount; // Cập nhật ngay
+            document.getElementById("characterCount").textContent = characterCount; // update immediately
         });
     </script>
 </body>

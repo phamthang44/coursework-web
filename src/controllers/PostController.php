@@ -23,7 +23,7 @@ class PostController extends BaseController
     private $postCommentController;
     function __construct()
     {
-        parent::__construct(['/posts', '/quorae', '/login', '/404', '/403', '/signup', '/api/vote/post']);
+        parent::__construct(['/posts', '/quorae', '/login', '/404', '/403', '/signup', '/api/vote/post', '/api/post/top-contributors']);
         $this->postDAO = new PostDAOImpl();
         $this->moduleDAO = new ModuleDAOImpl();
         $this->postAssetDAO = new PostAssetDAOImpl();
@@ -491,6 +491,7 @@ class PostController extends BaseController
     public function search($query)
     {
         header("Content-Type: application/json; charset=UTF-8");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             echo json_encode(["status" => false, "message" => "Invalid request"]);
             return;
@@ -499,7 +500,10 @@ class PostController extends BaseController
             echo json_encode(["status" => false, "message" => "No search query provided"]);
             return;
         }
-        $postsFound = $this->getResultSearch($query);
+
+        $search = rawurldecode($query); //"test long content"
+        error_log("Search query: " . $search);
+        $postsFound = $this->getResultSearch($search);
 
         if (count($postsFound) === 0) {
             SessionManager::set('error', "No posts found");

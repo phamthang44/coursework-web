@@ -454,12 +454,12 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       const commentId = this.getAttribute("data-comment-id");
 
-      // Ẩn tất cả form trước khi mở đúng form
+      // hide all reply forms
       document.querySelectorAll(".reply-form").forEach((form) => {
         form.classList.add("hidden");
       });
 
-      // Chỉ hiển thị form tương ứng với comment đang được bấm
+      // only show form of clicked comment
       const replyForm = document.querySelector(
         `.reply-form[data-comment-id="${commentId}"]`
       );
@@ -639,6 +639,16 @@ if (topContributors) {
       });
 
       getUsersInfo(userIds).then((data) => {
+        if (!data.users) {
+          const errorMsgModal = new Modal();
+          checkExistingModal();
+          errorMsgModal.openModal(`<div class="space-y-4 error-login-modal">
+          <h2 class="text-red-500 text-2xl font-medium">Error !</h2>
+          <p class="text-black dark:text-white font-medium">You need to login to see Top Contributors.</p>
+          <a href="/login" class="flex items-center justify-center text-white block w-[100px] h-[40px] rounded-lg font-medium bg-red-600">Login</a>
+          </div>
+          `);
+        }
         let users = data.users.map((user) => {
           return user;
         });

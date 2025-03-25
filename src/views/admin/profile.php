@@ -351,10 +351,6 @@
         </div>
     </div>
 
-    <!-- Edit Profile Modal -->
-    <!-- <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 flex items-center justify-center hidden z-50" id="editProfileModal">
-
-    </div> -->
     <script src="/js/script.js"></script>
     <script src="/js/Validator.js"></script>
     <script>

@@ -25,7 +25,7 @@ class UserController extends BaseController
     private $postCommentDAO;
     public function __construct()
     {
-        parent::__construct(['/posts', '/403', '/404', '/signup', '/login', '/quorae']);
+        parent::__construct(['/posts', '/403', '/404', '/signup', '/login', '/quorae', '/api/user/top-contributor', '/api/user/moderators', '/api/post/top-contributors']);
         $this->userDAO = new UserDAOImpl();
         $this->userMsgDAO = new MessageFromUserDAOImpl();
         $this->postVoteDAO = new PostVoteDAO();
@@ -396,7 +396,7 @@ class UserController extends BaseController
     }
     public function manageUsers()
     {
-        $this->checkPermission('admin'); // Chỉ admin mới truy cập được
+        $this->checkPermission('admin'); // only admin can access this page
 
         //$users = $this->userDAO->getAllUsers();
         require_once __DIR__ . '/../views/admin/manage_users.php';
@@ -410,6 +410,10 @@ class UserController extends BaseController
     public function getUserTopContributor()
     {
         header("Content-Type: application/json");
+        // if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        //     header("Location: /404");
+        //     exit();
+        // }
         $data = json_decode(file_get_contents('php://input'), true);
         if (!isset($data['user_ids']) || !is_array($data['user_ids'])) {
             echo json_encode(["success" => false, "message" => "Invalid request: user_ids is required and must be an array"]);
@@ -436,16 +440,22 @@ class UserController extends BaseController
                 ];
             }
         }
+        if (empty($users)) {
+            echo json_encode(["success" => false, "message" => "No user found"]);
+            exit();
+        }
         echo json_encode(["success" => true, "users" => $users]);
         exit();
     }
 
     public function getModerators()
     {
+        header("Content-Type: application/json");
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             header("Location: /404");
             exit();
         }
+
         $moderators = $this->userDAO->getModerators();
         $users = [];
         foreach ($moderators as $moderator) {
