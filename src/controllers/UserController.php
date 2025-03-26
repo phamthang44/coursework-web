@@ -103,6 +103,11 @@ class UserController extends BaseController
                     $username = $username . "." . ($lastId + 1);
                 }
                 $email = trim($_POST['email']);
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    SessionManager::set('error', 'Invalid email format');
+                    header("Location: /signup");
+                    exit();
+                }
 
                 if ($this->checkExistedEmail($email)) {
                     throw new Exception("Email already exists");

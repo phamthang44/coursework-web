@@ -236,13 +236,13 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                     <div class="relative">
                         <button id="avatar-menu-button" class="flex items-center space-x-2 focus:outline-none">
                             <?php if ($user_avatar): ?>
-                                <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-8 h-8 rounded-full cursor-pointer avatar-user object-cover">
+                                <img src="/<?php echo $user_avatar; ?>" alt="<?php echo htmlspecialchars($user_name); ?>" class="w-8 h-8 rounded-full cursor-pointer avatar-user object-cover">
                             <?php else: ?>
                                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
-                                    <?php echo strtoupper(substr($user_name, 0, 1)); ?>
+                                    <?php echo strtoupper(substr(htmlspecialchars($user_name), 0, 1)); ?>
                                 </div>
                             <?php endif; ?>
-                            <span class="hidden md:inline text-sm dark:text-gray-300"><?php echo $user_name; ?></span>
+                            <span class="hidden md:inline text-sm dark:text-gray-300"><?php echo htmlspecialchars($user_name); ?></span>
                             <!-- Dropdown arrow -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -255,14 +255,14 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                             <div class="px-2 py-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center">
                                     <?php if ($user_avatar): ?>
-                                        <img src="/<?php echo $user_avatar; ?>" alt="<?php echo $user_name; ?>" class="w-12 h-12 rounded-full mr-3 avatar-user object-cover">
+                                        <img src="/<?php echo $user_avatar; ?>" alt="<?php echo htmlspecialchars($user_name); ?>" class="w-12 h-12 rounded-full mr-3 avatar-user object-cover">
                                     <?php else: ?>
                                         <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 mr-3">
-                                            <?php echo strtoupper(substr($user_name, 0, 1)); ?>
+                                            <?php echo strtoupper(substr(htmlspecialchars($user_name), 0, 1)); ?>
                                         </div>
                                     <?php endif; ?>
                                     <div>
-                                        <h3 class="font-semibold text-gray-800 dark:text-white"><?php echo $user_name; ?></h3>
+                                        <h3 class="font-semibold text-gray-800 dark:text-white"><?php echo htmlspecialchars($user_name); ?></h3>
                                         <p class="text-sm text-gray-500 dark:text-gray-400"><?php echo $user_email; ?></p>
                                     </div>
                                 </div>

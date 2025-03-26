@@ -502,7 +502,8 @@ class PostController extends BaseController
         }
 
         $search = rawurldecode($query); //"test long content"
-        error_log("Search query: " . $search);
+        $search = htmlspecialchars(trim($search), ENT_QUOTES, 'UTF-8');
+
         $postsFound = $this->getResultSearch($search);
 
         if (count($postsFound) === 0) {
