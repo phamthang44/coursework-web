@@ -49,7 +49,7 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex-1">
                     <div class="relative">
-                        <input type="text" placeholder="Search users..." class="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-darkmode dark:bg-darkmode dark:text-gray-200 focus:outline-none focus:border-blue-500">
+                        <input type="text" placeholder="Search users..." class="search-user w-full pl-10 pr-4 py-2 rounded-lg border dark:border-darkmode dark:bg-darkmode dark:text-gray-200 focus:outline-none focus:border-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                         </svg>
@@ -71,7 +71,7 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700 search-results-users">
                     <?php foreach ($users as $user) : ?>
                         <?php
                         $userProfileImage = $user->getProfileImage() ? $user->getProfileImage() : '';

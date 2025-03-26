@@ -393,4 +393,31 @@ class UserDAOImpl implements UserDAOI
         $stmt->bindParam(':userId', $userId);
         return $stmt->execute();
     }
+    private function createSQLMultiLikeQuery($query)
+    {
+        $keywords = explode(' ', trim($query));
+        $conditions = array_map(fn($word) => "(username LIKE ?)", $keywords);
+
+        $sql = "SELECT * FROM users WHERE " . implode(" AND ", $conditions) . "LIMIT 5;";
+
+        $params = [];
+        foreach ($keywords as $word) {
+            $params[] = "%$word%";
+        }
+
+        return [$sql, $params];
+    }
+    public function search($search)
+    {
+        if (empty(trim($search))) {
+            return []; // 
+        }
+
+        list($sql, $params) = $this->createSQLMultiLikeQuery($search);
+        // $sql = "SELECT * FROM Posts WHERE content LIKE ? AND title LIKE ? LIMIT 5";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->convertRowsToUsers($rows);
+    }
 }

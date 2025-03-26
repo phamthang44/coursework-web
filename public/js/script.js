@@ -748,3 +748,121 @@ if (moderators) {
     });
   });
 }
+
+// ------------------------------ search user feature ---------------------------------------
+const searchUser = document.querySelector(".search-user");
+
+if (searchUser) {
+  searchUser.addEventListener("input", async function () {
+    const searchTerm = this.value.trim();
+    if (searchTerm.length > 0) {
+      const result = await getResultUsers(searchTerm);
+      if (result.users) {
+        if (Array.isArray(result.users)) {
+          const searchResults = document.querySelector(".search-results-users");
+          console.log(searchResults);
+          if (searchResults)
+            searchResults.innerHTML = result.users
+              .map(
+                (user) => `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    ${
+                                      user.profileImage
+                                        ? `<img src="/${user.profileImage}" alt="Avatar" class="w-10 h-10 rounded-full object-cover"/>`
+                                        : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
+                                        ${user.username.charAt(0).toUpperCase()}
+                                      </div>`
+                                    }
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">${
+                                          user.firstName
+                                        } ${user.lastName}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-300">${
+                                  user.email
+                                }</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                0
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                ${user.status}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                ${user.role}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
+                                 ${
+                                   user.status === "active"
+                                     ? `<a href="/admin/banuser/${user.userId}" class="text-red-500 hover:underline">Ban</a>`
+                                     : `<a href="/admin/unbanuser/${user.userId}" class="text-green-500 hover:underline">Unban</a>`
+                                 }
+                            </td>
+                        </tr>`
+              )
+              .join("");
+        } else {
+          const searchResults = document.querySelector(".search-results");
+          searchResults.innerHTML = `<tr class="hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    ${
+                                      result.users.avatar
+                                        ? `<img src="/${result.users.profileImage}" alt="Avatar" class="w-10 h-10 rounded-full object-cover"/>`
+                                        : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
+                                        ${result.users.username
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                      </div>`
+                                    }
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">${
+                                          result.users.firstName
+                                        } ${result.users.lastName}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-300">${
+                                  result.users.email
+                                }</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                0
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                ${result.users.status}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                ${result.users.role}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
+                                 ${
+                                   result.users.status === "active"
+                                     ? `<a href="/admin/banuser/${result.users.userId}" class="text-red-500 hover:underline">Ban</a>`
+                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-green-500 hover:underline">Unban</a>`
+                                 }
+                            </td>
+                        </tr>`;
+        }
+        console.log(result.users);
+      }
+    } else {
+      const searchResults = document.querySelector(".search-results");
+      searchResults.classList.add("hidden");
+    }
+  });
+}
+
+async function getResultUsers(searchTerm) {
+  const response = await fetch(
+    `/api/user/search/${encodeURIComponent(searchTerm)}`
+  );
+  const data = await response.json();
+  return data;
+}

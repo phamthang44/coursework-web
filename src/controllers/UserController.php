@@ -25,7 +25,7 @@ class UserController extends BaseController
     private $postCommentDAO;
     public function __construct()
     {
-        parent::__construct(['/posts', '/403', '/404', '/signup', '/login', '/quorae', '/api/user/top-contributor', '/api/user/moderators', '/api/post/top-contributors']);
+        parent::__construct(['/posts', '/403', '/404', '/signup', '/login', '/quorae', '/api/user/top-contributor', '/api/user/moderators', '/api/post/top-contributors', '/api/user/search/{query}']);
         $this->userDAO = new UserDAOImpl();
         $this->userMsgDAO = new MessageFromUserDAOImpl();
         $this->postVoteDAO = new PostVoteDAO();
@@ -474,5 +474,40 @@ class UserController extends BaseController
             ];
         }
         echo json_encode(["success" => true, "moderators" => $users]);
+    }
+
+    public function search($query)
+    {
+        header("Content-Type: application/json; charset=UTF-8");
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            echo json_encode(["status" => false, "message" => "Invalid request"]);
+            return;
+        }
+        if (empty($query)) {
+            echo json_encode(["status" => false, "message" => "No search query provided"]);
+            return;
+        }
+
+        $search = rawurldecode($query); //"username"
+        $search = htmlspecialchars(trim($search), ENT_QUOTES, 'UTF-8');
+
+        $usersFound = $this->getResultSearch($search);
+
+        if (count($usersFound) === 0) {
+            echo json_encode(["status" => false, "message" => "No posts found"]);
+            return;
+        }
+        $usersArray = array_map(fn($user) => $user->toArray(), $usersFound);
+
+        echo json_encode([
+            "status" => true,
+            "users" => count($usersArray) === 1 ? $usersArray[0] : $usersArray
+        ]);
+    }
+
+    public function getResultSearch($query)
+    {
+        return $this->userDAO->search($query);
     }
 }
