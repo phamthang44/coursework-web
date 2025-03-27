@@ -211,12 +211,8 @@
                                                 <a href="/posts/edit/' . $postId . '" 
                                                    data-url="/posts/edit/' . $postId . '" 
                                                    class="edit-action-advanced block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                                                   Edit (advanced)
+                                                   Edit
                                                 </a>
-                                                <button
-                                                   class="edit-action-quick block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                                                   Edit (quick)
-                                                </button>
                                                 <a href="/posts/delete/' . $postId . '" 
                                                    data-url="/posts/delete/' . $postId . '" 
                                                    class="delete-action block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">

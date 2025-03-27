@@ -983,6 +983,8 @@ function handleUnbanAction(target) {
   if (target.classList.contains("unban-action")) {
     showConfirmBanModal(target);
   } else {
-    showConfirmBanModal(target);
+    if (!target) {
+      showConfirmBanModal(target);
+    }
   }
 }

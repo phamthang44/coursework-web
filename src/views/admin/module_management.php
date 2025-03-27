@@ -213,7 +213,7 @@
                     const deleteConfirmCard = new ConfirmCard();
                     deleteConfirmCard.openConfirmCard(`
     <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
-        Are you sure you want to delete this post?
+        Are you sure you want to delete <span class="text-red-500 dark:text-red-600">${moduleName}</span> ?
     </h2>`);
                 }
             });
