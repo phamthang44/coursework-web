@@ -319,7 +319,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                 <div class="add-question-dropdown hidden absolute right-12 top-[45px] mt-2 py-2 w-54 bg-white border border-red-700 dark:bg-darkmode dark:text-gray-600 rounded-lg shadow-md z-10">
                     <a href="/posts/create/"
                         class="create-new-post-ad block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                        Add new post (advanced)
+                        Add new post
                     </a>
                     <button
                         class="create-new-post-quick block w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">

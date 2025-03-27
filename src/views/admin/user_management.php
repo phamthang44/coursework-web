@@ -118,9 +118,9 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
                                 <?php if ($user->getStatus() === "banned") { ?>
-                                    <a href="/admin/unbanuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="unban">Unban</a>
+                                    <a href="/admin/unbanuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 unban-action" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="unban" data-user-role="<?= $user->getRole(); ?>">Unban</a>
                                 <?php } else { ?>
-                                    <a href="/admin/banuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="ban">Ban</a>
+                                    <a href="/admin/banuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 ban-action" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="ban" data-user-role="<?= $user->getRole(); ?>">Ban</a>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -192,24 +192,6 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
         </div>
     </div>
     <script src="/js/script.js"></script>
-    <script>
-        const actions = document.querySelectorAll('.action-ban a');
-        actions.forEach(action => {
-            action.addEventListener('click', (e) => {
-                e.preventDefault();
-                const url = e.target.href;
-                const confirmCard = new ConfirmCard();
-                const userName = e.target.getAttribute('data-user-name');
-                let wantTo = e.target.getAttribute('data-ban');
-                if (wantTo === 'ban') {
-                    wantTo = 'ban';
-                } else {
-                    wantTo = 'unban';
-                }
-                confirmCard.openConfirmCard(`<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`);
-            });
-        });
-    </script>
 </body>
 
 </html>

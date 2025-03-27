@@ -495,7 +495,7 @@ class UserController extends BaseController
         $usersFound = $this->getResultSearch($search);
 
         if (count($usersFound) === 0) {
-            echo json_encode(["status" => false, "message" => "No posts found"]);
+            echo json_encode(["status" => false, "message" => "No users found"]);
             return;
         }
         $usersArray = array_map(fn($user) => $user->toArray(), $usersFound);

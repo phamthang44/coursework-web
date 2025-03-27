@@ -753,14 +753,14 @@ if (moderators) {
 const searchUser = document.querySelector(".search-user");
 
 if (searchUser) {
+  const searchResults = document.querySelector(".search-results-users");
+  let oldResults = searchResults.innerHTML;
   searchUser.addEventListener("input", async function () {
     const searchTerm = this.value.trim();
     if (searchTerm.length > 0) {
       const result = await getResultUsers(searchTerm);
       if (result.users) {
         if (Array.isArray(result.users)) {
-          const searchResults = document.querySelector(".search-results-users");
-          console.log(searchResults);
           if (searchResults)
             searchResults.innerHTML = result.users
               .map(
@@ -771,7 +771,7 @@ if (searchUser) {
                                     ${
                                       user.profileImage
                                         ? `<img src="/${user.profileImage}" alt="Avatar" class="w-10 h-10 rounded-full object-cover"/>`
-                                        : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
+                                        : `<div class="w-10 h-10 flex items-center justify-center bg-gray-200 dark:bg-gray-600 rounded-full text-gray-700 dark:text-gray-300 font-semibold">
                                         ${user.username.charAt(0).toUpperCase()}
                                       </div>`
                                     }
@@ -791,7 +791,11 @@ if (searchUser) {
                                 0
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                ${user.status}
+                              ${
+                                user.status === "active"
+                                  ? `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-white">${user.status}</span>`
+                                  : `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-500 dark:text-white">${user.status}</span>`
+                              }
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 ${user.role}
@@ -799,27 +803,26 @@ if (searchUser) {
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
                                  ${
                                    user.status === "active"
-                                     ? `<a href="/admin/banuser/${user.userId}" class="text-red-500 hover:underline">Ban</a>`
-                                     : `<a href="/admin/unbanuser/${user.userId}" class="text-green-500 hover:underline">Unban</a>`
+                                     ? `<a href="/admin/banuser/${user.userId}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-username="${user.username}" data-user-role="${user.role}">Ban</a>`
+                                     : `<a href="/admin/unbanuser/${user.userId}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-username="${user.username}" data-user-role="${user.role}">Unban</a>`
                                  }
                             </td>
                         </tr>`
               )
               .join("");
         } else {
-          const searchResults = document.querySelector(".search-results");
           searchResults.innerHTML = `<tr class="hover:bg-gray-50 dark:hover:bg-gray-600">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    ${
-                                      result.users.avatar
-                                        ? `<img src="/${result.users.profileImage}" alt="Avatar" class="w-10 h-10 rounded-full object-cover"/>`
-                                        : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
-                                        ${result.users.username
-                                          .charAt(0)
-                                          .toUpperCase()}
-                                      </div>`
-                                    }
+                                ${
+                                  result.users.profileImage
+                                    ? `<img src="/${result.users.profileImage}" alt="Avatar" class="w-10 h-10 rounded-full object-cover"/>`
+                                    : `<div class="w-10 h-10 flex items-center justify-center bg-gray-200 dark:bg-gray-600 rounded-full text-gray-700 dark:text-gray-300 font-semibold">
+                                    ${result.users.username
+                                      .charAt(0)
+                                      .toUpperCase()}
+                                  </div>`
+                                }
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">${
                                           result.users.firstName
@@ -836,7 +839,11 @@ if (searchUser) {
                                 0
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                ${result.users.status}
+                            ${
+                              result.users.status === "active"
+                                ? `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-white">${result.users.status}</span>`
+                                : `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-500 dark:text-white">${result.users.status}</span>`
+                            }
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 ${result.users.role}
@@ -844,17 +851,16 @@ if (searchUser) {
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
                                  ${
                                    result.users.status === "active"
-                                     ? `<a href="/admin/banuser/${result.users.userId}" class="text-red-500 hover:underline">Ban</a>`
-                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-green-500 hover:underline">Unban</a>`
+                                     ? `<a href="/admin/banuser/${result.users.userId}" class="text-red-500 hover:underline ban-action" data-username="${result.users.username}" data-user-role="${result.users.role}">Ban</a>`
+                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-green-500 hover:underline unban-action" data-username="${result.users.username}" data-user-role="${result.users.role}>Unban</a>`
                                  }
                             </td>
                         </tr>`;
         }
-        console.log(result.users);
       }
-    } else {
-      const searchResults = document.querySelector(".search-results");
-      searchResults.classList.add("hidden");
+    }
+    if (searchTerm.length === 0) {
+      searchResults.innerHTML = oldResults;
     }
   });
 }
@@ -866,3 +872,53 @@ async function getResultUsers(searchTerm) {
   const data = await response.json();
   return data;
 }
+
+// ------------------------------- catch event click ban user ------------------------------------s
+document
+  .querySelector(".search-results-users")
+  .addEventListener("click", function (e) {
+    if (e.target.classList.contains("ban-action")) {
+      e.preventDefault();
+      e.stopPropagation();
+      const username = e.target.dataset.username;
+      const userRole = e.target.dataset.userRole;
+      if (userRole === "admin") {
+        const warnModal = new Modal();
+        checkExistingModal();
+        warnModal.openModal(`<div class="space-y-4 other-modal">
+        <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
+        <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
+        </div>
+        `);
+      }
+    }
+  });
+// -------------------------------- action ban --------------------------------------------------
+const actions = document.querySelectorAll(".action-ban a");
+actions.forEach((action) => {
+  action.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (e.target.dataset.userRole === "admin") {
+      const warnModal = new Modal();
+      checkExistingModal();
+      warnModal.openModal(`<div class="space-y-4 other-modal">
+      <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
+      <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
+      </div>
+      `);
+    } else {
+      const url = e.target.href;
+      const confirmCard = new ConfirmCard();
+      const userName = e.target.getAttribute("data-user-name");
+      let wantTo = e.target.getAttribute("data-ban");
+      if (wantTo === "ban") {
+        wantTo = "ban";
+      } else {
+        wantTo = "unban";
+      }
+      confirmCard.openConfirmCard(
+        `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`
+      );
+    }
+  });
+});
