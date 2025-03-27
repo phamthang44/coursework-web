@@ -864,7 +864,7 @@ if (searchUser) {
                                  ${
                                    result.users.status === "active"
                                      ? `<a href="/admin/banuser/${result.users.userId}" class="text-red-500 hover:underline ban-action w-[41px]" data-username="${result.users.username}" data-user-role="${result.users.role}" data-ban="ban">Ban</a>`
-                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-green-500 hover:underline unban-action" data-username="${result.users.username}" data-user-role="${result.users.role} data-ban="unban">Unban</a>`
+                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-red-500 hover:underline unban-action" data-username="${result.users.username}" data-user-role="${result.users.role} data-ban="unban">Unban</a>`
                                  }
                                  &nbsp;|&nbsp;
                                  <a href="/admin/update-role/${
@@ -912,56 +912,77 @@ actions.forEach((action) => {
 });
 
 function handleActionBan(e) {
-  e.stopPropagation();
   e.preventDefault();
-  if (e.target.classList.contains("ban-action")) {
-    if (e.target.dataset.userRole === "admin") {
-      const warnModal = new Modal();
-      checkExistingModal();
-      warnModal.openModal(`<div class="space-y-4 other-modal">
-        <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
-        <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
-        </div>
-        `);
-    } else {
-      const url = e.target.href;
-      const confirmCard = new ConfirmCard();
-      const userName = e.target.getAttribute("data-user-name");
-      const userNameShort = e.target.getAttribute("data-username");
-      let wantTo = e.target.getAttribute("data-ban");
-      if (wantTo === "ban") {
-        wantTo = "ban";
-      } else {
-        wantTo = "unban";
-      }
-      if (!userName) {
-        confirmCard.openConfirmCard(
-          `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userNameShort}</span> ?</h2>`
-        );
-      } else {
-        confirmCard.openConfirmCard(
-          `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`
-        );
-      }
-    }
-  }
-  if (e.target.classList.contains("update-role-action")) {
-    e.stopPropagation();
-    e.preventDefault();
-    const confirmCard = new ConfirmCard();
-    const userId = e.target.getAttribute("data-user-id");
-    const userRole = e.target.getAttribute("data-user-role");
-    const userName = e.target.getAttribute("data-user-name");
-    if (userRole === "user") {
-      confirmCard.openConfirmCard(
-        `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="/admin/update-role/${userId}">Are you sure you want to update <span class="text-green-500">${userName}</span>'s role to admin?</h2>`
-      );
-    } else if (userRole === "admin") {
-      confirmCard.openConfirmCard(
-        `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="/admin/update-role/${userId}">Are you sure you want to update <span class="text-green-500">${userName}</span>'s role to user?</h2>`
-      );
-    }
+  e.stopPropagation();
+
+  const target = e.target;
+
+  if (target.classList.contains("ban-action")) {
+    handleBanAction(target);
+  } else if (target.classList.contains("update-role-action")) {
+    handleUpdateRole(target);
   } else {
-    console.log("test");
+    handleUnbanAction(target);
+  }
+}
+
+// handle ban user (if not role admin)
+function handleBanAction(target) {
+  if (target.dataset.userRole === "admin") {
+    showWarningModal();
+  } else {
+    showConfirmBanModal(target);
+  }
+}
+
+// show warning modal to prevent ban admin
+function showWarningModal() {
+  const warnModal = new Modal();
+  checkExistingModal();
+  warnModal.openModal(`
+    <div class="space-y-4 other-modal">
+      <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
+      <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
+    </div>
+  `);
+}
+
+// Show modal confirm ban / unban user
+function showConfirmBanModal(target) {
+  const url = target.href;
+  const confirmCard = new ConfirmCard();
+  const userName =
+    target.getAttribute("data-user-name") ||
+    target.getAttribute("data-username");
+  const action = target.getAttribute("data-ban") === "ban" ? "ban" : "unban";
+
+  confirmCard.openConfirmCard(`
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">
+      Are you sure you want to ${action} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span>?
+    </h2>
+  `);
+}
+
+// handle update user role
+function handleUpdateRole(target) {
+  const confirmCard = new ConfirmCard();
+  const userId = target.getAttribute("data-user-id");
+  const userRole = target.getAttribute("data-user-role");
+  const userName = target.getAttribute("data-user-name");
+
+  const newRole = userRole === "user" ? "admin" : "user";
+  confirmCard.openConfirmCard(`
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="/admin/update-role/${userId}">
+      Are you sure you want to update <span class="text-green-500">${userName}</span>'s role to ${newRole}?
+    </h2>
+  `);
+}
+
+// handle logic unban when other conditions do not match
+function handleUnbanAction(target) {
+  if (target.classList.contains("unban-action")) {
+    showConfirmBanModal(target);
+  } else {
+    showConfirmBanModal(target);
   }
 }
