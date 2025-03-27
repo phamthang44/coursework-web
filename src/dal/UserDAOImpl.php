@@ -411,4 +411,13 @@ class UserDAOImpl implements UserDAOI
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $this->convertRowsToUsers($rows);
     }
+
+    public function updateUserRole($userId, $role)
+    {
+        $sql = "UPDATE Users SET role = :role WHERE user_id = :userId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':role', $role);
+        $stmt->bindParam(':userId', $userId);
+        return $stmt->execute();
+    }
 }

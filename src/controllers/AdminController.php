@@ -307,4 +307,32 @@ class AdminController extends BaseController
             exit();
         }
     }
+
+    public function updateRole($userId)
+    {
+        $currentUser = SessionManager::get('user');
+        if (!$currentUser || $currentUser->getRole() !== 'admin') {
+            header("Location: /403");
+            exit();
+        }
+
+        try {
+            $oldRoleOfUser = $this->userDAO->getUserById($userId)->getRole();
+            $role = $oldRoleOfUser === 'admin' ? 'user' : 'admin';
+            $result = $this->userDAO->updateUserRole($userId, $role);
+
+            if ($result) {
+                SessionManager::set('message', "User role updated successfully");
+                header("Location: /admin/user-management");
+                exit();
+            } else {
+                throw new Exception("Failed to update user role");
+            }
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            SessionManager::set('message', $message);
+            header("Location: /admin/user-management");
+            exit();
+        }
+    }
 }

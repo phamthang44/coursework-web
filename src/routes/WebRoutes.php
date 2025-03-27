@@ -74,6 +74,7 @@ class WebRoutes
         $router->addRoute('GET', '/admin/modules/delete/{moduleId}', 'AdminController', 'deleteModule');
         $router->addRoute('GET', '/admin/banuser/{id}', 'AdminController', 'banuser');
         $router->addRoute('GET', '/admin/unbanuser/{id}', 'AdminController', 'unbanuser');
+        $router->addRoute('GET', '/admin/update-role/{id}', 'AdminController', 'updateRole');
         // Search route
         $router->addRoute('GET', '/search/{query}', 'PostController', 'search');
 

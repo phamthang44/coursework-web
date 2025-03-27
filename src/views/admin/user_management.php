@@ -116,12 +116,16 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 <?= $user->getRole(); ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
-                                <?php if ($user->getStatus() === "banned") { ?>
-                                    <a href="/admin/unbanuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 unban-action" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="unban" data-user-role="<?= $user->getRole(); ?>">Unban</a>
-                                <?php } else { ?>
-                                    <a href="/admin/banuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 ban-action" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="ban" data-user-role="<?= $user->getRole(); ?>">Ban</a>
-                                <?php } ?>
+                            <td class="py-6 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban leading-5 w-fit">
+                                <div class="flex gap-5">
+                                    <?php if ($user->getStatus() === "banned") { ?>
+                                        <a href="/admin/unbanuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 unban-action" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="unban" data-user-role="<?= $user->getRole(); ?>">Unban</a>
+                                    <?php } else { ?>
+                                        <a href="/admin/banuser/<?= $userId ?>" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 ban-action w-[41px]" data-user-name="<?= $userFirstName . " " . $userLastName ?>" data-ban="ban" data-user-role="<?= $user->getRole(); ?>">Ban</a>
+                                    <?php } ?>
+                                    &nbsp;|&nbsp;
+                                    <a href="/admin/update-role/<?= $userId ?>" class="text-green-400 hover:text-green-500 update-role-action" data-user-role="<?= $user->getRole(); ?>" data-user-id="<?= $user->getUserId(); ?>" data-user-name="<?= $userFirstName . " " . $userLastName ?>">Update role</a>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -192,6 +196,18 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
         </div>
     </div>
     <script src="/js/script.js"></script>
+    <script>
+        message = <?= json_encode(SessionManager::get('message')) ?>;
+        if (message) {
+            const messageModal = new Modal();
+            messageModal.openModal(`
+            <div class="update-role-message-modal">
+                <h2 class="capitalize text-xl font-bold text-white"><span>✅</span>  ${message}</h2>
+            </div>
+            `)
+        }
+        <?= SessionManager::remove('message') ?>
+    </script>
 </body>
 
 </html>

@@ -760,6 +760,7 @@ if (searchUser) {
     if (searchTerm.length > 0) {
       const result = await getResultUsers(searchTerm);
       if (result.users) {
+        console.log(result.users);
         if (Array.isArray(result.users)) {
           if (searchResults)
             searchResults.innerHTML = result.users
@@ -800,12 +801,22 @@ if (searchUser) {
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 ${user.role}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
-                                 ${
-                                   user.status === "active"
-                                     ? `<a href="/admin/banuser/${user.userId}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-username="${user.username}" data-user-role="${user.role}">Ban</a>`
-                                     : `<a href="/admin/unbanuser/${user.userId}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-username="${user.username}" data-user-role="${user.role}">Unban</a>`
-                                 }
+                            <td class="py-6 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban leading-5 w-fit">
+                                 <div class="flex gap-5">
+                                  ${
+                                    user.status === "active"
+                                      ? `<a href="/admin/banuser/${user.userId}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 w-[41px]" data-username="${user.username}" data-user-role="${user.role}" data-ban="ban">Ban</a>`
+                                      : `<a href="/admin/unbanuser/${user.userId}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" data-username="${user.username}" data-user-role="${user.role}" data-ban="unban">Unban</a>`
+                                  }
+                                  &nbsp;|&nbsp;
+                                 <a href="/admin/update-role/${
+                                   user.userId
+                                 }" class="text-green-400 hover:text-green-500 update-role-action" data-user-role="${
+                  user.role
+                }" data-user-id="${user.userId}" data-user-name="${
+                  user.firstName + " " + user.lastName
+                }">Update role</a>
+                 </div>
                             </td>
                         </tr>`
               )
@@ -848,12 +859,25 @@ if (searchUser) {
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 ${result.users.role}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban">
+                            <td class="py-6 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium action-ban leading-5 w-fit">
+                            <div class="flex gap-5">
                                  ${
                                    result.users.status === "active"
-                                     ? `<a href="/admin/banuser/${result.users.userId}" class="text-red-500 hover:underline ban-action" data-username="${result.users.username}" data-user-role="${result.users.role}">Ban</a>`
-                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-green-500 hover:underline unban-action" data-username="${result.users.username}" data-user-role="${result.users.role}>Unban</a>`
+                                     ? `<a href="/admin/banuser/${result.users.userId}" class="text-red-500 hover:underline ban-action w-[41px]" data-username="${result.users.username}" data-user-role="${result.users.role}" data-ban="ban">Ban</a>`
+                                     : `<a href="/admin/unbanuser/${result.users.userId}" class="text-green-500 hover:underline unban-action" data-username="${result.users.username}" data-user-role="${result.users.role} data-ban="unban">Unban</a>`
                                  }
+                                 &nbsp;|&nbsp;
+                                 <a href="/admin/update-role/${
+                                   result.users.userId
+                                 }" class="text-green-400 hover:text-green-500 update-role-action" data-user-role="${
+            result.users.role
+          }" 
+                                 data-user-id="${
+                                   result.users.userId
+                                 }" data-user-name="${
+            result.users.username
+          }">Update role</a>
+                            </div>
                             </td>
                         </tr>`;
         }
@@ -874,51 +898,70 @@ async function getResultUsers(searchTerm) {
 }
 
 // ------------------------------- catch event click ban user ------------------------------------s
-document
-  .querySelector(".search-results-users")
-  .addEventListener("click", function (e) {
-    if (e.target.classList.contains("ban-action")) {
-      e.preventDefault();
-      e.stopPropagation();
-      const username = e.target.dataset.username;
-      const userRole = e.target.dataset.userRole;
-      if (userRole === "admin") {
-        const warnModal = new Modal();
-        checkExistingModal();
-        warnModal.openModal(`<div class="space-y-4 other-modal">
-        <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
-        <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
-        </div>
-        `);
-      }
-    }
-  });
+const tableResultUsers = document.querySelector(".search-results-users");
+tableResultUsers.addEventListener("click", (e) => {
+  handleActionBan(e);
+});
+
 // -------------------------------- action ban --------------------------------------------------
-const actions = document.querySelectorAll(".action-ban a");
+const actions = document.querySelectorAll(".action-ban");
 actions.forEach((action) => {
   action.addEventListener("click", (e) => {
-    e.preventDefault();
+    handleActionBan(e);
+  });
+});
+
+function handleActionBan(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  if (e.target.classList.contains("ban-action")) {
     if (e.target.dataset.userRole === "admin") {
       const warnModal = new Modal();
       checkExistingModal();
       warnModal.openModal(`<div class="space-y-4 other-modal">
-      <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
-      <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
-      </div>
-      `);
+        <h2 class="text-red-500 text-2xl font-medium">Warning !</h2>
+        <p class="text-black dark:text-white font-medium">You can't ban an admin.</p>
+        </div>
+        `);
     } else {
       const url = e.target.href;
       const confirmCard = new ConfirmCard();
       const userName = e.target.getAttribute("data-user-name");
+      const userNameShort = e.target.getAttribute("data-username");
       let wantTo = e.target.getAttribute("data-ban");
       if (wantTo === "ban") {
         wantTo = "ban";
       } else {
         wantTo = "unban";
       }
+      if (!userName) {
+        confirmCard.openConfirmCard(
+          `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userNameShort}</span> ?</h2>`
+        );
+      } else {
+        confirmCard.openConfirmCard(
+          `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`
+        );
+      }
+    }
+  }
+  if (e.target.classList.contains("update-role-action")) {
+    e.stopPropagation();
+    e.preventDefault();
+    const confirmCard = new ConfirmCard();
+    const userId = e.target.getAttribute("data-user-id");
+    const userRole = e.target.getAttribute("data-user-role");
+    const userName = e.target.getAttribute("data-user-name");
+    if (userRole === "user") {
       confirmCard.openConfirmCard(
-        `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="${url}">Are you sure you want to ${wantTo} <span class="text-red-600 dark:text-red-700 font-bold">${userName}</span> ?</h2>`
+        `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="/admin/update-role/${userId}">Are you sure you want to update <span class="text-green-500">${userName}</span>'s role to admin?</h2>`
+      );
+    } else if (userRole === "admin") {
+      confirmCard.openConfirmCard(
+        `<h2 class="text-lg font-semibold text-gray-800 dark:text-white confirm-title" data-url="/admin/update-role/${userId}">Are you sure you want to update <span class="text-green-500">${userName}</span>'s role to user?</h2>`
       );
     }
-  });
-});
+  } else {
+    console.log("test");
+  }
+}
