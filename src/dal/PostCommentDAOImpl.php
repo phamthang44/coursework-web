@@ -56,15 +56,15 @@ class PostCommentDAOImpl implements PostCommentI
         return $stmt->fetch(); //if not return false else true
     }
 
-    public function addCommentWithoutTitle($postCommentContent, $postCommentVoteScore, $postCommentUserId, $postCommentTimeStamp, $postId)
+    public function addCommentWithoutTitle($postCommentContent, $postCommentVoteScore, $postCommentUserId, $commentCreateDate, $postId)
     {
         $conn = $this->pdo;
-        $stmt = $conn->prepare("INSERT INTO PostComments(content, vote_score, user_id, timestamp, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :postCommentTimeStamp, :postId)");
+        $stmt = $conn->prepare("INSERT INTO PostComments(content, vote_score, user_id, create_date, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :commentCreateDate, :postId)");
 
         $stmt->bindParam(":postCommentContent", $postCommentContent);
         $stmt->bindParam(":postCommentVoteScore", $postCommentVoteScore, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentUserId", $postCommentUserId, PDO::PARAM_INT);
-        $stmt->bindParam(":postCommentTimeStamp", $postCommentTimeStamp);
+        $stmt->bindParam(":commentCreateDate", $commentCreateDate);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
 
         try {
@@ -80,17 +80,17 @@ class PostCommentDAOImpl implements PostCommentI
         }
     }
 
-    public function addComment($postCommentTitle, $postCommentContent, $postCommentVoteScore, $postCommentUserId, $postCommentTimeStamp, $postCommentUpdatedTimeStamp, $postId)
+    public function addComment($postCommentTitle, $postCommentContent, $postCommentVoteScore, $postCommentUserId, $commentCreateDate, $commentUpdateDate, $postId)
     {
         // TODO: Implement addComment() method.
         $conn = $this->pdo;
-        $stmt = $conn->prepare("INSERT INTO PostComments(title, content, vote_score, user_id, parent_comment_id, current_timestamp, update_timestamp, post_id) VALUES (:postCommentTitle, :postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :postCommentTimeStamp, :postCommentUpdatedTimeStamp, :postId)");
+        $stmt = $conn->prepare("INSERT INTO PostComments(title, content, vote_score, user_id, parent_comment_id, create_date, update_date, post_id) VALUES (:postCommentTitle, :postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :commentCreateDate, :commentUpdateDate, :postId)");
         $stmt->bindParam(":postCommentTitle", $postCommentTitle);
         $stmt->bindParam(":postCommentContent", $postCommentContent);
         $stmt->bindParam(":postCommentVoteScore", $postCommentVoteScore, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentUserId", $postCommentUserId, PDO::PARAM_INT);
-        $stmt->bindParam(":postCommentTimeStamp", $postCommentTimeStamp);
-        $stmt->bindParam(":postCommentUpdatedTimeStamp", $postCommentUpdatedTimeStamp);
+        $stmt->bindParam(":commentCreateDate", $commentCreateDate);
+        $stmt->bindParam(":commentUpdateDate", $commentUpdateDate);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
 
         try {
@@ -106,15 +106,15 @@ class PostCommentDAOImpl implements PostCommentI
         }
     }
 
-    public function insertReplyAComment($postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $postCommentTimeStamp, $postId)
+    public function insertReplyAComment($postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $commentCreateDate, $postId)
     {
-        $sql = "INSERT INTO PostComments(content, vote_score, user_id, parent_comment_id, timestamp, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :postCommentTimeStamp, :postId)";
+        $sql = "INSERT INTO PostComments(content, vote_score, user_id, parent_comment_id, create_date, post_id) VALUES (:postCommentContent, :postCommentVoteScore, :postCommentUserId, :parentCommentId, :commentCreateDate, :postId)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(":postCommentContent", $postCommentContent);
         $stmt->bindParam(":postCommentVoteScore", $postCommentVoteScore, PDO::PARAM_INT);
         $stmt->bindParam(":postCommentUserId", $postCommentUserId, PDO::PARAM_INT);
         $stmt->bindParam(":parentCommentId", $parentCommentId, PDO::PARAM_INT);
-        $stmt->bindParam(":postCommentTimeStamp", $postCommentTimeStamp);
+        $stmt->bindParam(":commentCreateDate", $commentCreateDate);
         $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
         try {
             $result = $stmt->execute();
@@ -227,7 +227,7 @@ class PostCommentDAOImpl implements PostCommentI
     {
         $results = [];
         foreach ($rows as $row) {
-            $postComment = new PostComment($row['post_comment_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['parent_comment_id'], $row['timestamp'], $row['update_timestamp'], $row['post_id'], $row['user_id']);
+            $postComment = new PostComment($row['post_comment_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['parent_comment_id'], $row['create_date'], $row['update_date'], $row['post_id'], $row['user_id']);
 
             $results[] = $postComment;
         }

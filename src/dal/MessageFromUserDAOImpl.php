@@ -19,7 +19,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
 
     public function insertMessage($title, $message, $userId)
     {
-        $sql = "INSERT INTO messagefromuser (title, content, user_id) VALUES (:title, :message, :userId)";
+        $sql = "INSERT INTO message_from_users (title, content, user_id) VALUES (:title, :message, :userId)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':message', $message);
@@ -29,7 +29,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
 
     public function updateMessage($title, $message, $messageId)
     {
-        $sql = "UPDATE messagefromuser SET title = :title, message = :message WHERE message_from_user_id = :messageId";
+        $sql = "UPDATE message_from_users SET title = :title, message = :message WHERE message_from_user_id = :messageId";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':message', $message);
@@ -39,7 +39,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
 
     public function deleteMessage($messageId)
     {
-        $sql = "DELETE FROM messagefromuser WHERE message_from_user_id = :messageId";
+        $sql = "DELETE FROM message_from_users WHERE message_from_user_id = :messageId";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':messageId', $messageId);
         return $stmt->execute();
@@ -47,7 +47,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
 
     public function getMessage($messageId)
     {
-        $sql = "SELECT * FROM messagefromuser WHERE message_from_user_id = :messageId";
+        $sql = "SELECT * FROM message_from_users WHERE message_from_user_id = :messageId";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':messageId', $messageId);
         $stmt->execute();
@@ -57,7 +57,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
 
     public function getAllMessages()
     {
-        $sql = "SELECT * FROM messagefromuser";
+        $sql = "SELECT * FROM message_from_users";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +67,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
 
     public function getMessagesFromAdmin()
     {
-        $sql = "SELECT * FROM messagefromuser WHERE user_id = 1";
+        $sql = "SELECT * FROM message_from_users WHERE user_id = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -78,7 +78,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
     public function getTotalMessageNums()
     {
         // TODO: Implement getTotalMessageNums() method.
-        $sql = "SELECT COUNT(*) FROM messagefromuser";
+        $sql = "SELECT COUNT(*) FROM message_from_users";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchColumn();

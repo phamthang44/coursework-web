@@ -162,9 +162,9 @@
                                 $postId = $post->getPostId();
                                 $title = $post->getTitle();
                                 $content = $post->getContent();
-                                $timestamp = $post->getTimestamp();
-                                $datetime = new DateTime($timestamp);
-                                $formattedTimestamp = $datetime->format('F j, Y');
+                                $postCreateDate = $post->getCreateDate();
+                                $datetime = new DateTime($postCreateDate);
+                                $formattedPostCreateDate = $datetime->format('F j, Y');
                                 $module = $moduleController->getModuleById($post->getModuleId());
                                 $moduleId = $post->getModuleId();
                                 $moduleName = $module->getModuleName();
@@ -231,7 +231,7 @@
                                                     <?= $avatarUser ?></div>
                                                 <div class="ml-4">
                                                     <h4 class="font-medium text-gray-900 dark:text-white"><?= $firstName . " " . $lastName ?></h4>
-                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Posted on <?= $formattedTimestamp ?></p>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Posted on <?= $$formattedPostCreateDate ?></p>
                                                 </div>
                                                 <div class="relative ml-auto">
                                                     <?= $buttonMoreOptions . $postMoreOptionsDropdown ?>

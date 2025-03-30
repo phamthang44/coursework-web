@@ -45,8 +45,8 @@
     $title = $post->getTitle();
     $content = $post->getContent();
     $moduleName = $postController->getModuleName($post->getModuleId());
-    $createdAt = $post->getTimestamp() ?? 'Unknown';
-    $updatedAt = $post->getUpdatedTimestamp() ?? 'Unknown';
+    $createdAt = $post->getCreateDate() ?? 'Unknown';
+    $updatedAt = $post->getUpdatedDate() ?? 'Unknown';
 
     // Format dates
     $createdAtFormatted = date('M d, Y', strtotime($createdAt));
@@ -139,6 +139,12 @@
 
             <!-- Post Content -->
             <div class="p-4 md:p-6">
+                <div>
+                    <!-- Post Image -->
+                    <?php if ($assetsByPostId->getMediaKey()) { ?>
+                        <img src="/<?= $assetsByPostId->getMediaKey() ?>" alt="Post image" class="w-full h-auto rounded-lg mb-4">
+                    <?php } ?>
+                </div>
                 <div class="prose max-w-none dark:prose-invert prose-lg"><?= $content ?></div>
 
                 <!-- Post Actions -->

@@ -37,7 +37,7 @@ function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $po
                         <?php if ($isPostAuthor): ?>
                             <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full mr-3">Author</span>
                         <?php endif; ?>
-                        <span class="text-sm text-gray-500 dark:text-gray-400"><?= $comment->timeAgo($comment->getPostCommentTimeStamp()) ?></span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"><?= $comment->timeAgo($comment->getCommentCreateDate()) ?></span>
                     </div>
                     <p class="text-gray-800 dark:text-gray-300 mb-2">
                         <?= nl2br(htmlspecialchars($comment->getPostCommentContent())) ?>

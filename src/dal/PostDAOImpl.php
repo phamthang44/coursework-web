@@ -42,7 +42,7 @@ class PostDAOImpl implements PostDAOI
         $stmt->bindParam(":postId", $postId);
         $stmt->execute();
         $row = $stmt->fetch();
-        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
+        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['create_date'], $row['update_date']);
     }
 
     public function getPostByTitle($postTitle)
@@ -57,7 +57,7 @@ class PostDAOImpl implements PostDAOI
         // If only 1 result, return object Post
         if (count($rows) === 1) {
             $row = $rows[0];
-            return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
+            return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['create_date'], $row['update_date']);
         }
 
         // If more than 1 row then create an array posts
@@ -177,7 +177,7 @@ class PostDAOImpl implements PostDAOI
     public function convertResultRowToPostObj(array $result, array $posts): array
     {
         foreach ($result as $row) {
-            $post = new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
+            $post = new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['create_date'], $row['update_date']);
             $posts[] = $post;
         }
 
@@ -204,7 +204,7 @@ class PostDAOImpl implements PostDAOI
         if (!$row) {
             return null;
         }
-        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['timestamp'], $row['update_timestamp']);
+        return new Post($row['post_id'], $row['title'], $row['content'], $row['vote_score'], $row['user_id'], $row['module_id'], $row['create_date'], $row['update_date']);
     }
 
     public function getPostByPage($limit, $offset)

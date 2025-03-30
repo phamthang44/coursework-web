@@ -146,7 +146,7 @@
                                     $firstName = $postAuthor->getFirstName();
                                     $lastName = $postAuthor->getLastName();
                                     $isPublished = ($post !== null) ? 'Published' : '';
-                                    $postDate = $post->getTimestamp();
+                                    $postDate = $post->getCreateDate();
                                     $postDateFormatted = date('M d, Y', strtotime($postDate));
                                     ?>
 

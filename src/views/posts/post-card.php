@@ -26,8 +26,8 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     $title = $post->getTitle();
     $content = $post->getContent();
     $moduleId = $postController->getModuleName($post->getModuleId());
-    $createdAt = $post->getTimestamp() ?? 'Unknown';
-    $updatedAt = $post->getUpdatedTimestamp() ?? 'Unknown';
+    $createdAt = $post->getCreateDate() ?? 'Unknown';
+    $updatedAt = $post->getUpdatedDate() ?? 'Unknown';
 
     // Format dates
     $createdAtFormatted = date('M d, Y', strtotime($createdAt));

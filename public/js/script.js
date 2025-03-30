@@ -668,7 +668,7 @@ if (topContributors) {
                   <div class="flex items-center">
                     ${
                       user.avatar
-                        ? `<img src="${user.avatar}" alt="Avatar" class="w-10 h-10 rounded-full object cover"/>`
+                        ? `<img src="/${user.avatar}" alt="Avatar" class="w-10 h-10 rounded-full object cover"/>`
                         : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
                     ${user.username.charAt(0).toUpperCase()}
                   </div>`
@@ -724,7 +724,7 @@ if (moderators) {
                 <div class="flex items-center">
                   ${
                     user.avatar
-                      ? `<img src="${user.avatar}" alt="Avatar" class="w-10 h-10 rounded-full object cover"/>`
+                      ? `<img src="/${user.avatar}" alt="Avatar" class="w-10 h-10 rounded-full object cover"/>`
                       : `<div class="w-10 h-10 flex items-center justify-center bg-purple-600 rounded-full text-white font-semibold">
                   ${user.username.charAt(0).toUpperCase()}
                 </div>`

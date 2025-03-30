@@ -12,8 +12,8 @@ class Post implements JsonSerializable
     private $voteScore;
     private $userId;
     private $moduleId;
-    private $timestamp;
-    private $updatedTimestamp;
+    private $createDate;
+    private $updatedDate;
 
 
     /**
@@ -23,11 +23,11 @@ class Post implements JsonSerializable
      * @param $voteScore
      * @param $userId
      * @param $moduleId
-     * @param $timestamp
-     * @param $updatedTimestamp
+     * @param $createDate
+     * @param $updatedDate
      * @param $postAssetId
      */
-    public function __construct($postId, $title, $content, $voteScore, $userId, $moduleId, $timestamp, $updatedTimestamp)
+    public function __construct($postId, $title, $content, $voteScore, $userId, $moduleId, $createDate, $updatedDate)
     {
         $this->postId = $postId;
         $this->title = $title;
@@ -35,8 +35,8 @@ class Post implements JsonSerializable
         $this->voteScore = $voteScore;
         $this->userId = $userId;
         $this->moduleId = $moduleId;
-        $this->timestamp = $timestamp;
-        $this->updatedTimestamp = $updatedTimestamp;
+        $this->createDate = $createDate;
+        $this->updatedDate = $updatedDate;
     }
 
     /**
@@ -138,33 +138,33 @@ class Post implements JsonSerializable
     /**
      * @return mixed
      */
-    public function getTimestamp()
+    public function getCreateDate()
     {
-        return $this->timestamp;
+        return $this->createDate;
     }
 
     /**
-     * @param mixed $timestamp
+     * @param mixed $createdate
      */
-    public function setTimestamp($timestamp)
+    public function setDate($createdate)
     {
-        $this->timestamp = $timestamp;
+        $this->createDate = $createdate;
     }
 
     /**
      * @return mixed
      */
-    public function getUpdatedTimestamp()
+    public function getUpdatedDate()
     {
-        return $this->updatedTimestamp;
+        return $this->updatedDate;
     }
 
     /**
-     * @param mixed $updatedTimestamp
+     * @param mixed $updatedDate
      */
-    public function setUpdatedTimestamp($updatedTimestamp)
+    public function setUpdatedDate($updatedDate)
     {
-        $this->updatedTimestamp = $updatedTimestamp;
+        $this->updatedDate = $updatedDate;
     }
 
     public function toArray()

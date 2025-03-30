@@ -86,7 +86,7 @@ class PostController extends BaseController
             }
         }
 
-        require_once __DIR__ . '/../views/posts/post.php';
+        require_once __DIR__ . '/../views/posts/homepage.php';
     }
 
     //CRUD first
@@ -121,7 +121,7 @@ class PostController extends BaseController
             }
 
             // Get the list asset
-            $assets = $postAssetService->getByPostId($postId);
+            $assetsByPostId = $postAssetService->getByPostId($postId);
             $currentUser = $this->currentUser;
             $userId = $post->getUserId();
             $user = $this->userController->getUser($userId);

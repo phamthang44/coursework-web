@@ -10,8 +10,8 @@ class PostComment
     private $postCommentVoteScore;
     private $postCommentUserId;
     private $parentCommentId;
-    private $postCommentTimeStamp;
-    private $postCommentUpdatedTimeStamp;
+    private $commentCreateDate;
+    private $commentUpdateDate;
     private $postId;
     private $userId;
 
@@ -22,11 +22,11 @@ class PostComment
      * @param $postCommentVoteScore
      * @param $postCommentUserId
      * @param $parentCommentId
-     * @param $postCommentTimeStamp
-     * @param $postCommentUpdatedTimeStamp
+     * @param $commentCreateDate
+     * @param $commentUpdateDate
      * @param $postId
      */
-    public function __construct($postCommentId, $postCommentTitle, $postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $postCommentTimeStamp, $postCommentUpdatedTimeStamp, $postId)
+    public function __construct($postCommentId, $postCommentTitle, $postCommentContent, $postCommentVoteScore, $postCommentUserId, $parentCommentId, $commentCreateDate, $commentUpdateDate, $postId)
     {
         $this->postCommentId = $postCommentId;
         $this->postCommentTitle = $postCommentTitle;
@@ -34,8 +34,8 @@ class PostComment
         $this->postCommentVoteScore = $postCommentVoteScore;
         $this->postCommentUserId = $postCommentUserId;
         $this->parentCommentId = $parentCommentId;
-        $this->postCommentTimeStamp = $postCommentTimeStamp;
-        $this->postCommentUpdatedTimeStamp = $postCommentUpdatedTimeStamp;
+        $this->commentCreateDate = $commentCreateDate;
+        $this->commentUpdateDate = $commentUpdateDate;
         $this->postId = $postId;
     }
 
@@ -138,33 +138,33 @@ class PostComment
     /**
      * @return mixed
      */
-    public function getPostCommentTimeStamp()
+    public function getCommentCreateDate()
     {
-        return $this->postCommentTimeStamp;
+        return $this->commentCreateDate;
     }
 
     /**
-     * @param mixed $postCommentTimeStamp
+     * @param mixed $commentCreateDate
      */
-    public function setPostCommentTimeStamp($postCommentTimeStamp)
+    public function setCommentCreateDate($commentCreateDate)
     {
-        $this->postCommentTimeStamp = $postCommentTimeStamp;
+        $this->commentCreateDate = $commentCreateDate;
     }
 
     /**
      * @return mixed
      */
-    public function getPostCommentUpdatedTimeStamp()
+    public function getCommentUpdateDate()
     {
-        return $this->postCommentUpdatedTimeStamp;
+        return $this->commentUpdateDate;
     }
 
     /**
-     * @param mixed $postCommentUpdatedTimeStamp
+     * @param mixed $commentUpdateDate
      */
-    public function setPostCommentUpdatedTimeStamp($postCommentUpdatedTimeStamp)
+    public function setCommentUpdateDate($commentUpdateDate)
     {
-        $this->postCommentUpdatedTimeStamp = $postCommentUpdatedTimeStamp;
+        $this->commentUpdateDate = $commentUpdateDate;
     }
 
     /**
@@ -183,9 +183,9 @@ class PostComment
         $this->postId = $postId;
     }
 
-    public function timeAgo($timestamp)
+    public function timeAgo($commentCreateDate)
     {
-        $time = strtotime($timestamp);
+        $time = strtotime($commentCreateDate);
         $diff = time() - $time;
 
         $units = [

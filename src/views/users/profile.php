@@ -175,7 +175,7 @@
                                 $postId = $post->getPostId();
                                 $title = $post->getTitle();
                                 $content = $post->getContent();
-                                $timestamp = $post->getTimestamp();
+                                $timestamp = $post->getCreateDate();
                                 $datetime = new DateTime($timestamp);
                                 $formattedTimestamp = $datetime->format('F j, Y');
                                 $module = $moduleController->getModuleById($post->getModuleId());
