@@ -10,7 +10,7 @@
 
 </head>
 
-<body class="bg-gray-100 dark:bg-darkmode2">
+<body class="bg-gray-100 dark:bg-darkmode2 flex flex-col min-h-screen">
     <?php
     // User authentication setup
     use controllers\ModuleController;
@@ -48,13 +48,13 @@
     ?>
     <?php
     if (!is_null($userObj)) {
-        echo '<div class="container mx-auto py-6 w-1/3 rounded-lg">';
+        echo '<div class="container mx-auto py-6 w-1/3 rounded-lg flex-1">';
         echo '<h1 class="text-2xl text-green-500 font-bold text-center mt-20 justify-center">✔️ Email has been sent!</h1>';
         echo '<p class="text-gray-600 text-left mt-4 text-2xl dark:text-white">You will be redirected to the contact page in <span id="countdown" class="text-green-500 text-medium">5</span> seconds.</p>';
         echo '</div>';
         echo '<div class="mt-[100px]"></div>';
     } else if (is_null($userObj)) {
-        echo '<div class="flex w-full h-auto flex-col items-center justify-center">
+        echo '<div class="flex w-full h-full flex-col items-center justify-center">
                 <h1 class="text-2xl text-red-500 font-bold text-center mt-20">Error cannot send email without login</h1>
                 <a href="/login" class="block smt-4 bg-red-500 hover:bg-red-600 transition text-white font-bold py-2 px-4 rounded-lg">Login</a>
             </div>';

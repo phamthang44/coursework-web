@@ -52,7 +52,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
         $stmt->bindParam(':messageId', $messageId);
         $stmt->execute();
         $row = $stmt->fetch();
-        return new MessageFromUser($row['message_from_user_id'], $row['title'], $row['content'], $row['user_id'], $row['timestamp']);
+        return new MessageFromUser($row['message_from_user_id'], $row['title'], $row['content'], $row['user_id'], $row['create_date']);
     }
 
     public function getAllMessages()
@@ -92,7 +92,7 @@ class MessageFromUserDAOImpl implements MessageFromUserDAOI
                 $row['title'],
                 $row['content'],
                 $row['user_id'],
-                $row['timestamp']
+                $row['create_date']
             );
         }
         return $messages;
