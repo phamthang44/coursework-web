@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="This is create post page of QuoraeHub, where users can create their posts.">
+    <meta name="author" content="QuoraeHub Team">
     <title>QuoraeHub</title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">

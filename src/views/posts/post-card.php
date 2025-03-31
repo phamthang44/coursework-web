@@ -109,9 +109,9 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         <?php } ?>
 
                         <div class="flex flex-row gap-3">
-                            <p><?= $createdAtFormatted ?></p>
+                            <p class="dark:text-[#e6e7e8] text-gray-600"><?= $createdAtFormatted ?></p>
                             <?php if ($createdAtFormatted !== $updatedAtFormatted): ?>
-                                <p>Updated: <?= $updatedAtFormatted ?></p>
+                                <p class="dark:text-[#e6e7e8] text-gray-600">Updated: <?= $updatedAtFormatted ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -145,7 +145,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
 
                 <?php if ($currentUser) { ?>
                     <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
-                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>" aria-label="Upvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
@@ -155,7 +155,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             <?= $voteDisplay ?>
                         </span>
 
-                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>" aria-label="Downvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -163,7 +163,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                     </div>
                 <?php } else { ?>
                     <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
-                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>" aria-label="Upvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
@@ -173,7 +173,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             <?= $voteDisplay ?>
                         </span>
 
-                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>" aria-label="Downvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -193,13 +193,13 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
             <?php if ($showControls): ?>
                 <div class="mt-4 flex justify-between items-center">
                     <div>
-                        <a href="/posts/edit/<?= $postId ?>" class="inline-flex items-center px-3 py-1 mr-2 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors">
+                        <a href="/posts/edit/<?= $postId ?>" class="inline-flex items-center px-3 py-1 mr-2 bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-xs rounded hover:bg-blue-600 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                             Edit
                         </a>
-                        <a href="/posts/delete/<?= $postId ?>" class="delete-btn inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors">
+                        <a href="/posts/delete/<?= $postId ?>" class="delete-btn inline-flex items-center px-3 py-1 bg-red-500 dark:bg-red-600 dark:hover:bg-red-700 text-white text-xs rounded hover:bg-red-600 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>

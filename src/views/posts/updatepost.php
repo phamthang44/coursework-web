@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="This is edit post page of QuoraeHub, where users can edit their posts.">
+    <meta name="author" content="QuoraeHub Team">
     <title>QuoraeHub</title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
@@ -30,7 +32,7 @@
     $postController = new PostController();
     $moduleController = new ModuleController();
     if (isset($_SESSION['user_id'])) {
-        $userId = $_SESSION['user_id'];
+        $userId = SessionManager::get('user_id');
         $user = $userController->getUser($userId);
         $user_logged_in = true;
         $user_name = $user->getUsername();

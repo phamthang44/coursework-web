@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This is an home page of QuoraeHub, a platform for sharing knowledge and insights.">
+    <meta name="keywords" content="QuoraeHub, knowledge sharing, insights, community, posts">
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link
@@ -121,7 +123,7 @@
                     Previous
                 </a>
             <?php else: ?>
-                <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-md cursor-not-allowed">
+                <span class="px-4 py-2 text-sm font-medium text-white dark:text-gray-400 bg-gray-400 dark:bg-gray-100 rounded-md cursor-not-allowed">
                     Previous
                 </span>
             <?php endif; ?>

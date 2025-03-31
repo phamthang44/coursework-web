@@ -899,9 +899,11 @@ async function getResultUsers(searchTerm) {
 
 // ------------------------------- catch event click ban user ------------------------------------s
 const tableResultUsers = document.querySelector(".search-results-users");
-tableResultUsers.addEventListener("click", (e) => {
-  handleActionBan(e);
-});
+if (tableResultUsers !== null) {
+  tableResultUsers.addEventListener("click", (e) => {
+    handleActionBan(e);
+  });
+}
 
 // -------------------------------- action ban --------------------------------------------------
 const actions = document.querySelectorAll(".action-ban");

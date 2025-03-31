@@ -236,7 +236,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                     <div class="relative">
                         <button id="avatar-menu-button" class="flex items-center space-x-2 focus:outline-none">
                             <?php if ($user_avatar): ?>
-                                <img src="/<?php echo $user_avatar; ?>" alt="<?php echo htmlspecialchars($user_name); ?>" class="w-8 h-8 rounded-full cursor-pointer avatar-user object-cover">
+                                <img src="/<?php echo $user_avatar; ?>" class="w-8 h-8 rounded-full cursor-pointer avatar-user object-cover" alt="">
                             <?php else: ?>
                                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 cursor-pointer">
                                     <?php echo strtoupper(substr(htmlspecialchars($user_name), 0, 1)); ?>
@@ -255,7 +255,7 @@ function render_quora_header($user_logged_in = false, $user_name = '', $user_ava
                             <div class="px-2 py-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center">
                                     <?php if ($user_avatar): ?>
-                                        <img src="/<?php echo $user_avatar; ?>" alt="<?php echo htmlspecialchars($user_name); ?>" class="w-12 h-12 rounded-full mr-3 avatar-user object-cover">
+                                        <img src="/<?php echo $user_avatar; ?>" alt="" class="w-12 h-12 rounded-full mr-3 avatar-user object-cover">
                                     <?php else: ?>
                                         <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 dark:bg-gray-600 dark:text-gray-300 mr-3">
                                             <?php echo strtoupper(substr(htmlspecialchars($user_name), 0, 1)); ?>
