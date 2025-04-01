@@ -69,8 +69,6 @@
         $isActiveDisplay = 'text-gray-600 dark:text-gray-400';
     }
 
-    $postCommentController = new PostCommentController();
-    $userController = new UserController();
     $numberComments = $postCommentController->getNumberComments($postId);
     $comments = $postCommentController->getComments($postId);
 

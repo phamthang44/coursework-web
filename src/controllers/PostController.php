@@ -110,6 +110,8 @@ class PostController extends BaseController
             header("Location: /quorae");
             exit();
         }
+        $postCommentController = new PostCommentController();
+        $userController = new UserController();
         try {
             $postDAO = new PostDAOImpl();
             $postAssetService = new PostAssetDAOImpl();
