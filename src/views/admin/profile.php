@@ -25,21 +25,13 @@
     <div class="overlay fixed z-[1] top-0 left-0 w-full h-full bg-[#222222] hidden opacity-45 transition-opacity duration-300"></div>
     <?php
 
-    use controllers\PostController;
-    use controllers\ModuleController;
-    use controllers\AdminController;
-    use utils\SessionManager;
     use utils\Template;
 
     Template::header();
     Template::footer();
-    // $admin = SessionManager::get('admin');
-    // if (!$admin) {
-    //     header('Location: /403');
-    // }
+
     if (!is_null($user)) {
-        $postController = new PostController();
-        $moduleController = new ModuleController();
+
         echo render_quora_header(true, $currentUser->getUserName(), $currentUser->getProfileImage(), $currentUser->getEmail(), $currentUser);
         $userId = $user->getUserId();
         $firstName = $user->getFirstName();
@@ -231,7 +223,7 @@
                                                     <?= $avatarUser ?></div>
                                                 <div class="ml-4">
                                                     <h4 class="font-medium text-gray-900 dark:text-white"><?= $firstName . " " . $lastName ?></h4>
-                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Posted on <?= $$formattedPostCreateDate ?></p>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Posted on <?= $formattedPostCreateDate ?></p>
                                                 </div>
                                                 <div class="relative ml-auto">
                                                     <?= $buttonMoreOptions . $postMoreOptionsDropdown ?>

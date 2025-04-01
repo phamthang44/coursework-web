@@ -43,6 +43,8 @@ class AdminController extends BaseController
     public function userProfile($firstName, $lastName, $userID)
     {
         $user = $this->getUser($userID);
+        $postController = new PostController();
+        $moduleController = new ModuleController();
         $currentUser = SessionManager::get('user');
         if (!$user) {
             header("Location: /404");
@@ -58,7 +60,9 @@ class AdminController extends BaseController
         foreach ($posts as $post) {
             $comments[$post->getPostId()] = $this->postCommentDAO->getCommentsByPostId($post->getPostId());
         }
+
         $isOwner = $currentUser && method_exists($currentUser, 'getUserId') && $currentUser->getUserId() === $user->getUserId();
+
         require_once __DIR__ . '/../views/admin/profile.php';
     }
 

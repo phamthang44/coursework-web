@@ -141,8 +141,10 @@
             <div class="p-4 md:p-6">
                 <div>
                     <!-- Post Image -->
-                    <?php if ($assetsByPostId->getMediaKey()) { ?>
-                        <img src="/<?= $assetsByPostId->getMediaKey() ?>" alt="Post image" class="w-full h-auto rounded-lg mb-4">
+                    <?php if ($assetsByPostId) { ?>
+                        <?php if ($assetsByPostId->getMediaKey()) { ?>
+                            <img src="/<?= $assetsByPostId->getMediaKey() ?>" alt="Post image" class="w-full h-auto rounded-lg mb-4">
+                        <?php } ?>
                     <?php } ?>
                 </div>
                 <div class="prose max-w-none dark:prose-invert prose-lg"><?= $content ?></div>

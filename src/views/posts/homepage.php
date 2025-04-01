@@ -373,8 +373,6 @@
                             dropdown.classList.add("hidden");
                         }
                         if (e.target.classList.contains("edit-action-quick")) {
-                            // e.preventDefault();
-                            // e.stopPropagation();
 
                             checkExistingDropdown(e);
                             checkExistingModal();
@@ -389,6 +387,8 @@
                             const postModuleId = postCard.dataset.moduleId || '';
                             const postModuleName = postCard.dataset.moduleName || '';
                             const postImage = postCard.dataset.postImage;
+                            let postContentLength = postContent.split(/\s+/).length;
+                            let postTitleLength = postTitle.length;
                             let hiddenClass = 'hidden';
                             if (postImage) {
                                 hiddenClass = '';
@@ -401,7 +401,7 @@
                                         <div class="form-group py-4 mb-4">
                                             <div class="flex">
                                                 <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title (Optional) Max(100 characters):</label>
-                                                <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">0</span></p>
+                                                <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">${postTitleLength}</span></p>
                                             </div>
                                             <input type="text" id="title" name="title" placeholder="Enter title (optional)"
                                                 class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
@@ -413,7 +413,7 @@
                                         <div class="form-group">
                                             <div class="flex">
                                                 <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
-                                                <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">0</span></p>
+                                                <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">${postContentLength}</span></p>
                                             </div>
                                             <textarea id="content" name="content" rows="5" placeholder="Enter content"
                                                 class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${postContent}</textarea>

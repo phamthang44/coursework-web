@@ -14,16 +14,13 @@
 <body class="bg-white dark:bg-darkmode2">
     <?php
 
-    use controllers\ModuleController;
-    use controllers\UserController;
     use utils\SessionManager;
     use utils\Template;
 
     Template::header();
     Template::footer();
 
-    $userController = new UserController();
-    $moduleController = new ModuleController();
+
     $currentUser = SessionManager::get('user');
     if ($currentUser->getStatus() === 'banned') {
         SessionManager::set('error', 'You are banned from the site');

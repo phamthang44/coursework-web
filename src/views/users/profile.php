@@ -48,8 +48,6 @@
     Template::postCard();
 
     if (isset($user) && !is_null($user)) {
-        $postController = new PostController();
-        $moduleController = new ModuleController();
 
         echo render_quora_header(true, $currentUser->getUserName(), $currentUser->getProfileImage(), $currentUser->getEmail(), $currentUser);
 
@@ -67,7 +65,7 @@
         $currentPage = $postController->getCurrentPage();
         $totalPages = $postController->getTotalPages($userId);
         $modules = $moduleController->getAllModules();
-        $posts = $postController->getPostsByPageByUserId($userId);
+
 
         $dob = $user->getDob();
         $formattedDob = $dob ? date("Y-m-d", strtotime($dob)) : "Not set";
@@ -85,7 +83,7 @@
                             <form class="" action="/users/update-avatar/<?php echo $userId ?>" method="POST" enctype="multipart/form-data" id="form-update-avatar">
                                 <div id="preview-container-avatar" class="w-32 h-32 rounded-full mb-4">
                                     <div class="relative">
-                                        <?php if (is_null($user->getProfileImage()) || empty($user->getProfileImage())) { ?>
+                                        <?php if (is_null($profileImage) || empty($profileImage)) { ?>
                                             <div class="w-32 h-32 rounded-full bg-purple-600 dark:bg-purple-700 text-white text-6xl font-bold flex items-center justify-center">
                                                 <?php echo strtoupper(substr($username, 0, 1)); ?>
                                             </div>

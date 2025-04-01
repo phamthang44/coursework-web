@@ -14,9 +14,6 @@
 <body class="bg-white dark:bg-darkmode2">
     <?php
     // User authentication setup
-    use controllers\ModuleController;
-    use controllers\UserController;
-    use controllers\PostController;
     use utils\SessionManager;
     use utils\Template;
 
@@ -28,32 +25,8 @@
         SessionManager::set('error', 'You are banned from the site');
         header('Location: /403');
     }
-    $userController = new UserController();
-    $postController = new PostController();
-    $moduleController = new ModuleController();
-    if (isset($_SESSION['user_id'])) {
-        $userId = SessionManager::get('user_id');
-        $user = $userController->getUser($userId);
-        $user_logged_in = true;
-        $user_name = $user->getUsername();
-        $user_avatar = $user->getProfileImage() ?? '';
-        $user_email = $user->getEmail();
-    } else {
-        $user_logged_in = false;
-        $user_name = '';
-        $user_avatar = '';
-        $user_email = '';
-    }
 
-    $post = $postController->getPostByIdAndUserId($postId, $userId);
-    $postAdminDisplay = $postController->getPostById($postId);
-    if (SessionManager::get('role') === 'admin') {
-        $post = $postAdminDisplay;
-    }
-    $moduleName = $moduleController->getModuleName($post->getModuleId());
-    $postImageObj = $postController->getPostImage($post->getPostId());
-    $postImageStr = (!is_null($postImageObj)) ? $postImageObj->getMediaKey() : '';
-    $postImage = $postImageStr ?? '';
+
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $user);
     ?>
     <div class="container mx-auto py-6 w-4/5 rounded-lg">
@@ -62,7 +35,7 @@
             <!-- Title Field (Optional) -->
             <div class="form-group py-4 mb-4">
                 <label for="title" class="block font-medium text-gray-700 dark:text-white mb-4">Title:</label>
-                <p class="font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount">0</span></p>
+                <p class="font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount"><?php echo $postTitleLength; ?></span></p>
                 <input type="text" id="title" name="title" placeholder="Enter new title"
                     class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
                     value="<?php echo $post->getTitle() ?>">
@@ -73,7 +46,7 @@
             <!-- Content Field (Required) -->
             <div class="form-group">
                 <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
-                <p class="font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">0</span></p>
+                <p class="font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount"><?= $postContentCountWords ?></span></p>
                 <textarea id="content" name="content" rows="5" placeholder="Enter new content"
                     class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"><?php echo $post->getContent(); ?></textarea>
                 <span class="form-message text-red-500 font-medium text-sm"></span>

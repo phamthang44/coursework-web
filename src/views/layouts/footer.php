@@ -73,7 +73,7 @@ function render_quora_footer($additional_links = [], $show_newsletter = true)
                         existingModal.remove();
                     }
                     const aboutModal = new Modal();
-                    aboutModal.openModal(`<p class="text-xl text-black dark:text-white">QuoraeHub is an online platform where students can post questions and receive answers from their peers. It fosters collaborative learning by allowing students to share knowledge, discuss ideas, and help each other understand complex topics. This interactive environment encourages critical thinking and problem-solving while building a supportive academic community. Whether seeking homework help or exploring new concepts, students can benefit from diverse perspectives and assistance. Quorae Hub empowers learners by making education more accessible and engaging through peer-to-peer interaction.</p>`)
+                    aboutModal.openModal(`<p class="p-10 text-xl text-black dark:text-white">QuoraeHub is an online platform where students can post questions and receive answers from their peers. It fosters collaborative learning by allowing students to share knowledge, discuss ideas, and help each other understand complex topics. This interactive environment encourages critical thinking and problem-solving while building a supportive academic community. Whether seeking homework help or exploring new concepts, students can benefit from diverse perspectives and assistance. Quorae Hub empowers learners by making education more accessible and engaging through peer-to-peer interaction.</p>`)
                 });
             }
         </script>

@@ -152,13 +152,15 @@ class UserController extends BaseController
 
     public function userProfile($firstName, $lastName, $id)
     {
+        $postController = new PostController();
+        $moduleController = new ModuleController();
         $user = $this->getProfileUser($firstName, $lastName, $id);
         $currentUser = SessionManager::get('user');
         if (!$user) {
             header("Location: /404");
             exit();
         }
-        $posts = $this->postDAO->getPostsByUserId($user->getUserId());
+        $posts = $postController->getPostsByPageByUserId($user->getUserId());
         $voteScores = [];
         foreach ($posts as $post) {
             $voteScores[$post->getPostId()] = $this->postVoteDAO->getVoteScore($post->getPostId());
