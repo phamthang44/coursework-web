@@ -242,10 +242,12 @@ class SearchUI {
       this.searchBar.addEventListener("input", () =>
         this.debouncedFetchResults()
       );
-      this.overlay.addEventListener("click", () => {
-        this.hideSearchResults();
-        this.hideOverlay();
-      });
+      if (this.overlay) {
+        this.overlay.addEventListener("click", () => {
+          this.hideSearchResults();
+          this.hideOverlay();
+        });
+      }
     }
   }
 

@@ -424,8 +424,9 @@
                                             <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
                                             <select id="module" name="module"
                                                 class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
-                                                <option value="" class="text-black dark:text-white">Selected : ${postModuleName}</option>
-                                                <?php foreach ($modules as $module): ?>
+                                                
+                                                <?php foreach ($modules as $module): ?>                     
+                                                    ${!postModuleName ? `<option value="" class="text-black dark:text-white"> -- Select Module -- </option>` : `<option value="${postModuleId}" class="text-black dark:text-white">${postModuleName}</option>`}  
                                                     <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
                                                 <?php endforeach; ?>
                                             </select>

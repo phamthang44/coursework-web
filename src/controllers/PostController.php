@@ -234,37 +234,15 @@ class PostController extends BaseController
         $postController = new PostController();
         $moduleController = new ModuleController();
         try {
-            $post = $this->postDAO->getPost($postId);
-            if (!$post) {
+            $postAdminDisplay = $postController->getPostById($postId);
+            if (!$postAdminDisplay) {
                 SessionManager::set("error", "Post not found");
                 header("Location: /quorae");
                 exit();
             }
-            if (isset($_SESSION['user_id'])) {
-                $userId = SessionManager::get('user_id');
-                $user = $userController->getUser($userId);
-                $user_logged_in = true;
-                $user_name = $user->getUsername();
-                $user_avatar = $user->getProfileImage() ?? '';
-                $user_email = $user->getEmail();
-            } else {
-                $user_logged_in = false;
-                $user_name = '';
-                $user_avatar = '';
-                $user_email = '';
-            }
-
-            $post = $postController->getPostByIdAndUserId($postId, $userId);
-            $postAdminDisplay = $postController->getPostById($postId);
-            $postContentArray = explode(' ', $post->getContent());
-            $postContentCountWords = count($postContentArray);
-            $postTitleLength = strlen($post->getTitle());
             $modules = $this->moduleDAO->getAllModules();
-            if (SessionManager::get('role') === 'admin') {
-                $post = $postAdminDisplay;
-            }
-            $moduleName = $moduleController->getModuleName($post->getModuleId());
-            $postImageObj = $postController->getPostImage($post->getPostId());
+            $moduleName = $moduleController->getModuleName($postAdminDisplay->getModuleId());
+            $postImageObj = $postController->getPostImage($postAdminDisplay->getPostId());
             $postImageStr = (!is_null($postImageObj)) ? $postImageObj->getMediaKey() : '';
             $postImage = $postImageStr ?? '';
             require_once __DIR__ . '/../views/posts/updatepost.php';

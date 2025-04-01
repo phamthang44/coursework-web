@@ -25,7 +25,28 @@
         SessionManager::set('error', 'You are banned from the site');
         header('Location: /403');
     }
+    if (isset($_SESSION['user_id'])) {
+        $userId = SessionManager::get('user_id');
+        $user = $userController->getUser($userId);
+        $user_logged_in = true;
+        $user_name = $user->getUsername();
+        $user_avatar = $user->getProfileImage() ?? '';
+        $user_email = $user->getEmail();
+    } else {
+        $user_logged_in = false;
+        $user_name = '';
+        $user_avatar = '';
+        $user_email = '';
+    }
+    $post = $postController->getPostByIdAndUserId($postId, $userId);
 
+    if (SessionManager::get('role') === 'admin') {
+        $post = $postAdminDisplay;
+    }
+
+    $postContentArray = explode(' ', $post->getContent());
+    $postContentCountWords = count($postContentArray);
+    $postTitleLength = strlen($post->getTitle());
 
     echo render_quora_header($user_logged_in, $user_name, $user_avatar, $user_email, $user);
     ?>
@@ -57,8 +78,10 @@
                 <label for="module" class="block font-medium text-gray-700 dark:text-white mb-4">Module Name:</label>
                 <select id="module" name="module"
                     class="w-50 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
-                    <option value="" class="text-black dark:text-white">Selected : <?php echo $moduleName ?></option>
                     <?php foreach ($modules as $module): ?>
+                        <?php if (!$moduleName) { ?>
+                            <option value="" class="text-black dark:text-white"> -- Select Module -- </option>
+                        <?php } ?>
                         <option class="text-black dark:text-white" value="<?php echo $module->getModuleId(); ?>"><?php echo $module->getModuleName(); ?></option>
                     <?php endforeach; ?>
                 </select>

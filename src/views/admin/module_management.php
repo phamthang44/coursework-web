@@ -74,6 +74,7 @@
                     <tbody class="bg-white dark:bg-darkmode divide-y divide-gray-200 dark:divide-gray-600 over-flow-y-auto">
                         <!-- Replace this section with dynamic content -->
                         <?php foreach ($modules as $module) { ?>
+
                             <tr class="module-item hover:bg-gray-50 dark:hover:bg-gray-700"
                                 data-module-id="<?= htmlspecialchars($module->getModuleId(), ENT_QUOTES, 'UTF-8'); ?>"
                                 data-module-name="<?= htmlspecialchars($module->getModuleName(), ENT_QUOTES, 'UTF-8'); ?>"
@@ -175,12 +176,14 @@
         const moduleItems = document.querySelectorAll('.module-item');
         moduleItems.forEach(item => {
             item.addEventListener('click', (e) => {
+                checkExistingModal();
                 const moduleModal = new Modal();
                 const moduleId = item.dataset.moduleId;
                 const moduleName = item.dataset.moduleName;
                 const moduleDescription = item.dataset.moduleDescription;
 
                 if (e.target.classList.contains("edit-module-btn")) {
+                    checkExistingModal();
                     moduleModal.openModal(`<h2 class="text-xl text-red-500 font-bold mb-4">Edit the module</h2>
                             <form action="/admin/modules/update/${moduleId}" method="POST" enctype="multipart/form-data" id="form-update-module" class="space-y-4">
                                 <div class="form-group py-4 mb-4">
@@ -212,16 +215,16 @@
                     checkExistingModal();
                     const deleteConfirmCard = new ConfirmCard();
                     deleteConfirmCard.openConfirmCard(`
-    <h2 class="text-red-600 dark:text-white confirm-title" data-url="${e.target.href}">
-        Are you sure you want to delete <span class="text-red-500 dark:text-red-600">${moduleName}</span> ?
+    <h2 class="text-gray-800 dark:text-white confirm-title" data-url="${e.target.href}">
+        Are you sure you want to delete <span class="text-red-500 dark:text-red-600 font-medium">${moduleName}</span> ?
     </h2>`);
                 }
             });
         });
-
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === "childList") {
+
                     Validator({
                         form: "#form-update-module",
                         formGroupSelector: ".form-group",
@@ -284,6 +287,10 @@
                                 });
                                 const data = await response.json();
                                 if (data.status) {
+                                    console.log(data)
+                                    if (data.module.moduleId >= 10) {
+                                        window.location.reload();
+                                    }
                                     checkExistingModal();
                                     const moduleTable = document.querySelector("tbody");
                                     const newModule = document.createElement("tr");

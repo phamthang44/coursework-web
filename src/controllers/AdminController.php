@@ -181,7 +181,6 @@ class AdminController extends BaseController
 
             if ($result) {
                 $module = $this->moduleController->getModuleById($moduleId);
-                error_log(print_r($module, true));
                 echo json_encode([
                     "status" => true,
                     "module" => $module->toArray()
