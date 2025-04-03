@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This is a page to view specific post of QuoraeHub, a platform for sharing knowledge and insights.">
     <title><?= $post->getTitle() . " - QuoraeHub" ?></title>
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
@@ -153,21 +154,21 @@
                         <?php if ($currentUser) { ?>
                             <!-- Upvote/Downvote -->
                             <div class="vote-score flex items-center space-x-[50px] relative w-[150px]">
-                                <button class="vote-btn upvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                                <button aria-label="upvote-button" class="vote-btn upvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
                                     <i class="fas fa-arrow-up"></i>
                                 </button>
                                 <span class="font-medium absolute block <?= $isActiveDisplay ?>"><?= $voteDisplay ?></span>
-                                <button class="vote-btn downvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                                <button aria-label="downvote-button" class="vote-btn downvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
                                     <i class="fas fa-arrow-down"></i>
                                 </button>
                             </div>
                         <?php } else { ?>
                             <div class="vote-score flex items-center space-x-[50px] relative w-[150px]">
-                                <button class="vote-btn upvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                                <button aria-label="upvote-button" class="vote-btn upvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
                                     <i class="fas fa-arrow-up"></i>
                                 </button>
                                 <span class="font-medium absolute block <?= $isActiveDisplay ?>"><?= $voteDisplay ?></span>
-                                <button class="vote-btn downvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                                <button aria-label="downvote-button" class="vote-btn downvote-btn flex items-center justify-center h-8 w-8 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
                                     <i class="fas fa-arrow-down"></i>
                                 </button>
                             </div>

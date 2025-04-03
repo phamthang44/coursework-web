@@ -45,7 +45,7 @@ function renderCommentTree($comments, $postId, $parentId = null, $level = 0, $po
                     <div class="flex items-center space-x-4 text-sm">
                         <?php $voteData = $postCommentController->getVoteData($comment->getPostCommentId(), $currentUser->getUserId()) ?>
                         <span class="like-count"><?= $voteData['voteScore'] ?></span>
-                        <button class="text-gray-500 hover:text-gray-700 like-button" data-comment-id="<?= $comment->getPostCommentId() ?>">
+                        <button aria-label="like-button" class="text-gray-500 hover:text-gray-700 like-button" data-comment-id="<?= $comment->getPostCommentId() ?>">
                             <?php if ($voteData['userLiked']) { ?>
                                 <i class="far fa-thumbs-up text-white icon-active"></i>
                             <?php } else { ?>
