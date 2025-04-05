@@ -32,24 +32,21 @@
             <h2 class="text-2xl mb-[20px] text-white">Welcome to KnowledgeHub</h2>
 
             <form action="/signup" class="form-signup" id="form-signup" method="POST">
-                <div class="flex">
-                    <div class="form-group pb-[20px] relative">
-                        <label for="firstName" class="block mb-2 text-sm text-[#777] font-medium">First name</label>
-                        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" autocomplete="off"
-                            class="bg-[#181818] py-3 px-4 mb-[5px] border border-[#2a2a2a] rounded-lg text-[15px] transition-all text-white focus:outline-none focus:border-[#f42935] focus:shadow">
-                        <span class="form-message absolute right-[40px] -top-[2px] text-red-600"></span>
-                    </div>
-                    <div class="form-group ml-auto relative">
-                        <label for="lastName" class="block mb-[5px] text-sm text-[#777] font-medium">Last name</label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" autocomplete="off"
-                            class="bg-[#181818] py-3 px-4 mb-[5px] border border-[#2a2a2a] rounded-lg text-[15px] transition-all text-white focus:outline-none focus:border-[#f42935] focus:shadow">
-                        <span class="form-message absolute right-[40px] -top-[2px] text-red-600"></span>
-                    </div>
+                <div class="form-group relative w-full mb-10">
+                    <label for="firstName" class="block mb-2 text-sm text-[#777] font-medium">First name</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" autocomplete="off"
+                        class="bg-[#181818] w-full py-3 px-4 mb-[5px] border border-[#2a2a2a] rounded-lg text-[15px] transition-all text-white focus:outline-none focus:border-[#f42935] focus:shadow">
+                    <span class="form-message max-chars absolute right-[40px] -top-[2px] text-red-600"></span>
                 </div>
-
+                <div class="form-group relative mb-10">
+                    <label for="lastName" class="block mb-[5px] text-sm text-[#777] font-medium">Last name</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" autocomplete="off"
+                        class="bg-[#181818] w-full py-3 px-4 mb-[5px] border border-[#2a2a2a] rounded-lg text-[15px] transition-all text-white focus:outline-none focus:border-[#f42935] focus:shadow">
+                    <span class="form-message max-chars absolute right-[40px] -top-[2px] text-red-600"></span>
+                </div>
                 <div class="mb-10 form-group relative">
                     <label for="email" class="block mb-2 text-sm text-[#777] font-medium">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off"
+                    <input id="email" name="email" placeholder="Enter your email" autocomplete="off"
                         class="bg-[#181818] w-full py-3 px-4 border border-[#2a2a2a] rounded-lg text-[15px] transition-all text-white focus:outline-none focus:border-[#f42935] focus:shadow">
                     <?php if (!empty($_SESSION['error'])) {
                         $error = $_SESSION['error'];
@@ -115,8 +112,13 @@
                 Validator.hasNoWhiteSpace("#email"),
                 Validator.hasNoWhiteSpace("#password"),
                 Validator.hasNoWhiteSpace("#confirm-password"),
+                Validator.maxLength("#firstName", 20, "First name must be less than 20 characters"),
+                Validator.maxLength("#lastName", 20, "Last name must be less than 20 characters"),
             ],
         });
+
+        const maxChars = document.querySelectorAll('.max-chars');
+        console.log(maxChars);
     </script>
 </body>
 

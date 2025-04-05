@@ -310,7 +310,7 @@
             <form action="/login" class="form-login" id="form-login" method="POST">
                 <div class="input-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="off">
+                    <input id="email" name="email" placeholder="Enter your email" autocomplete="off">
                     <span class="form-message"></span>
                 </div>
 

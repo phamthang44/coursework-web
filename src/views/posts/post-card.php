@@ -145,7 +145,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
 
                 <?php if ($currentUser) { ?>
                     <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
-                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>" aria-label="Upvote">
+                        <button class="vote-btn upvote-btn p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>" aria-label="Upvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
@@ -155,15 +155,15 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             <?= $voteDisplay ?>
                         </span>
 
-                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>" aria-label="Downvote">
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>" aria-label="Downvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
                     </div>
                 <?php } else { ?>
-                    <div class="vote-score flex items-center relative w-[100px]" data-score="<?= $voteScore ?>">
-                        <button class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>" aria-label="Upvote">
+                    <div class="vote-score flex justify-center items-center relative w-[100px]" data-score="<?= $voteScore ?>">
+                        <button class="vote-btn upvote-btn p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>" aria-label="Upvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
@@ -173,7 +173,7 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                             <?= $voteDisplay ?>
                         </span>
 
-                        <button class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>" aria-label="Downvote">
+                        <button class="vote-btn downvote-btn ml-auto p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>" aria-label="Downvote">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
