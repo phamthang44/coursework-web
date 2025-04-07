@@ -208,7 +208,7 @@
                     <input type="text" id="title" name="title" placeholder="Enter title (optional)"
                         class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">
                     <span class="form-message text-red-500 text-sm"></span>
-                    <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
+                    <input type="hidden" name="user_id" value="<?php if (!is_null($user)) echo $user->getUserId(); ?>">
                 </div>
 
                 <!-- Content Field (Required) -->
@@ -407,7 +407,7 @@
                                                 class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
                                                 value="${postTitle}">
                                             <span class="form-message text-red-500 text-sm"></span>
-                                            <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
+                                            <input type="hidden" name="user_id" value="<?php if ($user) echo $user->getUserId(); ?>">
                                         </div>
                                         <!-- Content Field (Required) -->
                                         <div class="form-group">

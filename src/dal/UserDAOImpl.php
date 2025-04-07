@@ -250,8 +250,8 @@ class UserDAOImpl implements UserDAOI
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['user_id'] ?? 0;
-    }
+        return $row['last_id'] ?? 0;
+    } //debug here test case that is username not unique
 
     /**
      * @param \PDOStatement $stmt

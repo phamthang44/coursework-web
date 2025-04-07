@@ -104,15 +104,27 @@ class UserController extends BaseController
                 }
                 $email = trim($_POST['email']);
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $localEmail = explode('@', $email)[0];
+                    $domainEmail = explode('@', $email)[1];
+                    if (empty($localEmail) || empty($domainEmail)) {
+                        SessionManager::set('error', 'Invalid email format');
+                        header("Location: /signup");
+                        exit();
+                    }
+                    if (strlen($localEmail) > 64 || strlen($domainEmail) > 255) {
+                        SessionManager::set('error', 'Invalid email format with length greater than 64 or 255 characters');
+                        header("Location: /signup");
+                        exit();
+                    }
                     SessionManager::set('error', 'Invalid email format');
                     header("Location: /signup");
                     exit();
                 }
 
                 if ($this->checkExistedEmail($email)) {
-                    throw new Exception("Email already exists");
+                    throw new Exception("Email already exists !");
                 }
-
+                error_log("username: " . $username);
                 $this->userDAO->createUser($username, $lastName, $firstName, $email, $hashedPassword, NULL, NULL, NULL);
                 header("Location: /login");
             } else {

@@ -225,3 +225,16 @@ Validator.hasNoWhiteSpace = function (selector) {
     },
   };
 };
+
+Validator.maxLengthLocalPartEmail = function (selector, max, message) {
+  return {
+    selector: selector,
+    test: function (value) {
+      let localPart = value.split("@")[0];
+      return localPart.length <= max
+        ? undefined
+        : message ||
+            `Please input at most ${max} characters in the local part of the email`;
+    },
+  };
+};
