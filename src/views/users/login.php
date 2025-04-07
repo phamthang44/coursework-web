@@ -351,6 +351,7 @@
                 Validator.isRequired("#email", "(*required)"),
                 Validator.isEmail("#email"),
                 Validator.isRequired("#password", "(*required)"),
+                Validator.maxLengthLocalPartEmail("#email", 64, " The local part of email before '@' must be less than 64 characters"),
             ],
         });
     </script>
