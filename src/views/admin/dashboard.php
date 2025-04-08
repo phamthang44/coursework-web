@@ -114,10 +114,6 @@
                     <div class="flex justify-between items-center p-4 border-b border-border-light dark:border-border-dark">
                         <h3 class="text-lg font-medium">Recent Posts</h3>
                         <div class="flex items-center gap-3">
-                            <input
-                                type="text"
-                                class="px-3 py-2 border border-border-light dark:border-border-dark rounded bg-white dark:bg-gray-800 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark"
-                                placeholder="Search posts..." />
                             <a href="/posts/create" class="flex items-center px-4 py-2 bg-blue-400 dark:bg-primary-dark text-black dark:text-white rounded hover:opacity-90 transition-opacity">
                                 <i class="fas fa-plus mr-2"></i> Add New
                             </a>

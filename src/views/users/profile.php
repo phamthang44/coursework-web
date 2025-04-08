@@ -349,6 +349,22 @@
     <script src="/js/script.js"></script>
     <script src="/js/Validator.js"></script>
     <script>
+        <?php
+        $error = SessionManager::get('error');
+        SessionManager::remove('error');
+        ?>
+        let errorMessage = <?= json_encode($error) ?>;
+        if (errorMessage) {
+            const errorModal = new Modal();
+            errorMessage = "There is already an account with this email address. Please use another email address.";
+            errorModal.openModal(`
+                <div class="error-modal">
+                    <div class="bg-white dark:bg-darkmode rounded-lg w-full max-w-xl mx-4 p-4">
+                        <h3 class="text-lg font-semibold text-red-600">Error !</h3>
+                        <p class="mt-2 text-gray-700 dark:text-gray-300">${errorMessage}</p>
+                    </div>
+                </div>`);
+        }
         document.querySelector('.edit-profile').addEventListener('click', function() {
             const editProfileModal = new Modal();
             editProfileModal.openModal(`<div class="bg-white dark:bg-darkmode rounded-lg w-full max-w-xl mx-4">
@@ -421,7 +437,19 @@
         function handleImagePreview(e) {
             let file = e.target.files[0];
             let reader = new FileReader();
-
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                const errorModal = new Modal();
+                errorModal.openModal(`
+                    <div class="error-modal">
+                        <h1 class="text-2xl text-red-600 dark:text-red-500 font-medium mb-4">Error !</h1>
+                        <h2 class="text-gray-600 dark:text-white ">File size exceeds 10MB. Please choose a smaller file.</h2>
+                    </div>`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                return;
+            }
             reader.onload = function(e) {
                 let preview = document.getElementById("preview-update");
                 if (preview) {

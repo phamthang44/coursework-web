@@ -201,22 +201,25 @@ class AdminController extends BaseController
             exit();
         }
 
-        header("Content-Type: application/json");
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(["success" => false, "message" => "Invalid request"]);
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            header("Location: /admin/module-management");
+            SessionManager::set('message', "Invalid request method");
             exit();
         }
 
         try {
             $result = $this->moduleController->deleteModule($moduleId);
             if ($result) {
-                echo json_encode(["status" => true]);
+                header("Location: /admin/module-management");
+                SessionManager::set('message', "Module deleted successfully");
+                exit();
             } else {
                 throw new Exception("Failed to delete module");
             }
         } catch (\Throwable $th) {
-            echo json_encode(["status" => false, "message" => $th->getMessage()]);
+            header("Location: /admin/module-management");
+            SessionManager::set('message', $th->getMessage());
+            exit();
         }
     }
 

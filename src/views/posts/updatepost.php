@@ -59,7 +59,7 @@
                 <p class="font-medium text-gray-700 dark:text-white mb-4">Characters count: <span id="characterCount"><?php echo $postTitleLength; ?></span></p>
                 <input type="text" id="title" name="title" placeholder="Enter new title"
                     class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
-                    value="<?php echo $post->getTitle() ?>">
+                    value="<?php echo htmlspecialchars($post->getTitle(), ENT_QUOTES, 'UTF-8') ?>">
                 <span class="form-message text-red-500 text-sm"></span>
                 <input type="hidden" name="user_id" value="<?php echo $user->getUserId(); ?>">
             </div>
@@ -69,7 +69,7 @@
                 <label for="content" class="block font-medium text-gray-700 dark:text-white mb-4">Content (Required):</label>
                 <p class="font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount"><?= $postContentCountWords ?></span></p>
                 <textarea id="content" name="content" rows="5" placeholder="Enter new content"
-                    class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"><?php echo $post->getContent(); ?></textarea>
+                    class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"><?php echo htmlspecialchars($post->getContent(), ENT_QUOTES, 'UTF-8') ?></textarea>
                 <span class="form-message text-red-500 font-medium text-sm"></span>
             </div>
 
@@ -109,7 +109,7 @@
                         <img id="preview" src="" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-1 rounded-lg border border-gray-300 hidden" />
                     <?php } ?>
                 </div>
-                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Update post">
+                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold cursor-pointer" type="submit" value="Update post">
             </div>
         </form>
     </div>
@@ -118,6 +118,7 @@
     echo render_quora_footer();
     ?>
     <script src="/js/validator.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         Validator({
             form: "#form-upload-post",
@@ -126,6 +127,7 @@
             rules: [
                 Validator.isRequired("#content"),
                 Validator.isRequiredSelection("#module"),
+                Validator.maxLength("#title", 100),
             ],
         });
 
@@ -133,7 +135,19 @@
         image.addEventListener('change', function(e) {
             let file = e.target.files[0];
             let reader = new FileReader();
-
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                const errorModal = new Modal();
+                errorModal.openModal(`
+                    <div class="error-modal">
+                        <h1 class="text-2xl text-red-600 dark:text-red-500 font-medium mb-4">Error !</h1>
+                        <h2 class="text-gray-600 dark:text-white ">File size exceeds 10MB. Please choose a smaller file.</h2>
+                    </div>`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                return;
+            }
             //read file, show image
             reader.onload = function(e) {
                 let preview = document.getElementById("preview");

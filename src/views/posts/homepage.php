@@ -414,7 +414,7 @@
                                             </div>
                                             <input type="text" id="title" name="title" placeholder="Enter title (optional)"
                                                 class="w-full h-12 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                                value="${postTitle}">
+                                                value="${escapeHtml(postTitle)}">
                                             <span class="form-message text-red-500 text-sm"></span>
                                             <input type="hidden" name="user_id" value="<?php if ($user) echo $user->getUserId(); ?>">
                                         </div>
@@ -425,7 +425,7 @@
                                                 <p class="ml-auto font-medium text-gray-700 dark:text-white mb-4">Word count: <span id="wordCount">${postContentLength}</span></p>
                                             </div>
                                             <textarea id="content" name="content" rows="5" placeholder="Enter content"
-                                                class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${postContent}</textarea>
+                                                class="w-full h-40 resize-none p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white">${escapeHtml(postContent)}</textarea>
                                             <span class="form-message text-red-500 font-medium text-sm"></span>
                                         </div>
                                         <!-- Module Select -->

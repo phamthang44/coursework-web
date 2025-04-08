@@ -92,9 +92,9 @@
                                     <button class="edit-module-btn text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
                                         Edit
                                     </button>
-                                    <button class="delete-module-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                    <a href="/admin/modules/delete/<?php echo $module->getModuleId(); ?>" class="delete-module-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                         Delete
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                         <?php } ?>
