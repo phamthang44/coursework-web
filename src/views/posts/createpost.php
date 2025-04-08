@@ -95,7 +95,7 @@
                     <h3 class="font-medium text-gray-700 dark:text-white">Preview Image:</h3>
                     <img id="preview" src="" alt="Preview Image" class="w-[500px] h-[500px] object-cover mt-2 rounded-lg border border-gray-300" />
                 </div>
-                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create new post">
+                <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold cursor-pointer" type="submit" value="Create new post">
             </div>
         </form>
     </div>
@@ -104,6 +104,7 @@
     echo render_quora_footer();
     ?>
     <script src="/js/validator.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         Validator({
             form: "#form-upload-post",
@@ -111,6 +112,7 @@
             formMessage: ".form-message",
             rules: [
                 Validator.isRequired("#content"),
+                Validator.maxLength("#title", 100),
                 Validator.isRequiredSelection("#module"),
             ],
         });
@@ -119,7 +121,19 @@
         image.addEventListener('change', function(e) {
             let file = e.target.files[0];
             let reader = new FileReader();
-
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                const errorModal = new Modal();
+                errorModal.openModal(`
+                    <div class="error-modal">
+                        <h1 class="text-2xl text-red-600 dark:text-red-500 font-medium mb-4">Error !</h1>
+                        <h2 class="text-gray-600 dark:text-white ">File size exceeds 10MB. Please choose a smaller file.</h2>
+                    </div>`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                return;
+            }
             //read file, show image
             reader.onload = function(e) {
                 let preview = document.getElementById("preview");

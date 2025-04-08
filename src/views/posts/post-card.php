@@ -58,10 +58,10 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     ob_start();
 ?>
     <div id="post-card-<?= $postId ?>" class="post-card bg-white dark:bg-darkmode rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 w-xl h-1vh" data-post-id="<?= $postId ?>"
-        data-title="<?= htmlspecialchars($post->getTitle()) ?>"
-        data-content="<?= htmlspecialchars($post->getContent()) ?>"
+        data-title="<?= htmlspecialchars($post->getTitle(), ENT_QUOTES, 'UTF-8') ?>"
+        data-content="<?= htmlspecialchars($post->getContent(), ENT_QUOTES, 'UTF-8') ?>"
         data-module-id="<?= $post->getModuleId() ?>"
-        data-module-name="<?= htmlspecialchars($moduleId) ?>"
+        data-module-name="<?= htmlspecialchars($moduleId, ENT_QUOTES, 'UTF-8') ?>"
         data-post-image="<?= !empty($assets) ? $assets[0]->getMediaKey() : '' ?>">
         <div class="pl-5 pr-5 pb-5">
             <?php
@@ -103,15 +103,15 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                     <?php endif; ?>
                     <div class="flex gap-1 text-xs flex-col">
                         <?php if ($authorObj->getRole() === 'admin') { ?>
-                            <p class="flex items-center justify-center"><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span><span class="ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2">Admin</span></p>
+                            <p class="flex items-center justify-center"><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span><span class="ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2">Admin</span></p>
                         <?php } else { ?>
-                            <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author) ?></span></p>
+                            <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span></p>
                         <?php } ?>
 
                         <div class="flex flex-row gap-3">
-                            <p class="dark:text-[#e6e7e8] text-gray-600"><?= $createdAtFormatted ?></p>
+                            <p class="dark:text-[#e6e7e8] text-gray-600"><?= htmlspecialchars($createdAtFormatted, ENT_QUOTES, 'UTF-8') ?></p>
                             <?php if ($createdAtFormatted !== $updatedAtFormatted): ?>
-                                <p class="dark:text-[#e6e7e8] text-gray-600">Updated: <?= $updatedAtFormatted ?></p>
+                                <p class="dark:text-[#e6e7e8] text-gray-600">Updated: <?= htmlspecialchars($updatedAtFormatted, ENT_QUOTES, 'UTF-8') ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -119,14 +119,14 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                 <!-- Module badge -->
                 <div>
                     <span class=" inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs px-2 py-1 rounded-full">
-                        Module: <?= htmlspecialchars($moduleId) ?>
+                        Module: <?= htmlspecialchars($moduleId, ENT_QUOTES, 'UTF-8') ?>
                     </span>
                 </div>
             </div>
             <!-- Post header with image if available -->
             <?php if (!empty($assets)): ?>
                 <div class="post-image-container w-full h-58 overflow-hidden bg-gray-100 dark:bg-gray-700 mt-4 mb-4 rounded-lg">
-                    <img src="/<?= htmlspecialchars($assets[0]->getMediaKey()) ?>"
+                    <img src="/<?= htmlspecialchars($assets[0]->getMediaKey(), ENT_QUOTES, 'UTF-8') ?>"
                         alt="Post image"
                         class="w-full h-full object-cover">
                 </div>

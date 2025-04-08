@@ -147,8 +147,8 @@ class PostController extends BaseController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 // Validate input
-                $title = trim(htmlspecialchars($_POST['title'] ?? '', ENT_QUOTES, 'UTF-8'));
-                $content = trim(htmlspecialchars($_POST['content'] ?? '', ENT_QUOTES, 'UTF-8'));
+                $title = trim(htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8'));
+                $content = trim(htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8'));
 
                 if (empty($content)) {
                     throw new Exception("Title and content are required");
@@ -156,7 +156,7 @@ class PostController extends BaseController
 
                 // Create post and take id
                 $userId = $_POST['user_id'];
-                $moduleId = htmlspecialchars($_POST['module'] ?? '', ENT_QUOTES, 'UTF-8');
+                $moduleId = htmlspecialchars($_POST['module'], ENT_QUOTES, 'UTF-8');
                 if (empty($moduleId)) {
                     throw new Exception("Module is required");
                 }
@@ -168,7 +168,7 @@ class PostController extends BaseController
                     if (!file_exists($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
-                    $maxFileSize = 100 * 1024 * 1024; // 100MB
+                    $maxFileSize = 10 * 1024 * 1024; // 10MB
                     // Check error when uploading file
                     if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
                         throw new Exception("File upload error: " . $_FILES['image']['error']);
@@ -188,7 +188,7 @@ class PostController extends BaseController
                     }
                     // check the size of file image
                     if ($_FILES['image']['size'] > $maxFileSize) {
-                        throw new Exception("File size must not exceed 100MB");
+                        throw new Exception("File size must not exceed 10MB");
                     }
                     // make the unique filename
                     do {

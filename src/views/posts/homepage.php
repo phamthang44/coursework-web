@@ -252,9 +252,6 @@
                         <img id="preview" src="" alt="Preview Image" class="w-80 h-40 object-cover mt-2 rounded-lg border border-gray-300" />
                     </div>
                 </div>
-
-                
-
                 <!-- Submit Button -->
                 <div class="flex justify-end">
                     <input class="btn bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Create post">
@@ -336,7 +333,19 @@
         function handleImagePreview(e) {
             let file = e.target.files[0];
             let reader = new FileReader();
-
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                const errorModal = new Modal();
+                errorModal.openModal(`
+                    <div class="error-modal">
+                        <h1 class="text-2xl text-red-600 dark:text-red-500 font-medium mb-4">Error !</h1>
+                        <h2 class="text-gray-600 dark:text-white ">File size exceeds 10MB. Please choose a smaller file.</h2>
+                    </div>`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                return;
+            }
             reader.onload = function(e) {
                 let preview = document.getElementById("preview");
                 preview.src = e.target.result;
