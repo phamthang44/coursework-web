@@ -23,7 +23,7 @@ A CRUD web application designed for students to post coursework-related question
 - **Tools**: XAMPP (local development), VS Code, Git.
 
 ## Project Structure
-## Project Structure
+```
 📂 root/
 ├── 📂 config/             # Configuration files
 │   └── 📄 database.php    # Database connection settings
@@ -44,6 +44,7 @@ A CRUD web application designed for students to post coursework-related question
 ├── 📂 uploads/            # Uploaded images
 ├── 📂 tests/              # Reserved for future test cases
 └── 📄 README.md           # Project documentation
+```
 ## Installation
 
 1. **Prerequisites**:
