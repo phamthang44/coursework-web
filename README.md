@@ -55,5 +55,4 @@ A CRUD web application designed for students to post coursework-related question
 
 3. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/student-question-posting-system.git
-   cd student-question-posting-system
+   git clone https://github.com/phamthang44/coursework-web
