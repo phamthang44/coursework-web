@@ -23,32 +23,37 @@ A CRUD web application designed for students to post coursework-related question
 - **Tools**: XAMPP (local development), VS Code, Git.
 
 ## Project Structure
-├── config/
-|   ├── database.php
-├── favicon/
-├── public/             # Static files and entry point
-│   ├── css/            # Tailwind CSS styles
-│   ├── js/             # JavaScript files (validator.js, script.js)
-│   ├── .htaccess       # URL rewriting and security
-│   └── index.php       # Main entry point
-├── src/                # Core application logic
-│   ├── controllers/    # Input validation and response handling
-│   ├── dal/            # Data Access Layer for DB interactions
-│   ├── models/         # Data Access Objects mapped to DB schema
-|   ├── routes/
-|   ├── styles/
-│   ├── utils/          # Router, SessionManager, Template classes
-│   └── views/          # Templates (admin, users, posts, etc.)
-├── uploads/            # Uploaded images
-├── tests/              # Reserved for future test cases
-└── README.md           # Project documentation
+├── config/                 # Configuration files
+│   └── database.php        # Database connection settings
+├── favicon/                # Favicon assets
+├── public/                 # Static files and entry point
+│   ├── css/                # Tailwind CSS styles
+│   ├── js/                 # JavaScript files (validator.js, script.js)
+│   ├── .htaccess           # URL rewriting and security
+│   └── index.php           # Main entry point
+├── src/                    # Core application logic
+│   ├── controllers/        # Input validation and response handling
+│   ├── dal/                # Data Access Layer for DB interactions
+│   ├── models/             # Data Access Objects mapped to DB schema
+│   ├── routes/             # Route definitions
+│   ├── styles/             # Additional styles (if separate from public/css)
+│   ├── utils/              # Router, SessionManager, Template classes
+│   └── views/              # Templates (admin, users, posts, etc.)
+├── uploads/                # Uploaded images
+├── tests/                  # Reserved for future test cases
+└── README.md               # Project documentation
 ## Installation
 
 1. **Prerequisites**:
-   - XAMPP (or similar with PHP 8.x and MySQL 8.0).
+   - XAMPP (with PHP 8.x, MySQL 8.0, and Apache).
+   - Composer (for autoloading dependencies).
    - Git installed.
 
-2. **Clone the Repository**:
+2. **Install Composer**:
+   - Download and install Composer from [getcomposer.org](https://getcomposer.org).
+   - Run `composer install` in the project root to generate `vendor/autoload.php` for autoloading.
+
+3. **Clone the Repository**:
    ```bash
    git clone https://github.com/your-username/student-question-posting-system.git
    cd student-question-posting-system
