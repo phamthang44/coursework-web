@@ -23,25 +23,27 @@ A CRUD web application designed for students to post coursework-related question
 - **Tools**: XAMPP (local development), VS Code, Git.
 
 ## Project Structure
-├── config/                 # Configuration files
-│   └── database.php        # Database connection settings
-├── favicon/                # Favicon assets
-├── public/                 # Static files and entry point
-│   ├── css/                # Tailwind CSS styles
-│   ├── js/                 # JavaScript files (validator.js, script.js)
-│   ├── .htaccess           # URL rewriting and security
-│   └── index.php           # Main entry point
-├── src/                    # Core application logic
-│   ├── controllers/        # Input validation and response handling
-│   ├── dal/                # Data Access Layer for DB interactions
-│   ├── models/             # Data Access Objects mapped to DB schema
-│   ├── routes/             # Route definitions
-│   ├── styles/             # Additional styles (if separate from public/css)
-│   ├── utils/              # Router, SessionManager, Template classes
-│   └── views/              # Templates (admin, users, posts, etc.)
-├── uploads/                # Uploaded images
-├── tests/                  # Reserved for future test cases
-└── README.md               # Project documentation
+## Project Structure
+📂 root/
+├── 📂 config/             # Configuration files
+│   └── 📄 database.php    # Database connection settings
+├── 📂 favicon/            # Favicon assets
+├── 📂 public/             # Static files and entry point
+│   ├── 📂 css/            # Tailwind CSS styles
+│   ├── 📂 js/             # JavaScript (validator.js, script.js)
+│   ├── 📄 .htaccess       # URL rewriting and security
+│   └── 📄 index.php       # Main entry point
+├── 📂 src/                # Core application logic
+│   ├── 📂 controllers/    # Input validation and response handling
+│   ├── 📂 dal/            # Data Access Layer for DB interactions
+│   ├── 📂 models/         # Data Access Objects mapped to DB schema
+│   ├── 📂 routes/         # Route definitions
+│   ├── 📂 styles/         # Additional styles (if separate from public/css)
+│   ├── 📂 utils/          # Router, SessionManager, Template classes
+│   └── 📂 views/          # Templates (admin, users, posts, etc.)
+├── 📂 uploads/            # Uploaded images
+├── 📂 tests/              # Reserved for future test cases
+└── 📄 README.md           # Project documentation
 ## Installation
 
 1. **Prerequisites**:
