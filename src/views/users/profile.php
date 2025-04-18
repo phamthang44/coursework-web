@@ -267,7 +267,7 @@
                                         <div class="flex items-center justify-between text-xl text-gray-500 dark:text-gray-400">
                                             <!-- Vote score -->
                                             <div class="vote-score flex items-center relative w-[100px]">
-                                                <button aria-label="upvote-button" class="vote-btn upvote-btn p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
+                                                <button aria-label="upvote-button" class="vote-btn upvote-btn p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore > 0 ? $isActiveUpvote : "" ?>">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                                     </svg>
@@ -277,7 +277,7 @@
                                                     <?= $voteDisplay ?>
                                                 </span>
 
-                                                <button aria-label="downvote-button" class="vote-btn downvote-btn ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
+                                                <button aria-label="downvote-button" class="vote-btn downvote-btn ml-auto p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 <?= $voteScore <= 0 ? $isActiveDownvote : "" ?>">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                                     </svg>
@@ -365,9 +365,10 @@
                     </div>
                 </div>`);
         }
-        document.querySelector('.edit-profile').addEventListener('click', function() {
-            const editProfileModal = new Modal();
-            editProfileModal.openModal(`<div class="bg-white dark:bg-darkmode rounded-lg w-full max-w-xl mx-4">
+        if (document.querySelector('.edit-profile')) {
+            document.querySelector('.edit-profile').addEventListener('click', function() {
+                const editProfileModal = new Modal();
+                editProfileModal.openModal(`<div class="bg-white dark:bg-darkmode rounded-lg w-full max-w-xl mx-4">
             <div class="flex justify-between items-center border-b dark:border-gray-700 p-4">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Profile</h3>
             </div>
@@ -432,7 +433,8 @@
                 </div>
             </form>
         </div>`);
-        });
+            });
+        }
 
         function handleImagePreview(e) {
             let file = e.target.files[0];
@@ -743,17 +745,19 @@
                     toggleBioEdit(true);
                 }
             });
+            if (document.querySelector('.cancel-bio')) {
+                document.querySelector('.cancel-bio').addEventListener("click", function() {
+                    const input = document.querySelector(".bio-input");
+                    if (input) {
+                        const textBio = document.createElement("p");
+                        textBio.classList = "bio-text text-gray-500 dark:text-gray-400 text-sm";
+                        textBio.innerText = input.value || "No bio set";
+                        input.replaceWith(textBio);
+                    }
+                    toggleBioEdit(false);
+                });
+            }
 
-            document.querySelector('.cancel-bio').addEventListener("click", function() {
-                const input = document.querySelector(".bio-input");
-                if (input) {
-                    const textBio = document.createElement("p");
-                    textBio.classList = "bio-text text-gray-500 dark:text-gray-400 text-sm";
-                    textBio.innerText = input.value || "No bio set";
-                    input.replaceWith(textBio);
-                }
-                toggleBioEdit(false);
-            });
         });
         const avatar = document.querySelector("#image");
         if (avatar) {

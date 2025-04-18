@@ -22,6 +22,6 @@ class Template
     }
     public static function postCommentLayout()
     {
-        require_once __DIR__ . '/../views/layouts/postcomment_layout.php';
+        require_once __DIR__ . '/../views/layouts/postcomment-layout.php';
     }
 }

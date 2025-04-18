@@ -422,7 +422,7 @@ class UserController extends BaseController
         $this->checkPermission('admin'); // only admin can access this page
 
         //$users = $this->userDAO->getAllUsers();
-        require_once __DIR__ . '/../views/admin/manage_users.php';
+        require_once __DIR__ . '/../views/admin/user-management.php';
     }
 
     public function getTotalUserNums()

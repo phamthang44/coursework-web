@@ -95,7 +95,7 @@ class PostController extends BaseController
         $userController = new UserController();
         $moduleController = new ModuleController();
         $modules = $this->moduleDAO->getAllModules();
-        require_once __DIR__ . '/../views/posts/createpost.php';
+        require_once __DIR__ . '/../views/posts/create-post.php';
     }
 
     public function viewPost($postId)
@@ -134,7 +134,7 @@ class PostController extends BaseController
             $postController = $this;
             $modules = $this->moduleDAO->getAllModules();
             // Move the data into view
-            require_once __DIR__ . '/../views/posts/viewpost.php';
+            require_once __DIR__ . '/../views/posts/view-post.php';
         } catch (Exception $e) {
             SessionManager::set('error', $e->getMessage());
             header("Location: /quorae");
@@ -245,7 +245,7 @@ class PostController extends BaseController
             $postImageObj = $postController->getPostImage($postAdminDisplay->getPostId());
             $postImageStr = (!is_null($postImageObj)) ? $postImageObj->getMediaKey() : '';
             $postImage = $postImageStr ?? '';
-            require_once __DIR__ . '/../views/posts/updatepost.php';
+            require_once __DIR__ . '/../views/posts/update-post.php';
         } catch (Exception $e) {
             SessionManager::set("Error in edit method: ", $e->getMessage());
             header("Location: /404");
@@ -364,7 +364,7 @@ class PostController extends BaseController
             } catch (Exception $e) {
                 error_log("Error in update method: " . $e->getMessage());
                 SessionManager::set('error', $e->getMessage());
-                header("Location: /500.php");
+                header("Location: /500");
                 exit();
             }
         }

@@ -18,7 +18,7 @@ class ModuleController
         // }
         // 
         // if (!$this->currentUser->getRole() !== 'admin') {
-        //     header("Location: /403"); // Trang báo lỗi quyền hạn
+        //     header("Location: /403"); // Page "No authorization"
         //     exit();
         // }
     }
@@ -29,7 +29,7 @@ class ModuleController
 
     public function moduleManagement()
     {
-        require_once __DIR__ . '/../views/admin/module_management.php';
+        require_once __DIR__ . '/../views/admin/module-management.php';
     }
 
     public function getModuleName($moduleId)
