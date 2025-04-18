@@ -146,12 +146,12 @@ class AdminController extends BaseController
         $currentPage = $_POST['page'] ?? 1;
         $offset = ($currentPage - 1) * 10;
         $users = $this->userDAO->getUserPerPage(10, $offset);
-        require_once __DIR__ . '/../views/admin/user_management.php';
+        require_once __DIR__ . '/../views/admin/user-management.php';
     }
 
     public function moduleManagement()
     {
-        require_once __DIR__ . '/../views/admin/module_management.php';
+        require_once __DIR__ . '/../views/admin/module-management.php';
     }
 
     public function updateModule($moduleId)
