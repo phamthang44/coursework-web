@@ -103,9 +103,13 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                     <?php endif; ?>
                     <div class="flex gap-1 text-xs flex-col">
                         <?php if ($authorObj->getRole() === 'admin') { ?>
-                            <p class="flex items-center justify-center"><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span><span class="ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2">Admin</span></p>
+                            <p class="flex items-center justify-center"><span class="text-lg font-medium text-orange-600 dark:text-orange-600"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span><span class="ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2">Admin</span></p>
                         <?php } else { ?>
-                            <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span></p>
+                            <?php if ($authorObj->getUserId() === $currentUser->getUserId()) { ?>
+                                <p><span class="text-lg font-medium text-orange-600 dark:text-orange-600"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span></p>
+                            <?php } else { ?>
+                                <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span></p>
+                            <?php } ?>
                         <?php } ?>
 
                         <div class="flex flex-row gap-3">

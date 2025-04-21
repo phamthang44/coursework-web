@@ -119,7 +119,11 @@
                     <div class="flex-1">
                         <h1 class="text-xl md:text-2xl font-bold mb-2"><?= $title ?></h1>
                         <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            <span class="font-medium"><?= $authorFirstName . " " . $authorLastName ?></span>
+                            <?php if ($isAuthor) { ?>
+                                <span class="font-medium text-orange-600 dark:text-orange-600"><?= $authorFirstName . " " . $authorLastName ?></span>
+                            <?php } else { ?>
+                                <span class="font-medium"><?= $authorFirstName . " " . $authorLastName ?></span>
+                            <?php } ?>
                             <span class="mx-2">·</span>
                             <!-- <span>Software Developer at TechCorp</span> -->
                             <!-- <span class="mx-2">·</span> -->
