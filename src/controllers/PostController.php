@@ -285,7 +285,9 @@ class PostController extends BaseController
 
                 //take the old post
                 $post = $this->postDAO->getPost($postId);
-
+                if (!$post) {
+                    throw new Exception("Post not found");
+                }
                 $oldTitle = $post->getTitle();
                 $oldContent = $post->getContent();
                 $oldModule = $post->getModuleId();
@@ -296,25 +298,20 @@ class PostController extends BaseController
 
                 $this->postDAO->updatePost($postId, $newTitle, $newContent, $newModule);
 
-                if (!$post) {
-                    throw new Exception("Post not found");
-                }
-
-                error_log("Post created successfully");
+                error_log("Post updated successfully");
+                // Retrieve the image object associated with the post
                 $imageObj = $this->postAssetDAO->getByPostId($postId);
-                if (!$imageObj) {
-                    $imagePath = null;
-                } else {
-                    $imagePath = $imageObj->getMediaKey();
-                }
+                $imagePath = $imageObj ? $imageObj->getMediaKey() : null;
+                error_log("Current image path: " . ($imagePath ?? "None"));
 
-                if (!empty($_FILES['image']['name']) && $imagePath === null) {
+                if (!empty($_FILES['image']['name'])) {
+                    error_log("Check this logic if else :" . $imagePath);
                     $uploadDir = __DIR__ . '/../../uploads/';
                     if (!file_exists($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
 
-                    $maxFileSize = 100 * 1024 * 1024; // 100MB
+                    $maxFileSize = 10 * 1024 * 1024; // 100MB
 
                     // Check error when uploading file
                     if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
@@ -353,10 +350,10 @@ class PostController extends BaseController
                     }
 
                     $imagePath = 'uploads/' . $fileName;
-                    $this->postAssetDAO->create($imagePath, $postId);
+                    $this->postAssetDAO->update($postId, $imagePath);
                     error_log("Image uploaded successfully: " . $imagePath);
                 } else {
-                    $this->postAssetDAO->update($post->getPostId(), $imagePath);
+                    error_log("No new image uploaded.");
                 }
                 SessionManager::set('success', "Post updated successfully");
                 header("Location: /quorae");
