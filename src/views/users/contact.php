@@ -72,7 +72,7 @@
                     class="w-full h-[300px] p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
                 <span class="form-message text-red-500 font-medium text-sm"></span>
             </div>
-            <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold" type="submit" value="Send">
+            <input class="w-[200px] h-[40px] rounded-lg bg-red-700 hover:bg-red-600 transition text-white font-bold cursor-pointer" type="submit" value="Send">
         </form>
     </div>
     <div class="mt-[100px]"></div>';

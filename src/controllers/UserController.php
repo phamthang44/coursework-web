@@ -76,14 +76,14 @@ class UserController extends BaseController
     public function emailsuccess()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            require_once __DIR__ . '/../views/success/sendmailsucess.php';
+            require_once __DIR__ . '/../views/success/sendmail-sucess.php';
         }
     }
 
     public function emailfail()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            require_once __DIR__ . '/../views/errors/sendmailfail.php';
+            require_once __DIR__ . '/../views/errors/sendmail-fail.php';
         }
     }
 
