@@ -56,7 +56,12 @@
 
             </div>
     </div>
-
+    <script>
+        const addQuestion = document.querySelector('.add-question');
+        if (addQuestion) {
+            addQuestion.classList.add('hidden');
+        }
+    </script>
 </body>
 
 </html>

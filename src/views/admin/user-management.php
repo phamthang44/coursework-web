@@ -207,6 +207,10 @@ if ($currentUser && $currentUser->getRole() !== 'admin') {
             `)
         }
         <?= SessionManager::remove('message') ?>
+        const addQuestion = document.querySelector('.add-question');
+        if (addQuestion) {
+            addQuestion.classList.add('hidden');
+        }
     </script>
 </body>
 
