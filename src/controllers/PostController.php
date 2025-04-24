@@ -351,6 +351,7 @@ class PostController extends BaseController
 
                     $imagePath = 'uploads/' . $fileName;
                     $this->postAssetDAO->update($postId, $imagePath);
+                    $this->postDAO->updateTime($postId);
                     error_log("Image uploaded successfully: " . $imagePath);
                 } else {
                     error_log("No new image uploaded.");

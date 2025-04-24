@@ -30,8 +30,8 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
     $updatedAt = $post->getUpdatedDate() ?? 'Unknown';
 
     // Format dates
-    $createdAtFormatted = date('M d, Y', strtotime($createdAt));
-    $updatedAtFormatted = date('M d, Y', strtotime($updatedAt));
+    $createdAtFormatted = date('M d, Y h:i A', strtotime($createdAt));
+    $updatedAtFormatted = date('M d, Y h:i A', strtotime($updatedAt));
 
     // Get author if available (assuming post has author method)
 
@@ -102,17 +102,21 @@ function render_post_card($post, $assets = [], $showControls = false, $postContr
                         </a>
                     <?php endif; ?>
                     <div class="flex gap-1 text-xs flex-col">
-                        <?php if ($authorObj->getRole() === 'admin') { ?>
-                            <p class="flex items-center justify-center"><span class="text-lg font-medium text-orange-600 dark:text-orange-600"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span><span class="ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2">Admin</span></p>
-                        <?php } else { ?>
-                            <?php if (!is_null($currentUser)) { ?>
-                                <?php if ($authorObj->getUserId() === $currentUser->getUserId()) { ?>
-                                    <p><span class="text-lg font-medium text-orange-600 dark:text-orange-600"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span></p>
-                                <?php } ?>
-                            <?php } else { ?>
-                                <p><span class="text-lg text-gray-500 dark:text-white"><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span></p>
-                            <?php } ?>
-                        <?php } ?>
+                        <p class="flex items-center justify-start">
+                            <?php
+                            $authorName = htmlspecialchars($author, ENT_QUOTES, 'UTF-8');
+                            if ($authorObj->getRole() === 'admin') {
+                                echo "<span class='text-lg text-red-500 dark:text-red-600 font-medium'>{$authorName}</span>";
+                                echo "<span class='ml-[10px] flex justify-center items-center rounded-full bg-red-600 text-white w-[50px] h-[20px] font-bold px-2'>Admin</span>";
+                            } else {
+                                $authorClass = 'text-lg text-gray-500 dark:text-white';
+                                if (!is_null($currentUser) && $authorObj->getUserId() === $currentUser->getUserId()) {
+                                    $authorClass = 'text-lg font-medium text-orange-600 dark:text-orange-600';
+                                }
+                                echo "<span class='{$authorClass}'>{$authorName}</span>";
+                            }
+                            ?>
+                        </p>
 
                         <div class="flex flex-row gap-3">
                             <p class="dark:text-[#e6e7e8] text-gray-600"><?= htmlspecialchars($createdAtFormatted, ENT_QUOTES, 'UTF-8') ?></p>

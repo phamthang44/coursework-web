@@ -100,6 +100,14 @@ class PostDAOImpl implements PostDAOI
         $stmt->execute();
     }
 
+    public function updateTime($postId)
+    {
+        $sql = "UPDATE Posts SET update_date = NOW() WHERE post_id = :postId";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(":postId", $postId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     public function updatePostTitle($postId, $title): bool
     {
         // TODO: Implement updatePostTitle() method.
