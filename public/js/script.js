@@ -601,7 +601,6 @@ if (helpBtns) {
         <li class="text-black dark:text-white mt-2">1. <span class="font-semibold text-yellow-600">How to post:</span> Click “Create Post,” enter your content, and submit. Your post will be reviewed before going live.</li>
         <li class="text-black dark:text-white mt-2">2. <span class="font-semibold text-yellow-600">How to comment:</span> Pick a post, type your thoughts in the comment box, and hit send.</li>
         <li class="text-black dark:text-white mt-2">3. <span class="font-semibold text-green-500">Need help?</span> Contact admins at <span class="text-red-600 font-semibold">Contact us</span> button</li>
-        <li class="text-black dark:text-white mt-2">4. <span class="font-semibold text-blue-500">Forgot password?</span> Click <span class="font-semibold text-green-600">“Forgot Password”</span> on the login page to reset it.</li>
       </ul>
     `);
     });
