@@ -204,7 +204,7 @@ class PostController extends BaseController
                     $this->postAssetDAO->create($imagePath, $postId);
                 }
 
-                $referer = $_SERVER["HTTP_REFERER"] ?? "/posts";
+                $referer = $_SERVER["HTTP_REFERER"] ?? "/quorae";
                 SessionManager::set("success", "The post has been created successfully!");
                 if (strpos($referer, "profile") !== false) {
                     header("Location: " . $referer);

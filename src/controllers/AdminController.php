@@ -211,7 +211,7 @@ class AdminController extends BaseController
             $result = $this->moduleController->deleteModule($moduleId);
             if ($result) {
                 header("Location: /admin/module-management");
-                SessionManager::set('message', "Module deleted successfully");
+                //SessionManager::set('message', "Module deleted successfully");
                 exit();
             } else {
                 throw new Exception("Failed to delete module");
@@ -254,6 +254,7 @@ class AdminController extends BaseController
                     "status" => true,
                     "module" => $module->toArray()
                 ]);
+                // header("Location: /admin/module-management");
             } else {
                 throw new Exception("Failed to create module");
             }
